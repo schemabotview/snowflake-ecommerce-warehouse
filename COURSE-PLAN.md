@@ -122,10 +122,10 @@ identifier, URLs and user names are never shown: the recorder normalises them to
 | --- | --- |
 | company | Shopwave (fictional online store); Ana, analytics engineer; teams: data (loading), analytics (dbt), BI and finance (reading); the marketing agency Brightline (a partner) |
 | account | shown as `shopwave-dw` (`SHOPWAVE-DW.snowflakecomputing.com`): organisation `SHOPWAVE`, account name `DW`, locator `SW12345`, user `ANA`; Enterprise, AWS `eu-west-2`. The trial MUST be made in AWS eu-west-2: the region is real output, not normalised |
-| warehouses | `WH_LOAD` XS, `WH_TRANSFORM` XS (S in 10.4), `WH_BI` XS multi-cluster 1–3; auto-suspend 60 s |
+| warehouses | `WH_LOAD` XS (2.2), `WH_BI` XS (4.4; multi-cluster 1–3 in 10.4), `WH_TRANSFORM` XS (7; S in 10.4); auto-suspend 60 s; all under `RM_MONTHLY` |
 | budget | resource monitor `RM_MONTHLY`, 50 credits, notify 80%, suspend 100% |
 | databases | `RAW` (schema `SHOPWAVE`), `ANALYTICS` (schemas `STAGING`, `MARTS`, `BI`), `ANALYTICS_DEV` (a clone) |
-| roles | `LOADER`, `TRANSFORMER`, `ANALYST`, `REGION_MANAGER`, under `SYSADMIN`; users `ana`, `svc_loader`, `svc_dbt` (key-pair) |
+| roles | `LOADER`, `TRANSFORMER`, `ANALYST`, `REGION_MANAGER`, under `SYSADMIN`; users `ANA` (the administrator who opened the trial: the recorder's user, normalised), `RAVI` (BI), `SVC_LOADER`, `SVC_DBT` (`TYPE = SERVICE`, key pair; private keys in `~/.keys` on the recording machine, never committed) |
 | stage | `RAW.SHOPWAVE.LANDING` (internal); file formats `FF_CSV`, `FF_CSV_LATIN1`, `FF_JSON`, `FF_PARQUET` |
 | core star | `fct_order_lines` (grain: one order line), `dim_customer` (SCD2), `dim_product` (SCD2), `dim_date`, `dim_currency` |
 | PII | customer email masked for every role but `TRANSFORMER`; row access by country for `REGION_MANAGER` |
@@ -225,14 +225,14 @@ M model.
 
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
-| 1 | Users and roles | `CREATE USER ana`; `USE ROLE` | user → roles → privileges | S |
+| 1 | Users and roles | `CREATE USER RAVI` (BI; Ana is the administrator who opened the trial: the recorder's user); `CURRENT_AVAILABLE_ROLES()` | user → roles → privileges | S |
 | 2 | ◆ full scene: the system roles | `SHOW ROLES` | ACCOUNTADMIN, SECURITYADMIN, USERADMIN, SYSADMIN, PUBLIC | S |
 | 3 | Custom roles | `LOADER`, `TRANSFORMER`, `ANALYST` under `SYSADMIN` | the role tree | S |
-| 4 | Grants and future grants | `GRANT … ON FUTURE TABLES` | object → privilege → role | S |
+| 4 | Grants and future grants | `WH_BI` created (moved from Course 10: ANALYST needs a warehouse from Course 6); `GRANT … ON ALL / FUTURE TABLES` | object → privilege → role | S |
 | 5 | Least privilege | the matrix applied | role × database × privilege | S |
-| 6 | A refused query | `ANALYST` writes to `RAW` → `Insufficient privileges` | the missing grant, found | S |
+| 6 | A refused query | `ANALYST` UPDATEs `RAW` → refused (no USAGE on RAW: "does not exist or not authorized"); `SHOW GRANTS ON DATABASE RAW` | the missing grant, found | S |
 | 7 | Service users and key pairs | `svc_loader`, `svc_dbt` with RSA keys | no password: key → JWT → session | S |
-| 8 | Network policies | an allowed-IP list | where a login may come from | D |
+| 8 | Network policies | an allow list, NOT applied (it would lock out the recording machine) | where a login may come from | D |
 
 **5. `load` · Getting data in · 9**
 
@@ -358,6 +358,10 @@ M model.
    at 2,500 EUR. At SF 0.01: 48 movers, 654 silver, 134 gold, 11 customers with three versions.
 
 ## Open
+
+- The service users' private keys live in `/home/ana/.keys` on the recording machine (4.7). Course 7's
+  dbt profile reads `svc_dbt.p8` from there: record 4.7 → 7 on one machine, or re-record 4.7 (a new
+  key; only its fingerprint changes) before Course 7 on a new one.
 
 - Course 2 rests on four things a new trial is expected to have, confirmed only at recording: the
   shared `SNOWFLAKE_SAMPLE_DATA` database (2.1–2.3), `->>` (pipe) after `SHOW`, `COUNT(*)` answered

@@ -47,13 +47,13 @@ const ALL = [...SOURCES, ...LAYERS.flatMap(([, , , ps]) => ps), ...AROUND.flatMa
 export const BUILT: Record<string, string[]> = { intro: [] }
 BUILT['how-snowflake-runs'] = ['wh-load']
 BUILT.start = [...BUILT['how-snowflake-runs'], 'src-shop', 'raw-tables', 'monitor']
-BUILT.secure = [...BUILT.start, 'roles', 'keys']
+BUILT.secure = [...BUILT.start, 'roles', 'keys', 'wh-bi']
 BUILT.load = [...BUILT.secure, 'src-pay', 'src-clicks', 'src-returns', 'src-fx', 'landing', 'pipe']
 BUILT.model = [...BUILT.load, 'star', 'analysts']
 BUILT.transform = [...BUILT.model, 'wh-transform', 'stg', 'dbt']
 BUILT.history = [...BUILT.transform, 'snapshots']
 BUILT.facts = [...BUILT.history, 'facts']
-BUILT.perform = [...BUILT.facts, 'wh-bi']
+BUILT.perform = [...BUILT.facts]
 BUILT.serve = [...BUILT.perform, 'mart-revenue', 'metrics', 'policies', 'dashboard', 'share']
 BUILT.operate = [...BUILT.serve, 'tasks', 'clone', 'ci']
 /** Every part: the finished warehouse (Course 1's "what we'll build"). */

@@ -40,7 +40,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | 1 | `intro` | 3 | authored, rendered and looked at; not narrated (wavs) — 1.1 and 1.2 run locally, 1.3 concept |
 | 2 | `how-snowflake-runs` | 7 | authored and rendered; 2.5 doc-cited and 2.7 (model, runs locally) final; 2.1–2.4, 2.6 scripted, NOT RECORDED (their terminals show only the commands, read values `…`): re-read every frame and its narration after recording |
 | 3 | `start` | 7 | authored and rendered; 3.1 runs locally (final), 3.7 concept (its inventory reads 3.3 and 3.5), 3.2–3.6 scripted, NOT RECORDED |
-| 4 | `secure` | 8 | planned |
+| 4 | `secure` | 8 | authored and rendered; 4.8 doc-cited (final); 4.1–4.7 scripted, NOT RECORDED |
 | 5 | `load` | 9 | planned |
 | 6 | `model` | 9 | planned |
 | 7 | `transform` | 9 | planned (pilot) |

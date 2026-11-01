@@ -1,0 +1,1 @@
+{"from": "secure/05-least-privilege", "changes": ["queries/refused.sql", "queries/raw_grants.sql"], "snowflake": true, "time": "2026-11-11 09:50:00"}

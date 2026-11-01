@@ -1,0 +1,2 @@
+$ snow sql -f setup/users.sql
+$ snow sql -f queries/who.sql

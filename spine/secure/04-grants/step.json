@@ -1,0 +1,1 @@
+{"from": "secure/03-custom-roles", "changes": ["setup/warehouses.sql", "setup/grants.sql", "queries/future.sql"], "snowflake": true, "time": "2026-11-11 09:30:00"}

@@ -1,0 +1,3 @@
+$ snow sql -f setup/warehouses.sql
+$ snow sql -f setup/grants.sql
+$ snow sql -f queries/future.sql

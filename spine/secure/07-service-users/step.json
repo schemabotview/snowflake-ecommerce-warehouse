@@ -1,0 +1,1 @@
+{"from": "secure/06-refused", "changes": ["setup/keys.sh", "setup/service_users.sql", "queries/whoami.sh"], "snowflake": true, "time": "2026-11-11 10:00:00"}

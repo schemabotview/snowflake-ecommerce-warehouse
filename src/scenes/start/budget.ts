@@ -19,7 +19,7 @@ export const startBudget: SceneModel = ideFrame({
       type: 'group', id: 'whs', bare: true, dir: 'row', children: [
         { type: 'item', id: 'm-load', icon: 'cpu', title: 'WH_LOAD', sub: 'attached', stack: true },
         { type: 'item', id: 'm-transform', icon: 'cpu', title: 'WH_TRANSFORM', sub: 'Course 7', stack: true, muted: true },
-        { type: 'item', id: 'm-bi', icon: 'cpu', title: 'WH_BI', sub: 'Course 10', stack: true, muted: true },
+        { type: 'item', id: 'm-bi', icon: 'cpu', title: 'WH_BI', sub: 'Course 4', stack: true, muted: true },
       ],
     },
     {

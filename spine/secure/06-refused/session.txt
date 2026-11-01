@@ -1,0 +1,2 @@
+$ snow sql --role ANALYST -f queries/refused.sql
+$ snow sql -f queries/raw_grants.sql

@@ -1,0 +1,1 @@
+{"from": "secure/01-users", "changes": ["queries/roles.sql"], "snowflake": true, "time": "2026-11-11 09:10:00"}
