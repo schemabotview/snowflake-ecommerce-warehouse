@@ -1,0 +1,2 @@
+$ snow sql -f setup/dynamic_grants.sql
+$ bash model/as-transformer.sh -f queries/dynamic.sql

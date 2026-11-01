@@ -1,0 +1,4 @@
+$ cd dbt
+$ dbt run --select dim_currency fct_payments
+$ cd ..
+$ snow sql --role TRANSFORMER -f queries/currency.sql

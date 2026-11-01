@@ -1,0 +1,1 @@
+{"from": "transform/09-docs", "changes": ["load/customer_changes.sql", "load/customers_as_of.sql", "load/month_ends.sh", "dbt/snapshots/snap_customers.yml", "queries/customer_81.sql", "dbt/models/staging/_sources.yml"], "snowflake": true, "time": "2026-11-16 09:00:00", "venv": true}

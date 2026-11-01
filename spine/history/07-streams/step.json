@@ -1,0 +1,1 @@
+{"from": "history/06-currency", "changes": ["setup/stream_grants.sql", "load/order_changes.sql"], "snowflake": true, "time": "2026-11-16 09:50:00"}

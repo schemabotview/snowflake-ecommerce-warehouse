@@ -1,0 +1,2 @@
+$ snow sql -f setup/stream_grants.sql
+$ bash load/as-loader.sh -f load/order_changes.sql

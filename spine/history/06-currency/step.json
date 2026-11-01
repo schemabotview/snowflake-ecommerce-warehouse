@@ -1,0 +1,1 @@
+{"from": "history/05-late", "changes": ["dbt/models/marts/core/dim_currency.sql", "dbt/models/marts/core/fct_payments.sql", "queries/currency.sql"], "snowflake": true, "time": "2026-11-16 09:40:00", "venv": true}

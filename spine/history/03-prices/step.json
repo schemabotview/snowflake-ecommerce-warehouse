@@ -1,0 +1,1 @@
+{"from": "history/02-snapshots", "changes": ["load/product_prices.sql", "dbt/models/staging/_sources.yml", "dbt/models/staging/stg_product_prices.sql", "dbt/models/marts/core/dim_product.sql", "queries/price_history.sql"], "snowflake": true, "time": "2026-11-16 09:10:00", "venv": true}

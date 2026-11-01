@@ -1,0 +1,1 @@
+{"from": "history/03-prices", "changes": ["dbt/models/marts/core/dim_customer.sql", "dbt/models/marts/core/fct_order_lines.sql", "queries/point_in_time.sql"], "snowflake": true, "time": "2026-11-16 09:20:00", "venv": true}

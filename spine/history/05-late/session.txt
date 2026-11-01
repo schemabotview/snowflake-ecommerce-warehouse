@@ -1,0 +1,1 @@
+$ snow sql --role TRANSFORMER -f queries/late.sql

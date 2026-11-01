@@ -1,0 +1,5 @@
+$ bash load/as-loader.sh -f load/product_prices.sql
+$ cd dbt
+$ dbt run --select stg_product_prices dim_product
+$ cd ..
+$ snow sql --role TRANSFORMER -f queries/price_history.sql

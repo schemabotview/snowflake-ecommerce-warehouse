@@ -1,0 +1,10 @@
+$ head -1 data/raw/customers.csv
+customer_id,country,signup_date,email
+$ grep '^81,' data/raw/customers.csv
+81,ES,2025-10-06,customer81@example.com
+$ head -1 data/raw/customer_changes.csv
+customer_id,changed_at,field,country,loyalty_tier
+$ grep '^81,' data/raw/customer_changes.csv
+81,2026-01-16 13:32:34,country,AT,bronze
+81,2026-03-21 22:56:35,tier,AT,silver
+81,2026-05-21 08:10:50,tier,AT,gold

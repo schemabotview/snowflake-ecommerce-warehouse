@@ -280,14 +280,14 @@ M model.
 
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
-| 1 | ◆ full scene: SCD types | concept + one customer's moves | types 0, 1, 2, 3 on the same row | S |
-| 2 | dbt snapshots | `snap_customers`: a move and a tier change | `dbt_valid_from` / `dbt_valid_to` rows | S |
-| 3 | Price history | `snap_products` from the price changes | a product's prices over 2026 | S |
+| 1 | ◆ full scene: SCD types | customer 81's rows in the generator's files (runs locally) + types 0–3 applied to them | types 0, 1, 2, 3 on the same row | L |
+| 2 | dbt snapshots | `CUSTOMER_STATE` (the shop's live table, replicated) set to each month end from the overlay's change log, `dbt snapshot` after each (`load/month_ends.sh`); customer 81 (ES → AT 01-16, silver 03-21, gold 05-21) | `dbt_valid_from` / `dbt_valid_to` rows | S |
+| 3 | Price history | `dim_product` versioned straight from the price LOG (no snapshot: the source keeps its own history), `LEAD()` for valid_to | a product's prices over 2026 | S |
 | 4 | The price at the time of order | point-in-time join to `dim_product` | an order line → the version valid that day | S |
 | 5 | Late-arriving facts | a click 3 days late; an inferred member | the late row lands in the right day | S |
 | 6 | Currency | `dim_currency`, daily rates; revenue in EUR | never sum mixed currencies | S |
-| 7 | Streams | a stream on raw orders | change capture: offset → changed rows | S |
-| 8 | Dynamic tables vs dbt incremental | the same model both ways | target lag vs scheduled runs | S |
+| 7 | Streams | `CREATE STREAM` granted to LOADER; a stream on `ORDER_CHANGES` (the shop's change feed), Dec 1–7 loaded, consumed by an INSERT | change capture: offset → changed rows | S |
+| 8 | Dynamic tables vs dbt incremental | `CREATE DYNAMIC TABLE` granted to TRANSFORMER; `DT_DAILY_REVENUE`, lag 1 hour, then SUSPENDED (credits) | target lag vs scheduled runs | S |
 
 **9. `facts` · Every kind of fact · 8**
 
