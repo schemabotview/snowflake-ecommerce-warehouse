@@ -19,7 +19,7 @@ export const howWhere: SceneModel = ideFrame({
         { type: 'item', id: 'h-org', icon: 'building', title: `Organisation ${org}`, sub: 'the company: owns accounts, billing' },
         { type: 'item', id: 'h-account', icon: 'snowflakedb', title: `Account ${account}`, sub: `identifier ${org}-${account}` },
         { type: 'item', id: 'h-cloud', icon: 'cloud', title: 'Cloud: AWS', sub: 'chosen when the account is made' },
-        { type: 'item', id: 'h-region', icon: 'region', title: `Region ${region}`, sub: 'London: the data stays here' },
+        { type: 'item', id: 'h-region', icon: 'region', title: `Region ${region}`, sub: 'N. Virginia: the data stays here' },
       ],
     },
     {

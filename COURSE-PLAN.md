@@ -46,7 +46,7 @@ Friday revenue by category, from the warehouse.
 
 | what | pin | role |
 | --- | --- | --- |
-| Snowflake | a 30-day trial, **Enterprise** edition, AWS `eu-west-2` (London) | the warehouse; Enterprise is needed for masking and row access policies, multi-cluster warehouses, materialised views, search optimisation, query acceleration |
+| Snowflake | a 30-day trial, **Enterprise** edition, AWS `us-east-1` (N. Virginia; the owner's trial, opened 2026-11-01) | the warehouse; Enterprise is needed for masking and row access policies, multi-cluster warehouses, materialised views, search optimisation, query acceleration |
 | PostgreSQL | **18.6** (conda-forge, `sql-bank`'s `setup-postgres.sh`) | Shopwave's OLTP database, the source |
 | `shopwave_gen` | pinned to a commit of `spark-ecommerce-analytics` | the data, byte-identical to the Spark course's |
 | Python | **3.13.18** (dbt-snowflake 1.12.4 and the Snowflake CLI stop at 3.13) | the generator, dbt, scripts |
@@ -121,7 +121,7 @@ identifier, URLs and user names are never shown: the recorder normalises them to
 | fact | value |
 | --- | --- |
 | company | Shopwave (fictional online store); Ana, analytics engineer; teams: data (loading), analytics (dbt), BI and finance (reading); the marketing agency Brightline (a partner) |
-| account | shown as `shopwave-dw` (`SHOPWAVE-DW.snowflakecomputing.com`): organisation `SHOPWAVE`, account name `DW`, locator `SW12345`, user `ANA`; Enterprise, AWS `eu-west-2`. The trial MUST be made in AWS eu-west-2: the region is real output, not normalised |
+| account | shown as `shopwave-dw` (`SHOPWAVE-DW.snowflakecomputing.com`): organisation `SHOPWAVE`, account name `DW`, locator `SW12345`, user `ANA`; Enterprise, AWS `us-east-1` (`AWS_US_EAST_1`). The region is real output, not normalised: frames and narration say N. Virginia |
 | warehouses | `WH_LOAD` XS (2.2), `WH_BI` XS (4.4; multi-cluster 1–3 in 10.4), `WH_TRANSFORM` XS (7; S in 10.4); auto-suspend 60 s; all under `RM_MONTHLY` |
 | budget | resource monitor `RM_MONTHLY`, 50 credits, notify 80%, suspend 100% |
 | databases | `RAW` (schema `SHOPWAVE`), `ANALYTICS` (schemas `STAGING`, `MARTS`, `BI`), `ANALYTICS_DEV` (a clone) |

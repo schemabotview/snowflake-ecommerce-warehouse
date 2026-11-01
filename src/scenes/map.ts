@@ -79,7 +79,7 @@ export function warehouseMap(built: string[]): SceneNode {
     children: AROUND.map(([id, title, parts]) => group(id, title, undefined, parts, { tone: 'infra', dir: 'grid', cols: 2 })),
   }
   const account: Group = {
-    type: 'group', id: 'account', icon: 'snowflakedb', title: 'Snowflake account shopwave-dw', sub: 'Enterprise · AWS eu-west-2 (London)', dashed: true,
+    type: 'group', id: 'account', icon: 'snowflakedb', title: 'Snowflake account shopwave-dw', sub: 'Enterprise · AWS us-east-1 (N. Virginia)', dashed: true,
     children: [flow, around],
   }
   const readers = group('readers', 'Who reads it', undefined, READERS, { icon: 'users', tone: 'consume' })

@@ -28,7 +28,7 @@ export const howLayers: SceneModel = {
         {
           type: 'group', id: 'storage', badge: 3, title: 'Storage', sub: 'billed per terabyte stored', icon: 'disk', tone: 'store', dir: 'row', children: [
             { type: 'item', id: 'st-tables', icon: 'table', title: 'Tables', sub: 'columnar micro-partitions' },
-            { type: 'item', id: 'st-cloud', icon: 's3', title: 'Cloud object storage', sub: 'here: AWS, eu-west-2' },
+            { type: 'item', id: 'st-cloud', icon: 's3', title: 'Cloud object storage', sub: 'here: AWS, us-east-1' },
           ],
         },
       ],

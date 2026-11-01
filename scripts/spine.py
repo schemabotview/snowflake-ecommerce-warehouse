@@ -274,6 +274,16 @@ def snow_cli() -> None:
         os.chmod(SPINE_ROOT, 0o755)
 
 
+def pem(key: str) -> str:
+    """The private key as a PKCS#8 PEM file. An environment secret often holds only the base64 body
+    (no BEGIN/END lines, no newlines): rebuild the armour around it."""
+    key = key.strip()
+    if key.startswith('-----BEGIN'):
+        return key + '\n'
+    body = ''.join(key.split())
+    return '-----BEGIN PRIVATE KEY-----\n' + '\n'.join(body[i:i + 64] for i in range(0, len(body), 64)) + '\n-----END PRIVATE KEY-----\n'
+
+
 def connection() -> dict[str, str]:
     """Write ana's Snowflake connection from the environment's secrets (off screen), ask the account
     for the names it prints (organisation, account name, locator), and return {real: shown} — what the
@@ -285,7 +295,7 @@ def connection() -> dict[str, str]:
     account, user = os.environ['SNOWFLAKE_ACCOUNT'], os.environ['SNOWFLAKE_USER']
     cfg = HOME / '.snowflake'
     cfg.mkdir(parents=True, exist_ok=True)
-    (cfg / 'rsa_key.p8').write_text(os.environ['SNOWFLAKE_PRIVATE_KEY'].strip() + '\n')
+    (cfg / 'rsa_key.p8').write_text(pem(os.environ['SNOWFLAKE_PRIVATE_KEY']))
     (cfg / 'config.toml').write_text(
         'default_connection_name = "shopwave"\n\n[connections.shopwave]\n'
         f'account = "{account}"\nuser = "{user}"\nauthenticator = "SNOWFLAKE_JWT"\n'
