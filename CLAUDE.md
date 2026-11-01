@@ -43,7 +43,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | 4 | `secure` | 8 | authored and rendered; 4.8 doc-cited (final); 4.1–4.7 scripted, NOT RECORDED |
 | 5 | `load` | 9 | authored and rendered; 5.1–5.9 scripted, NOT RECORDED (every load runs as SVC_LOADER) |
 | 6 | `model` | 9 | authored and rendered; 6.1, 6.3 doc-cited (Kimball & Ross); 6.2, 6.4–6.9 scripted, NOT RECORDED; the star frame (`src/scenes/star.ts`) is built |
-| 7 | `transform` | 9 | planned (pilot) |
+| 7 | `transform` | 9 | authored and rendered (pilot); 7.1 doc-cited; 7.4 runs locally (`dbt parse`: the project parses, 13 models, 8 sources, and with 7.7–7.8's files 15 tests); 7.2–7.3, 7.5–7.9 scripted, NOT RECORDED |
 | 8 | `history` | 8 | planned |
 | 9 | `facts` | 8 | planned |
 | 10 | `perform` | 7 | planned |

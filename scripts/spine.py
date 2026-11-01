@@ -50,7 +50,8 @@ step.json (other keys, all optional):
   {"venv": true}                start with a venv for the project's requirements.txt activated (shared,
                                 parked between steps by requirements hash, as in the Spark course)
   {"capture": ["path", ...]}    files the session writes that a scene shows; saved to captured/
-  {"volatile": true}            compared with digits masked; or a list of kinds: ["digits", "uuid"]
+  {"volatile": true}            compared with digits masked; or a list of kinds: ["digits", "uuid"],
+                                ["clock"] (dbt's log-line clock and its "in 1.23s" timings only)
   {"time": "2026-11-09 09:00:00"}  Snowflake: the clock its normalised timestamps start from
 
 NORMALISATION (Snowflake steps, COURSE-PLAN.md "Facts"): the real account identifier, locator,
@@ -255,7 +256,7 @@ def environment() -> dict:
     tools = SPINE_ROOT / 'tools' / 'snow' / 'bin'
     return {**env, 'HOME': str(HOME), 'USER': USER, 'LOGNAME': USER, 'PGHOST': '/tmp', 'NO_COLOR': '1', 'TERM': 'dumb',
             'COLUMNS': str(COLUMNS), 'PYTHON_COLORS': '0', 'PIP_DISABLE_PIP_VERSION_CHECK': '1', 'PS1': '',
-            'DBT_SEND_ANONYMOUS_USAGE_STATS': 'False', 'PIP_CACHE_DIR': str(SPINE_ROOT / 'pip-cache'),
+            'DBT_SEND_ANONYMOUS_USAGE_STATS': 'False', 'DBT_USE_COLORS': 'False', 'DBT_PRINTER_WIDTH': str(COLUMNS), 'PIP_CACHE_DIR': str(SPINE_ROOT / 'pip-cache'),
             'PATH': f'{tools}:{env.get("PATH", "/usr/local/bin:/usr/bin:/bin")}'}
 
 
@@ -340,6 +341,10 @@ def run(step: Path) -> tuple[str, dict[str, str]]:
     """Run one step's commands as ana; the transcript as an 80-column terminal shows it."""
     config = config_of(step)
     env = environment()
+    if config.get('snowflake'):
+        # dbt's profile reads the account from the environment, as a learner's would (profiles.yml
+        # names the variable, never the value); the normaliser removes it from every output.
+        env['SNOWFLAKE_ACCOUNT'] = os.environ.get('SNOWFLAKE_ACCOUNT', '')
     project = lay_out(step)
     parked = venv(step, project, env)
     subprocess.run(['chown', '-R', f'{USER}:{USER}', str(HOME)], check=True)
@@ -420,6 +425,9 @@ def masked(text: str, step: Path) -> str:
     kinds = {'uuid', 'digits'} if kinds is True else set(kinds)
     if 'uuid' in kinds:
         text = UUID.sub('<uuid>', text)
+    if 'clock' in kinds:  # dbt stamps every log line with the wall clock, and its run's timings
+        text = re.sub(r'(?m)^\d\d:\d\d:\d\d  ', 'hh:mm:ss  ', text)
+        text = re.sub(r'in \d+\.\d+s\b', 'in #s', text)
     return re.sub(r' *\d+(?:[.,]\d+)*', ' #', text) if 'digits' in kinds else text
 
 

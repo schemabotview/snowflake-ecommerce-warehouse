@@ -1,0 +1,1 @@
+{"from": "transform/03-staging", "changes": ["dbt/models/marts/core/dim_date.sql", "dbt/models/marts/core/dim_customer.sql", "dbt/models/marts/core/dim_product.sql", "dbt/models/marts/core/int_first_payment.sql", "dbt/models/marts/core/fct_order_lines.sql", "dbt/dag.py"], "venv": true, "volatile": ["clock"]}

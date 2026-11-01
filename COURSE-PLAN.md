@@ -267,13 +267,13 @@ M model.
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
 | 1 | ELT layers | concept | raw → staging → marts; why transform after load | D |
-| 2 | A dbt project | `dbt init`, `profiles.yml` as `svc_dbt`, sources | project → profile → Snowflake | S |
+| 2 | A dbt project | written by hand (not `dbt init`, which is interactive): `dbt_project.yml`, `profiles.yml` as `SVC_DBT` (account from `$SNOWFLAKE_ACCOUNT`, key from `~/.keys`), `_sources.yml`, a `generate_schema_name` macro; `dbt debug` | project → profile → Snowflake | S |
 | 3 | Staging models | `stg_*`: rename, cast, dedupe clicks | one source → one staging model | S |
-| 4 | ◆ full scene: `ref()` and the DAG | `dbt ls`, the manifest | the DAG drawn from `manifest.json` | L |
+| 4 | ◆ full scene: `ref()` and the DAG | `dbt parse` (no connection) + `dag.py` reading `manifest.json`: 13 models, 8 sources | the DAG drawn from the run | L |
 | 5 | Materialisations | view, table, ephemeral | what each builds in Snowflake | S |
-| 6 | An incremental fact | `fct_order_lines` incremental, `merge` | first run vs next run | S |
+| 6 | An incremental fact | `fct_order_lines` incremental, `merge` on `order_line_key`, newer than `max(order_ts)`; `--full-refresh`, then a run with nothing new | first run vs next run | S |
 | 7 | Generic tests | unique, not null, relationships, accepted values | tests on the DAG | S |
-| 8 | Custom tests | unpaid and double-paid orders fail | the failing rows, found | S |
+| 8 | Custom tests | `assert_has_payment`, `assert_paid_once`: both FAIL on the planted rows | the failing rows, found | S |
 | 9 | Docs and lineage | `dbt docs generate` | lineage from source to mart | S |
 
 **8. `history` · Time in the warehouse · 8**

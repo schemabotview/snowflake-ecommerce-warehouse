@@ -1,0 +1,23 @@
+$ cd dbt
+$ dbt parse
+12:59:37  Running with dbt=1.12.6
+12:59:38  Registered adapter: snowflake=1.12.4
+12:59:38  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+12:59:39  Performance info: /home/ana/shopwave-dw/dbt/target/perf_info.json
+$ python dag.py
+13 models, 8 sources, 0 tests
+dim_customer      table     <- stg_customers
+dim_date          table     <-
+dim_product       table     <- stg_products
+fct_order_lines   table     <- dim_customer, dim_product, int_first_payment,
+                               stg_order_items, stg_orders
+int_first_payment ephemeral <- stg_payments
+stg_clicks        view      <- clicks
+stg_customers     view      <- customers
+stg_fx            view      <- fx_rates
+stg_order_items   view      <- order_items
+stg_orders        view      <- orders
+stg_payments      view      <- payments
+stg_products      view      <- products
+stg_returns       view      <- returns

@@ -1,0 +1,1 @@
+{"from": "transform/07-generic-tests", "changes": ["dbt/tests/assert_has_payment.sql", "dbt/tests/assert_paid_once.sql"], "venv": true, "snowflake": true, "time": "2026-11-14 09:50:00"}

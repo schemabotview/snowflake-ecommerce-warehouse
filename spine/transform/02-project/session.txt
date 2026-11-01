@@ -1,0 +1,3 @@
+$ cd dbt
+$ dbt --version
+$ dbt debug

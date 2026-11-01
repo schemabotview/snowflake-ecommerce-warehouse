@@ -1,0 +1,3 @@
+$ cd dbt
+$ dbt docs generate
+$ python lineage.py fct_order_lines
