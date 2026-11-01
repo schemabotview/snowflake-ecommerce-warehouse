@@ -1,3 +1,11 @@
 $ snow --version
+Snowflake CLI version: 3.31.0
 $ snow sql -q "SELECT CURRENT_CLIENT() AS client"
+SELECT CURRENT_CLIENT() AS client
++-----------------------+
+| CLIENT                |
+|-----------------------|
+| PythonConnector 4.7.5 |
++-----------------------+
 $ python client.py
+client: PythonConnector 5.1.0

@@ -1,11 +1,12 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { terminal } from '../ide'
+import { keepLines, terminal } from '../ide'
 import { cell } from '../recorded'
 import session from '../../../spine/how-snowflake-runs/03-partitions/session.txt?raw'
 
 // §2.3 — ◆ micro-partitions. TPC-H's LINEITEM (Snowflake's sample data) copied into a table of our
 // own and measured: rows, bytes, partitions (recorded on Snowflake). What a micro-partition is and
 // holds is doc-cited: docs.snowflake.com/en/user-guide/tables-clustering-micropartitions.
+const term = terminal(session)
 const rows = cell(session, 'ROW_COUNT'), bytes = cell(session, 'BYTES')
 const parts = cell(session, 'PARTITIONS'), depth = cell(session, 'DEPTH')
 
@@ -38,7 +39,7 @@ export const howPartitions: SceneModel = {
     },
     {
       type: 'group', id: 'proof', title: 'The table, measured', icon: 'terminal', tone: 'neutral', children: [
-        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: terminal(session) },
+        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: term, show: keepLines(term, ['$ snow sql', ['CREATE OR REPLACE TABLE', 'LINEITEM successfully'], ['SELECT row_count', '| 6'], ['SELECT j:', '| 8'], 'DROP DATABASE']) },
       ],
     },
   ],

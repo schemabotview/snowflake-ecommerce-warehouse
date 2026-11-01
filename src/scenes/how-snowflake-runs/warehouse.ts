@@ -13,6 +13,8 @@ export const howWarehouse: SceneModel = ideFrame({
   tree: howTree('queries/wake.sql', 'setup/warehouses.sql', ['setup/warehouses.sql', 'queries/wake.sql']),
   editor: { file: 'setup/warehouses.sql', code: sql },
   session,
+  // The run is 37 lines: the commands, the sum WH_LOAD computed, and its state afterwards.
+  keep: ['$ snow sql -f setup/warehouses.sql', '$ snow sql -f queries/wake.sql', 'SELECT SUM', '| 226', '| name', '| WH_LOAD'],
   side: [
     {
       type: 'group', id: 'states', badge: 1, title: 'A warehouse’s life', sub: 'billing runs only between resume and suspend', tone: 'infra', children: [

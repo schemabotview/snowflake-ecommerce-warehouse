@@ -1,2 +1,37 @@
 $ snow sql -f setup/warehouses.sql
+CREATE WAREHOUSE IF NOT EXISTS WH_LOAD
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: loading raw data';
++-----------------------------------------+
+| status                                  |
+|-----------------------------------------|
+| Warehouse WH_LOAD successfully created. |
++-----------------------------------------+
 $ snow sql -f queries/wake.sql
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW WAREHOUSES LIKE 'WH_LOAD' ->> SELECT "name", "size", "state" FROM $1;
++-----------------------------+
+| name    | size    | state   |
+|---------+---------+---------|
+| WH_LOAD | X-Small | STARTED |
++-----------------------------+
+SELECT SUM(O_TOTALPRICE) AS total FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.ORDERS;
++-----------------+
+| TOTAL           |
+|-----------------|
+| 226829306447.46 |
++-----------------+
+SHOW WAREHOUSES LIKE 'WH_LOAD' ->> SELECT "name", "size", "state" FROM $1;
++-----------------------------+
+| name    | size    | state   |
+|---------+---------+---------|
+| WH_LOAD | X-Small | STARTED |
++-----------------------------+

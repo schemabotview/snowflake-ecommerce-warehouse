@@ -1,1 +1,10 @@
 $ snow sql -f queries/where.sql
+SELECT CURRENT_ORGANIZATION_NAME() AS org,
+       CURRENT_ACCOUNT_NAME() AS account,
+       CURRENT_ACCOUNT() AS locator,
+       CURRENT_REGION() AS region;
++----------------------------------------------+
+| ORG      | ACCOUNT | LOCATOR | REGION        |
+|----------+---------+---------+---------------|
+| SHOPWAVE | DW      | SW12345 | AWS_US_EAST_1 |
++----------------------------------------------+

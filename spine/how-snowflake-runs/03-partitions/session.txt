@@ -1,1 +1,42 @@
 $ snow sql -f queries/partitions.sql
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE TRANSIENT DATABASE IF NOT EXISTS LAB;
++------------------------------------+
+| status                             |
+|------------------------------------|
+| Database LAB successfully created. |
++------------------------------------+
+CREATE OR REPLACE TABLE LAB.PUBLIC.LINEITEM AS
+  SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM;
++--------------------------------------+
+| status                               |
+|--------------------------------------|
+| Table LINEITEM successfully created. |
++--------------------------------------+
+SELECT row_count, bytes FROM LAB.INFORMATION_SCHEMA.TABLES
+WHERE table_name = 'LINEITEM';
++-----------------------+
+| ROW_COUNT | BYTES     |
+|-----------+-----------|
+| 6001215   | 139161600 |
++-----------------------+
+SELECT j:total_partition_count::int AS partitions,
+       j:average_depth::number(8, 2) AS depth
+FROM (SELECT PARSE_JSON(SYSTEM$CLUSTERING_INFORMATION(
+        'LAB.PUBLIC.LINEITEM', '(L_SHIPDATE)')) AS j);
++--------------------+
+| PARTITIONS | DEPTH |
+|------------+-------|
+| 8          | 8.00  |
++--------------------+
+DROP DATABASE LAB;
++---------------------------+
+| status                    |
+|---------------------------|
+| LAB successfully dropped. |
++---------------------------+

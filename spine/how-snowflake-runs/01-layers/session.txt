@@ -1,1 +1,30 @@
 $ snow sql -f queries/layers.sql
+SELECT CURRENT_VERSION() AS version;
++-----------+
+| VERSION   |
+|-----------|
+| 10.40.100 |
++-----------+
+SHOW WAREHOUSES ->> SELECT "name", "size", "state" FROM $1;
++----------------------------------------------------+
+| name                         | size    | state     |
+|------------------------------+---------+-----------|
+| COMPUTE_WH                   | X-Small | STARTED   |
+| SNOWFLAKE_LEARNING_WH        | X-Small | SUSPENDED |
+| SYSTEM$STREAMLIT_NOTEBOOK_WH | X-Small | SUSPENDED |
++----------------------------------------------------+
+SHOW DATABASES ->> SELECT "name", "kind" FROM $1;
++-------------------------------------------+
+| name                  | kind              |
+|-----------------------+-------------------|
+| SNOWFLAKE             | APPLICATION       |
+| SNOWFLAKE_LEARNING_DB | STANDARD          |
+| SNOWFLAKE_SAMPLE_DATA | IMPORTED DATABASE |
+| USER$ANA              | PERSONAL DATABASE |
++-------------------------------------------+
+SELECT COUNT(*) AS orders FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.ORDERS;
++---------+
+| ORDERS  |
+|---------|
+| 1500000 |
++---------+

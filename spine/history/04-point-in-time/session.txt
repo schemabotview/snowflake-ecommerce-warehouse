@@ -1,4 +1,4 @@
 $ cd dbt
 $ dbt run --select dim_customer fct_order_lines --full-refresh
 $ cd ..
-$ snow sql --role TRANSFORMER -f queries/point_in_time.sql
+$ bash model/as-transformer.sh -f queries/point_in_time.sql

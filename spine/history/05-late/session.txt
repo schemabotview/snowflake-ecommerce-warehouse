@@ -1,1 +1,1 @@
-$ snow sql --role TRANSFORMER -f queries/late.sql
+$ bash model/as-transformer.sh -f queries/late.sql

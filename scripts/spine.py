@@ -394,6 +394,36 @@ def wrap(text: str) -> str:
     return '\n'.join(out)
 
 
+def realign(text: str) -> str:
+    """Re-pad the Snowflake CLI's result tables after names were replaced: a course name longer than
+    the real one (SHOPWAVE for a 7-letter org) would push its cell past the column rule. Only
+    whitespace and rule lengths change; no cell's text does."""
+    lines, out, i = text.split('\n'), [], 0
+    while i < len(lines):
+        if not (lines[i].startswith('+-') and lines[i].endswith('-+')):
+            out.append(lines[i]); i += 1; continue
+        j = i + 1
+        while j < len(lines) and lines[j].startswith('|'):
+            j += 1
+        if j >= len(lines) or not lines[j].startswith('+'):
+            out.append(lines[i]); i += 1; continue
+        rows = [[c.strip() for c in l[1:-1].split('|')] for l in lines[i + 1:j] if not l.startswith('|-')]
+        widths = [max(len(r[k]) for r in rows) for k in range(len(rows[0]))] if rows and len({len(r) for r in rows}) == 1 else None
+        if widths is None:
+            out.extend(lines[i:j + 1]); i = j + 1; continue
+        body = []
+        for l in lines[i + 1:j]:
+            if l.startswith('|-'):
+                body.append('|' + '+'.join('-' * (w + 2) for w in widths) + '|')
+            else:
+                cells = [c.strip() for c in l[1:-1].split('|')]
+                body.append('|' + '|'.join(f' {c:<{w}} ' for c, w in zip(cells, widths)) + '|')
+        rule = '+' + '-' * (len(body[0]) - 2) + '+'
+        out += [rule, *body, rule]
+        i = j + 1
+    return '\n'.join(out)
+
+
 def normalise(text: str, names: dict[str, str], clock: str) -> str:
     """The real account → the course's (COURSE-PLAN.md, "Facts"). See the module docstring."""
     text = re.sub(r'\b[\w-]+(\.[\w-]+)*\.snowflakecomputing\.com', SHOWN_HOST, text, flags=re.I)
@@ -408,6 +438,7 @@ def normalise(text: str, names: dict[str, str], clock: str) -> str:
             return out + ' ' * max(len(word) + len(room) - len(out), 1)
         # group 2: the spaces after a name that run up to a table's column rule; group 3: a rule right after it
         text = re.sub(rf'(?<![A-Za-z0-9])({re.escape(real)})(?![A-Za-z0-9])( +(?=[|│]))?((?=[|│]))?', sub, text, flags=re.I)
+    text = realign(text)
     ids: dict[str, str] = {}
     text = QUERY_ID.sub(lambda m: ids.setdefault(m.group(0), f'01c0ffee-0000-0000-0000-{len(ids) + 1:012d}'), text)
     base = datetime.fromisoformat(clock)

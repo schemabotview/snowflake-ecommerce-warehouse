@@ -1,4 +1,4 @@
 $ cd dbt
 $ dbt run --select marts
 $ cd ..
-$ snow sql --role TRANSFORMER -f queries/materialised.sql
+$ bash model/as-transformer.sh -f queries/materialised.sql
