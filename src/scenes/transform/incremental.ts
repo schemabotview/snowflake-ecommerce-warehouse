@@ -7,13 +7,16 @@ import session from '../../../spine/transform/06-incremental/session.txt?raw'
 import sql from '../../../spine/transform/06-incremental/project/dbt/models/marts/core/fct_order_lines.sql?raw'
 
 // §7.6 — An incremental fact: a full refresh, then a run with nothing new to merge (recorded on Snowflake).
-const runs = isRecorded(session) ? [...session.matchAll(/incremental model \S+ .*\[(\w+ [\d.]+[^\]]*?) in ([\d.]+)s\]/g)].map((m) => m[1]) : ['…', '…']
+// dbt's status lines are longer than the terminal: read them with the 80-column wrap undone.
+const flat = session.replace(/^(.{80})\n/gm, '$1')
+const runs = isRecorded(session) ? [...flat.matchAll(/incremental model \S+\s+\[SUCCESS (\d+) in/g)].map((m) => `${m[1]} rows merged`) : ['…', '…']
 const done = fromRun(session, /(Done\..*)$/m)
 
 export const transformIncremental: SceneModel = ideFrame({
   tree: transformTree('dbt/models/marts/core/fct_order_lines.sql', 'dbt/models/marts/core/fct_order_lines.sql'),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, '{{ config', '{% endif %}', 0) },
   session,
+  keep: ['$ dbt run --select fct_order_lines --full-refresh', ['OK created sql incremental', 'S 35043'], 'Done. PASS=1', '$ dbt run --select fct_order_lines', ['OK created sql incremental', 'S 0 in'], 'Done. PASS=1'],
   side: [
     {
       type: 'group', id: 'two', badge: 1, title: 'Two runs of one model', tone: 'infra', children: [

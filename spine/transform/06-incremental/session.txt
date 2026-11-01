@@ -1,3 +1,37 @@
 $ cd dbt
 $ dbt run --select fct_order_lines --full-refresh
+19:02:33  Running with dbt=1.12.6
+19:02:33  Registered adapter: snowflake=1.12.4
+19:02:33  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:02:35  Found 13 models, 8 sources, 564 macros
+19:02:35
+19:02:35  Concurrency: 4 threads (target='prod')
+19:02:35
+19:02:37  1 of 1 START sql incremental model MARTS.fct_order_lines  [RUN]
+19:02:39  1 of 1 OK created sql incremental model MARTS.fct_order_lines  [SUCCES
+S 35043 in 2.13s]
+19:02:39
+19:02:39  Finished running 1 incremental model in 0 hours 0 minutes and 4.48 sec
+onds (4.48s).
+19:02:39
+19:02:39  Completed successfully
+19:02:39
+19:02:39  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
 $ dbt run --select fct_order_lines
+19:02:41  Running with dbt=1.12.6
+19:02:42  Registered adapter: snowflake=1.12.4
+19:02:42  Found 13 models, 8 sources, 564 macros
+19:02:42
+19:02:42  Concurrency: 4 threads (target='prod')
+19:02:42
+19:02:44  1 of 1 START sql incremental model MARTS.fct_order_lines  [RUN]
+19:02:46  1 of 1 OK created sql incremental model MARTS.fct_order_lines  [SUCCES
+S 0 in 1.70s]
+19:02:46
+19:02:46  Finished running 1 incremental model in 0 hours 0 minutes and 3.94 sec
+onds (3.94s).
+19:02:46
+19:02:46  Completed successfully
+19:02:46
+19:02:46  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1

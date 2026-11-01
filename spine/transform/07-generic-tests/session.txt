@@ -1,2 +1,49 @@
 $ cd dbt
 $ dbt test --select marts
+19:04:14  Running with dbt=1.12.6
+19:04:14  Registered adapter: snowflake=1.12.4
+19:04:14  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:04:16  Found 13 models, 13 data tests, 8 sources, 564 macros
+19:04:16
+19:04:16  Concurrency: 4 threads (target='prod')
+19:04:16
+19:04:17  1 of 13 START test accepted_values_fct_order_lines_order_status__paid_
+_placed__cancelled  [RUN]
+19:04:17  3 of 13 START test not_null_dim_date_date_key  [RUN]
+19:04:17  4 of 13 START test not_null_dim_product_product_key  [RUN]
+19:04:17  2 of 13 START test not_null_dim_customer_customer_key  [RUN]
+19:04:18  2 of 13 PASS not_null_dim_customer_customer_key  [PASS in 0.26s]
+19:04:18  5 of 13 START test not_null_fct_order_lines_customer_key  [RUN]
+19:04:18  1 of 13 PASS accepted_values_fct_order_lines_order_status__paid__place
+d__cancelled  [PASS in 0.32s]
+19:04:18  6 of 13 START test not_null_fct_order_lines_order_line_key  [RUN]
+19:04:18  5 of 13 PASS not_null_fct_order_lines_customer_key  [PASS in 0.16s]
+19:04:18  7 of 13 START test not_null_fct_order_lines_product_key  [RUN]
+19:04:18  6 of 13 PASS not_null_fct_order_lines_order_line_key  [PASS in 0.13s]
+19:04:18  8 of 13 START test relationships_fct_order_lines_customer_key__custome
+r_key__ref_dim_customer_  [RUN]
+19:04:18  7 of 13 PASS not_null_fct_order_lines_product_key  [PASS in 0.13s]
+19:04:18  9 of 13 START test relationships_fct_order_lines_product_key__product_
+key__ref_dim_product_  [RUN]
+19:04:18  8 of 13 PASS relationships_fct_order_lines_customer_key__customer_key_
+_ref_dim_customer_  [PASS in 0.14s]
+19:04:18  10 of 13 START test unique_dim_customer_customer_key  [RUN]
+19:04:18  9 of 13 PASS relationships_fct_order_lines_product_key__product_key__r
+ef_dim_product_  [PASS in 0.15s]
+19:04:18  11 of 13 START test unique_dim_date_date_key  [RUN]
+19:04:18  10 of 13 PASS unique_dim_customer_customer_key  [PASS in 0.15s]
+19:04:18  12 of 13 START test unique_dim_product_product_key  [RUN]
+19:04:18  12 of 13 PASS unique_dim_product_product_key  [PASS in 0.11s]
+19:04:18  13 of 13 START test unique_fct_order_lines_order_line_key  [RUN]
+19:04:18  11 of 13 PASS unique_dim_date_date_key ..... [PASS in 0.15s]
+19:04:18  3 of 13 PASS not_null_dim_date_date_key .... [PASS in 0.93s]
+19:04:18  13 of 13 PASS unique_fct_order_lines_order_line_key  [PASS in 0.13s]
+19:04:18  4 of 13 PASS not_null_dim_product_product_key  [PASS in 0.98s]
+19:04:19
+19:04:19  Finished running 13 data tests in 0 hours 0 minutes and 2.86 seconds (
+2.86s).
+19:04:19
+19:04:19  Completed successfully
+19:04:19
+19:04:19  Done. PASS=13 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=13

@@ -94,6 +94,7 @@ PINNED_PG = 'psql (PostgreSQL) 18.6'
 SNOW_CLI = 'snowflake-cli==3.31.0'  # its own install: it conflicts with dbt-core in one environment
 IGNORED = {'__pycache__', '.venv', 'data', 'target', 'logs', 'dbt_packages', 'out'}
 MARK = '__SPINE_MARK__'
+ANSI = re.compile(r'\x1b\[[0-9;?]*[@-~]|\x1b[=>]')
 UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
 # A Snowflake query id: 8-4-4-4-12 hex, the third group the deployment's (0000-…).
 QUERY_ID = re.compile(r'\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
@@ -258,7 +259,7 @@ def environment() -> dict:
     tools = SPINE_ROOT / 'tools' / 'snow' / 'bin'
     return {**env, 'HOME': str(HOME), 'USER': USER, 'LOGNAME': USER, 'PGHOST': '/tmp', 'NO_COLOR': '1', 'TERM': 'dumb',
             'COLUMNS': str(COLUMNS), 'PYTHON_COLORS': '0', 'PIP_DISABLE_PIP_VERSION_CHECK': '1', 'PS1': '',
-            'DBT_SEND_ANONYMOUS_USAGE_STATS': 'False', 'DBT_USE_COLORS': 'False', 'DBT_PRINTER_WIDTH': str(COLUMNS), 'PIP_CACHE_DIR': str(SPINE_ROOT / 'pip-cache'),
+            'DBT_SEND_ANONYMOUS_USAGE_STATS': 'False', 'DBT_USE_COLORS': 'False', 'DBT_PRINTER_WIDTH': str(COLUMNS - 36),  # dbt prefixes 'hh:mm:ss  ' and appends a status like [SUCCESS 1 in 0.55s] to every padded line 'PIP_CACHE_DIR': str(SPINE_ROOT / 'pip-cache'),
             'PATH': f'{tools}:{env.get("PATH", "/usr/local/bin:/usr/bin:/bin")}'}
 
 
@@ -371,7 +372,7 @@ def run(step: Path) -> tuple[str, dict[str, str]]:
         for cmd in commands((step / 'session.txt').read_text()):
             script = (state.read_text() if state.exists() else '') + f'cd {cwd}\n{{ {cmd}\n}} 2>&1\necho "{MARK}$PWD"\n'
             r = as_ana(script + f'declare -p VIRTUAL_ENV PATH 2>/dev/null | sed "s/^declare -x/export/; s/^declare --/export/" > {state}', env, cwd)
-            output, _, after = r.stdout.partition(MARK)
+            output, _, after = ANSI.sub('', r.stdout).partition(MARK)  # dbt resets colour even when told not to
             if after:
                 cwd = Path(after.split('\n')[0])
             blocks.append(f'$ {cmd}' + (f'\n{output.rstrip()}' if output.strip() else ''))

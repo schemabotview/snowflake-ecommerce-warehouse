@@ -1,4 +1,51 @@
 $ cd dbt
 $ dbt run --select marts
+19:01:54  Running with dbt=1.12.6
+19:01:55  Registered adapter: snowflake=1.12.4
+19:01:55  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:01:56  Found 13 models, 8 sources, 564 macros
+19:01:56
+19:01:56  Concurrency: 4 threads (target='prod')
+19:01:56
+19:01:58  2 of 4 START sql table model MARTS.dim_date  [RUN]
+19:01:58  3 of 4 START sql table model MARTS.dim_product  [RUN]
+19:01:58  1 of 4 START sql table model MARTS.dim_customer  [RUN]
+19:01:59  2 of 4 OK created sql table model MARTS.dim_date  [SUCCESS 365 in 1.38
+s]
+19:01:59  1 of 4 OK created sql table model MARTS.dim_customer  [SUCCESS 2000 in
+ 1.39s]
+19:02:00  3 of 4 OK created sql table model MARTS.dim_product  [SUCCESS 50 in 1.
+60s]
+19:02:00  4 of 4 START sql table model MARTS.fct_order_lines  [RUN]
+19:02:02  4 of 4 OK created sql table model MARTS.fct_order_lines  [SUCCESS 3504
+3 in 2.78s]
+19:02:03
+19:02:03  Finished running 4 table models in 0 hours 0 minutes and 6.86 seconds 
+(6.86s).
+19:02:03
+19:02:03  Completed successfully
+19:02:03
+19:02:03  Done. PASS=4 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=4
 $ cd ..
 $ bash model/as-transformer.sh -f queries/materialised.sql
+SELECT table_schema, table_name, table_type
+FROM ANALYTICS.INFORMATION_SCHEMA.TABLES
+WHERE table_schema IN ('STAGING', 'MARTS')
+ORDER BY 1, 2;
++---------------------------------------------+
+| TABLE_SCHEMA | TABLE_NAME      | TABLE_TYPE |
+|--------------+-----------------+------------|
+| MARTS        | DIM_CUSTOMER    | BASE TABLE |
+| MARTS        | DIM_DATE        | BASE TABLE |
+| MARTS        | DIM_PRODUCT     | BASE TABLE |
+| MARTS        | FCT_ORDER_LINES | BASE TABLE |
+| STAGING      | STG_CLICKS      | VIEW       |
+| STAGING      | STG_CUSTOMERS   | VIEW       |
+| STAGING      | STG_FX          | VIEW       |
+| STAGING      | STG_ORDERS      | VIEW       |
+| STAGING      | STG_ORDER_ITEMS | VIEW       |
+| STAGING      | STG_PAYMENTS    | VIEW       |
+| STAGING      | STG_PRODUCTS    | VIEW       |
+| STAGING      | STG_RETURNS     | VIEW       |
++---------------------------------------------+

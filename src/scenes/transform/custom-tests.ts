@@ -7,12 +7,14 @@ import sql from '../../../spine/transform/08-custom-tests/project/dbt/tests/asse
 
 // §7.8 — Custom tests: the generator's planted unpaid and double-paid orders, found (recorded on
 // Snowflake: both tests are expected to FAIL, and the counts are the run's).
-const got = (test: string) => isRecorded(session) ? (session.match(new RegExp(`Failure in test ${test}[\\s\\S]*?Got (\\d+) results?`))?.[1] ?? '0') : '…'
+// dbt 1.12 reports `FAIL 191 assert_has_payment`; a test that passed would say PASS.
+const got = (test: string) => isRecorded(session) ? (session.match(new RegExp(`(?:FAIL|PASS) (\\d+)? ?${test}`))?.[1] ?? '0') : '…'
 
 export const transformCustomTests: SceneModel = ideFrame({
   tree: transformTree('dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_has_payment.sql', ['dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_paid_once.sql']),
   editor: { file: 'dbt/tests/assert_has_payment.sql', code: sql },
   session,
+  keep: ['$ dbt test --select test_type:singular', 'FAIL 191', 'FAIL 55', ['[ERROR]: in test assert_has_payment', 'Got 191'], ['[ERROR]: in test assert_paid_once', 'Got 55'], 'Done. PASS=0'],
   side: [
     {
       type: 'group', id: 'found', badge: 1, title: 'The failing rows, found', sub: 'from the run', tone: 'consume', children: [

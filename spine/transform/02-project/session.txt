@@ -1,3 +1,64 @@
 $ cd dbt
 $ dbt --version
+Core:
+  - installed: 1.12.6
+  - latest:    1.12.6 - Up to date!
+
+Plugins:
+  - snowflake: 1.12.4 - Up to date!
+
+
+19:00:00  dbt v2 is available, and is the default for new installations. This is
+ dbt Core v1.
+          New project - install v2: https://docs.getdbt.com/docs/local/install-d
+bt?utm_source=dbt-cli
+          Existing v1 project - upgrade guide: https://docs.getdbt.com/docs/dbt-
+versions/dbt-upgrade/upgrading-to-v2?utm_source=dbt-cli
 $ dbt debug
+19:00:02  Running with dbt=1.12.6
+19:00:02  dbt version: 1.12.6
+19:00:02  python version: 3.13.18
+19:00:02  python path: /home/ana/shopwave-dw/.venv/bin/python3
+19:00:02  os info: Linux-6.18.44-fc-v185-x86_64-with-glibc2.39
+19:00:02  Using profiles dir at /home/ana/shopwave-dw/dbt
+19:00:02  Using profiles.yml file at /home/ana/shopwave-dw/dbt/profiles.yml
+19:00:02  Using dbt_project.yml file at /home/ana/shopwave-dw/dbt/dbt_project.ym
+l
+19:00:02  adapter type: snowflake
+19:00:02  adapter version: 1.12.4
+19:00:02  Configuration:
+19:00:02    profiles.yml file [OK found and valid]
+19:00:02    dbt_project.yml file [OK found and valid]
+19:00:02  Required dependencies:
+19:00:02   - git [OK found]
+
+19:00:02  Connection:
+19:00:02    account: SHOPWAVE-DW
+19:00:02    user: SVC_DBT
+19:00:02    database: ANALYTICS
+19:00:02    warehouse: WH_TRANSFORM
+19:00:02    role: TRANSFORMER
+19:00:02    schema: MARTS
+19:00:02    authenticator: None
+19:00:02    oauth_client_id: None
+19:00:02    query_tag: None
+19:00:02    client_session_keep_alive: False
+19:00:02    host: None
+19:00:02    port: None
+19:00:02    proxy_host: None
+19:00:02    proxy_port: None
+19:00:02    protocol: None
+19:00:02    connect_retries: 1
+19:00:02    connect_timeout: None
+19:00:02    retry_on_database_errors: False
+19:00:02    retry_all: False
+19:00:02    insecure_mode: False
+19:00:02    reuse_connections: True
+19:00:02    s3_stage_vpce_dns_name: None
+19:00:02    workload_identity_provider: None
+19:00:02    workload_identity_entra_resource: None
+19:00:02    platform_detection_timeout_seconds: 0.0
+19:00:02  Registered adapter: snowflake=1.12.4
+19:00:03    Connection test: [OK connection ok]
+
+19:00:03  All checks passed!

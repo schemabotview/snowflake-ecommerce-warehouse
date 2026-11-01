@@ -18,7 +18,7 @@
 
 ## Status
 
-Plan v1 written 2026-11-01. Infra built and Course 1 authored the same day (no Snowflake account yet).
+Plan v1 written 2026-11-01. Courses 1–8 authored; Courses 2–7 recorded on the owner's trial (AWS us-east-1) the same day. Recording stops at the pilot (Course 7) for the owner's review; Course 8 is scripted, not recorded.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
@@ -38,12 +38,12 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | # | course | sections | status |
 |---|---|---|---|
 | 1 | `intro` | 3 | authored, rendered and looked at; not narrated (wavs) — 1.1 and 1.2 run locally, 1.3 concept |
-| 2 | `how-snowflake-runs` | 7 | authored and rendered; 2.5 doc-cited and 2.7 (model, runs locally) final; 2.1–2.4, 2.6 scripted, NOT RECORDED (their terminals show only the commands, read values `…`): re-read every frame and its narration after recording |
-| 3 | `start` | 7 | authored and rendered; 3.1 runs locally (final), 3.7 concept (its inventory reads 3.3 and 3.5), 3.2–3.6 scripted, NOT RECORDED |
-| 4 | `secure` | 8 | authored and rendered; 4.8 doc-cited (final); 4.1–4.7 scripted, NOT RECORDED |
-| 5 | `load` | 9 | authored and rendered; 5.1–5.9 scripted, NOT RECORDED (every load runs as SVC_LOADER) |
-| 6 | `model` | 9 | authored and rendered; 6.1, 6.3 doc-cited (Kimball & Ross); 6.2, 6.4–6.9 scripted, NOT RECORDED; the star frame (`src/scenes/star.ts`) is built |
-| 7 | `transform` | 9 | authored and rendered (pilot); 7.1 doc-cited; 7.4 runs locally (`dbt parse`: the project parses, 13 models, 8 sources, and with 7.7–7.8's files 15 tests); 7.2–7.3, 7.5–7.9 scripted, NOT RECORDED |
+| 2 | `how-snowflake-runs` | 7 | RECORDED on the trial (AWS us-east-1); 2.5 doc-cited, 2.7 model; frames and narration re-read against the run |
+| 3 | `start` | 7 | RECORDED; 3.1 runs locally; 3.7 reads 3.3 and 3.5 |
+| 4 | `secure` | 8 | RECORDED; 4.6 rewritten around secondary roles (what the run found); 4.8 doc-cited |
+| 5 | `load` | 9 | RECORDED (after a failed first attempt: COURSE-PLAN, Open); 5.8 teaches reconciliation (767 lines sent, 185 loaded) |
+| 6 | `model` | 9 | RECORDED; 6.1, 6.3 doc-cited; the star frame is built |
+| 7 | `transform` | 9 | RECORDED (pilot) — AWAITING OWNER REVIEW; 7.4 runs locally; 13 tests pass, the 2 custom tests fail on 191 and 55 planted rows |
 | 8 | `history` | 8 | authored and rendered; 8.1 runs locally (customer 81 in the generator's files); 8.2–8.8 scripted, NOT RECORDED; the Course 8 dbt project parses (snapshot, versioned dims, fct_payments) |
 | 9 | `facts` | 8 | planned |
 | 10 | `perform` | 7 | planned |

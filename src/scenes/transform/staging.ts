@@ -13,6 +13,7 @@ export const transformStaging: SceneModel = ideFrame({
   tree: transformTree('dbt/models/staging/stg_products.sql', 'dbt/models/staging/stg_clicks.sql', ['dbt/models/staging/stg_clicks.sql', 'dbt/models/staging/stg_orders.sql', 'dbt/models/staging/stg_order_items.sql']),
   editor: { file: 'dbt/models/staging/stg_clicks.sql', code: sql },
   session,
+  keep: ['$ cd dbt', '$ dbt run --select staging', 'Found ', 'Finished running 8 view models', 'Done. PASS=8'],
   side: [
     {
       type: 'group', id: 'one', badge: 1, title: 'One source, one staging model', sub: 'source() points at RAW: a view on top', tone: 'store', children: [

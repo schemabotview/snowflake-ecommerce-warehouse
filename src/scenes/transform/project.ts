@@ -10,6 +10,7 @@ export const transformProject: SceneModel = ideFrame({
   tree: transformTree('dbt/models/staging/_sources.yml', 'dbt/profiles.yml', ['requirements.txt', 'dbt/dbt_project.yml', 'dbt/profiles.yml', 'dbt/macros/generate_schema_name.sql', 'dbt/models/staging/_sources.yml']),
   editor: { file: 'dbt/profiles.yml', code: profiles },
   session,
+  keep: ['$ cd dbt', '$ dbt --version', 'dbt v2 is available', '$ dbt debug', ['account: SHOPWAVE-DW', 'user: SVC_DBT'], 'Connection test: [OK connection ok]'],
   side: [
     {
       type: 'group', id: 'chain', badge: 1, title: 'From a project to Snowflake', tone: 'infra', children: [

@@ -12,6 +12,7 @@ export const transformMaterialisations: SceneModel = ideFrame({
   tree: transformTree('queries/materialised.sql', 'dbt/models/marts/core/int_first_payment.sql', ['dbt/models/marts/core/int_first_payment.sql', 'queries/materialised.sql']),
   editor: { file: 'dbt/models/marts/core/int_first_payment.sql', code: sql },
   session,
+  keep: ['$ dbt run --select marts', 'Done. PASS=4', ['| TABLE_SCHEMA', '| MARTS        | FCT_ORDER_LINES'], '| STAGING      | STG_CLICKS'],
   side: [
     {
       type: 'group', id: 'kinds', badge: 1, title: 'What each materialisation builds', tone: 'infra', children: [

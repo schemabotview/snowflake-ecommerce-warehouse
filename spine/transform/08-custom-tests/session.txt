@@ -1,2 +1,32 @@
 $ cd dbt
 $ dbt test --select test_type:singular
+19:04:26  Running with dbt=1.12.6
+19:04:27  Registered adapter: snowflake=1.12.4
+19:04:27  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:04:29  Found 13 models, 15 data tests, 8 sources, 564 macros
+19:04:29
+19:04:29  Concurrency: 4 threads (target='prod')
+19:04:29
+19:04:30  1 of 2 START test assert_has_payment ....... [RUN]
+19:04:30  2 of 2 START test assert_paid_once ......... [RUN]
+19:04:30  1 of 2 FAIL 191 assert_has_payment ......... [FAIL 191 in 0.24s]
+19:04:30  2 of 2 FAIL 55 assert_paid_once ............ [FAIL 55 in 0.24s]
+19:04:31
+19:04:31  Finished running 2 data tests in 0 hours 0 minutes and 1.66 seconds (1
+.66s).
+19:04:31
+19:04:31  Completed with 2 errors, 0 partial successes, and 0 warnings:
+19:04:31
+19:04:31  [ERROR]: in test assert_has_payment (tests/assert_has_payment.sql)
+19:04:31    Got 191 results, configured to fail if != 0
+19:04:31
+19:04:31    compiled code at target/compiled/shopwave/tests/assert_has_payment.s
+ql
+19:04:31
+19:04:31  [ERROR]: in test assert_paid_once (tests/assert_paid_once.sql)
+19:04:31    Got 55 results, configured to fail if != 0
+19:04:31
+19:04:31    compiled code at target/compiled/shopwave/tests/assert_paid_once.sql
+19:04:31
+19:04:31  Done. PASS=0 WARN=0 ERROR=2 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2

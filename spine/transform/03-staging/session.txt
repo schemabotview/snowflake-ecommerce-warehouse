@@ -1,2 +1,44 @@
 $ cd dbt
 $ dbt run --select staging
+19:01:18  Running with dbt=1.12.6
+19:01:19  Registered adapter: snowflake=1.12.4
+19:01:19  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:01:20  [WARNING]: Configuration paths exist in your dbt_project.yml file whic
+h do not apply to any resources.
+There are 1 unused configuration paths:
+- models.shopwave.marts
+19:01:20  Found 8 models, 8 sources, 564 macros
+19:01:20
+19:01:20  Concurrency: 4 threads (target='prod')
+19:01:20
+19:01:21  1 of 8 START sql view model STAGING.stg_clicks  [RUN]
+19:01:21  4 of 8 START sql view model STAGING.stg_order_items  [RUN]
+19:01:21  2 of 8 START sql view model STAGING.stg_customers  [RUN]
+19:01:21  3 of 8 START sql view model STAGING.stg_fx . [RUN]
+19:01:22  1 of 8 OK created sql view model STAGING.stg_clicks  [SUCCESS 1 in 0.4
+7s]
+19:01:22  5 of 8 START sql view model STAGING.stg_orders  [RUN]
+19:01:22  5 of 8 OK created sql view model STAGING.stg_orders  [SUCCESS 1 in 0.3
+4s]
+19:01:22  6 of 8 START sql view model STAGING.stg_payments  [RUN]
+19:01:22  6 of 8 OK created sql view model STAGING.stg_payments  [SUCCESS 1 in 0
+.28s]
+19:01:22  7 of 8 START sql view model STAGING.stg_products  [RUN]
+19:01:22  4 of 8 OK created sql view model STAGING.stg_order_items  [SUCCESS 1 i
+n 1.11s]
+19:01:22  8 of 8 START sql view model STAGING.stg_returns  [RUN]
+19:01:22  3 of 8 OK created sql view model STAGING.stg_fx  [SUCCESS 1 in 1.12s]
+19:01:22  2 of 8 OK created sql view model STAGING.stg_customers  [SUCCESS 1 in 
+1.29s]
+19:01:23  8 of 8 OK created sql view model STAGING.stg_returns  [SUCCESS 1 in 0.
+29s]
+19:01:23  7 of 8 OK created sql view model STAGING.stg_products  [SUCCESS 1 in 0
+.32s]
+19:01:23
+19:01:23  Finished running 8 view models in 0 hours 0 minutes and 2.98 seconds (
+2.98s).
+19:01:23
+19:01:23  Completed successfully
+19:01:23
+19:01:23  Done. PASS=8 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=8

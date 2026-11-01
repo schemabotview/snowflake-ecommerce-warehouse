@@ -14,7 +14,7 @@ for (const line of yml.split('\n')) {
   const m = line.match(/^  - name: (\w+)/), c = line.match(/^      - name: (\w+)/)
   if (m) model = m[1]
   else if (c) column = c[1]
-  const inline = line.match(/^\s+tests: \[(.+)\]/), item = line.match(/^          - (\w+)/)
+  const inline = line.match(/^\s+tests: \[(.+)\]/), item = line.match(/^          - (\w+):?/)
   if (inline) inline[1].split(',').forEach((t) => tests.push([model, column, t.trim()]))
   if (item) tests.push([model, column, item[1]])
 }
@@ -24,6 +24,7 @@ export const transformGenericTests: SceneModel = ideFrame({
   tree: transformTree('dbt/models/marts/core/_core.yml', 'dbt/models/marts/core/_core.yml'),
   editor: { file: 'dbt/models/marts/core/_core.yml', code: yml, ...view(yml, 'models:', '- name: dim_customer', 1) },
   session,
+  keep: ['$ dbt test --select marts', 'Found ', '13 of 13 PASS', 'Finished running 13', 'Done. PASS=13'],
   side: [
     {
       type: 'group', id: 'onstar', badge: 1, title: 'Tests on the DAG', sub: 'each a query that should return no rows', tone: 'infra', dir: 'row', children: [

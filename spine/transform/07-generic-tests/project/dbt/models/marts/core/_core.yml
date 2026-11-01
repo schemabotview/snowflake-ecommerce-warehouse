@@ -9,14 +9,17 @@ models:
       - name: customer_key
         tests:
           - not_null
-          - relationships: {to: ref('dim_customer'), field: customer_key}
+          - relationships:
+              arguments: {to: ref('dim_customer'), field: customer_key}
       - name: product_key
         tests:
           - not_null
-          - relationships: {to: ref('dim_product'), field: product_key}
+          - relationships:
+              arguments: {to: ref('dim_product'), field: product_key}
       - name: order_status
         tests:
-          - accepted_values: {values: [paid, placed, cancelled]}
+          - accepted_values:
+              arguments: {values: [paid, placed, cancelled]}
   - name: dim_customer
     columns:
       - name: customer_key

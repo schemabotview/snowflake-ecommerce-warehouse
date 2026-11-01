@@ -1,3 +1,27 @@
 $ cd dbt
 $ dbt docs generate
+19:04:38  Running with dbt=1.12.6
+19:04:39  Registered adapter: snowflake=1.12.4
+19:04:39  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:04:40  Found 13 models, 15 data tests, 8 sources, 564 macros
+19:04:40
+19:04:40  Concurrency: 4 threads (target='prod')
+19:04:40
+19:04:42  Building catalog
+19:04:50  Catalog written to /home/ana/shopwave-dw/dbt/target/catalog.json
 $ python lineage.py fct_order_lines
+fct_order_lines (incremental)
+  dim_customer (table)
+    stg_customers (view)
+      customers (source)
+  dim_product (table)
+    stg_products (view)
+      products (source)
+  int_first_payment (ephemeral)
+    stg_payments (view)
+      payments (source)
+  stg_order_items (view)
+    order_items (source)
+  stg_orders (view)
+    orders (source)

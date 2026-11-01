@@ -21,6 +21,7 @@ export const transformDocs: SceneModel = ideFrame({
   tree: transformTree('dbt/lineage.py', 'dbt/lineage.py', ['dbt/lineage.py'], { 'dbt/target/': 'manifest, catalog' }),
   editor: { file: 'dbt/lineage.py', code },
   session,
+  keep: ['$ dbt docs generate', 'Catalog written', '$ python lineage.py fct_order_lines', ['fct_order_lines (incremental)', '      customers (source)'], ['  stg_orders', '    orders (source)']],
   side: [
     {
       type: 'group', id: 'lineage', badge: 1, title: 'Everything fct_order_lines is built from', sub: 'from the manifest: +fct_order_lines', tone: 'store', children: [
