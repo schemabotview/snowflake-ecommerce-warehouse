@@ -424,6 +424,10 @@ def normalise(text: str, names: dict[str, str], clock: str) -> str:
 def refused(text: str, names: dict[str, str]) -> list[str]:
     """Every real name, or fragment of one 4 characters or longer, still in the text."""
     parts = {p for real in names for p in (real, *re.split(r'[-_.]', real)) if len(p) >= 4}
+    # A user name is often a person's name, and objects get named after it (a warehouse JANE_WH from a
+    # login JANEDOE42): every run of 5+ of its letters is a fragment too.
+    user = os.environ.get('SNOWFLAKE_USER', '')
+    parts |= {user[i:j] for i in range(len(user)) for j in range(i + 5, len(user) + 1) if user[i:j].isalpha()}
     shown = ' '.join(names.values()).lower()
     return sorted(p for p in parts if p.lower() in text.lower() and p.lower() not in shown)
 
