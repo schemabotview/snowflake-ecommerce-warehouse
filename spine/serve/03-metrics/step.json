@@ -1,0 +1,1 @@
+{"from": "serve/02-cohorts", "changes": ["dbt/models/marts/bi/metrics_monthly.sql", "queries/one_revenue.sql"], "snowflake": true, "time": "2026-11-19 09:20:00", "venv": true}

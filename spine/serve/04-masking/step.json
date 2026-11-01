@@ -1,0 +1,1 @@
+{"from": "serve/03-metrics", "changes": ["setup/masking_grants.sql", "govern/masking.sql", "dbt/models/marts/core/dim_customer.sql", "queries/masked.sql"], "snowflake": true, "time": "2026-11-19 09:30:00", "venv": true}

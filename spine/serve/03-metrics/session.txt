@@ -1,0 +1,49 @@
+$ cd dbt
+$ dbt run --select metrics_monthly
+20:22:46  Running with dbt=1.12.6
+20:22:47  Registered adapter: snowflake=1.12.4
+20:22:47  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:22:49  Found 26 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:22:49
+20:22:49  Concurrency: 4 threads (target='prod')
+20:22:49
+20:22:51  1 of 1 START sql table model BI.metrics_monthly  [RUN]
+20:22:52  1 of 1 OK created sql table model BI.metrics_monthly  [SUCCESS 12 in 1
+.37s]
+20:22:53
+20:22:53  Finished running 1 table model in 0 hours 0 minutes and 3.96 seconds (
+3.96s).
+20:22:53
+20:22:53  Completed successfully
+20:22:53
+20:22:53  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/one_revenue.sql
+SELECT 'every order line' AS answer, SUM(amount_eur) AS november_eur
+FROM FCT_ORDER_LINES WHERE order_date_key BETWEEN 20261101 AND 20261130
+UNION ALL
+SELECT 'paid orders only', SUM(amount_eur) FROM FCT_ORDER_LINES
+WHERE order_status = 'paid'
+  AND order_date_key BETWEEN 20261101 AND 20261130
+UNION ALL
+SELECT 'paid, net of refunds', net_revenue_eur
+FROM BI.METRICS_MONTHLY WHERE month = '2026-11'
+ORDER BY 2 DESC;
++-------------------------------------+
+| ANSWER               | NOVEMBER_EUR |
+|----------------------+--------------|
+| every order line     | 322549.71    |
+| paid orders only     | 287912.77    |
+| paid, net of refunds | 286739.98    |
++-------------------------------------+
+SELECT month, orders, gross_eur, refunds_eur, net_revenue_eur, aov_eur
+FROM BI.METRICS_MONTHLY WHERE month >= '2026-09' ORDER BY 1;
++------------------------------------------------------------------------+
+| MONTH   | ORDERS | GROSS_EUR | REFUNDS_EUR | NET_REVENUE_EUR | AOV_EUR |
+|---------+--------+-----------+-------------+-----------------+---------|
+| 2026-09 | 1308   | 161312.99 | 906.86      | 160406.13       | 122.63  |
+| 2026-10 | 1386   | 170476.12 | 964.97      | 169511.15       | 122.30  |
+| 2026-11 | 2420   | 287912.77 | 1172.79     | 286739.98       | 118.49  |
+| 2026-12 | 1881   | 227270.77 | 901.95      | 226368.82       | 120.34  |
++------------------------------------------------------------------------+

@@ -1,0 +1,9 @@
+# Keep every version of every customer: a new row whenever updated_at moves.
+snapshots:
+  - name: snap_customers
+    relation: source('shopwave', 'customer_state')
+    config:
+      schema: staging
+      unique_key: customer_id
+      strategy: timestamp
+      updated_at: updated_at

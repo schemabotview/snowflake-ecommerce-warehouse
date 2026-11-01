@@ -1,0 +1,95 @@
+$ snow sql -f govern/share.sql
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE SHARE IF NOT EXISTS SHOPWAVE_CAMPAIGNS
+  COMMENT = 'Campaign performance, for Brightline';
++------------------------------------------------+
+| status                                         |
+|------------------------------------------------|
+| Share SHOPWAVE_CAMPAIGNS successfully created. |
++------------------------------------------------+
+GRANT USAGE ON DATABASE ANALYTICS TO SHARE SHOPWAVE_CAMPAIGNS;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON SCHEMA ANALYTICS.BI TO SHARE SHOPWAVE_CAMPAIGNS;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW ANALYTICS.BI.CAMPAIGN_STATS
+  TO SHARE SHOPWAVE_CAMPAIGNS;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW GRANTS TO SHARE SHOPWAVE_CAMPAIGNS
+  ->> SELECT "privilege", "granted_on", "name" FROM $1;
++------------------------------------------------------+
+| privilege | granted_on | name                        |
+|-----------+------------+-----------------------------|
+| USAGE     | DATABASE   | ANALYTICS                   |
+| USAGE     | SCHEMA     | ANALYTICS.BI                |
+| SELECT    | VIEW       | ANALYTICS.BI.CAMPAIGN_STATS |
++------------------------------------------------------+
+$ bash govern/reader.sh
+reader account BRIGHTLINE: locator BL67890
+ALTER SHARE SHOPWAVE_CAMPAIGNS ADD ACCOUNTS = BL67890
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW SHARES LIKE 'SHOPWAVE_CAMPAIGNS'
+  ->> SELECT "kind", "name", "to" FROM $1
++-----------------------------------------------------+
+| kind     | name               | to                  |
+|----------+--------------------+---------------------|
+| OUTBOUND | SHOPWAVE_CAMPAIGNS | SHOPWAVE.BRIGHTLINE |
++-----------------------------------------------------+
+$ bash govern/as-brightline.sh -f govern/brightline.sql
+CREATE WAREHOUSE IF NOT EXISTS BRIGHTLINE_WH WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60 INITIALLY_SUSPENDED = TRUE;
++-----------------------------------------------+
+| status                                        |
+|-----------------------------------------------|
+| Warehouse BRIGHTLINE_WH successfully created. |
++-----------------------------------------------+
+USE WAREHOUSE BRIGHTLINE_WH;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE DATABASE IF NOT EXISTS SHOPWAVE
+  FROM SHARE SW12345.SHOPWAVE_CAMPAIGNS;
++-----------------------------------------+
+| status                                  |
+|-----------------------------------------|
+| Database SHOPWAVE successfully created. |
++-----------------------------------------+
+SELECT campaign_id, SUM(visits) AS visits, SUM(buying_visits) AS buying
+FROM SHOPWAVE.BI.CAMPAIGN_STATS GROUP BY 1 ORDER BY 2 DESC;
++--------------------------------+
+| CAMPAIGN_ID  | VISITS | BUYING |
+|--------------+--------+--------|
+| newsletter   | 11485  | 2845   |
+| retarget     | 11382  | 2763   |
+| black-friday | 971    | 229    |
+| spring-sale  | 869    | 218    |
++--------------------------------+
+SELECT COUNT(*) FROM SHOPWAVE.MARTS.FCT_SESSIONS;
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ 002003 (02000): 01c0ffee-0000-0000-0000-000000000001: SQL compilation error: │
+│ Schema 'SHOPWAVE.MARTS' does not exist or not authorized. Your primary role  │
+│ SYSADMIN or one of your secondary roles must have USAGE or any other         │
+│ privilege granted on SCHEMA SHOPWAVE.MARTS.                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯

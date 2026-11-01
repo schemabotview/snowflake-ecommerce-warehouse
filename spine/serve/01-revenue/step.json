@@ -1,0 +1,1 @@
+{"from": "perform/07-credits", "changes": ["dbt/dbt_project.yml", "dbt/models/marts/bi/mart_revenue.sql", "queries/revenue.sql"], "snowflake": true, "time": "2026-11-19 09:00:00", "venv": true}

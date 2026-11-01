@@ -1,0 +1,40 @@
+$ cd dbt
+$ dbt run --select mart_cohorts
+20:22:23  Running with dbt=1.12.6
+20:22:24  Registered adapter: snowflake=1.12.4
+20:22:24  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:22:26  Found 25 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:22:26
+20:22:26  Concurrency: 4 threads (target='prod')
+20:22:26
+20:22:28  1 of 1 START sql table model BI.mart_cohorts  [RUN]
+20:22:30  1 of 1 OK created sql table model BI.mart_cohorts  [SUCCESS 78 in 1.55
+s]
+20:22:30
+20:22:30  Finished running 1 table model in 0 hours 0 minutes and 3.98 seconds (
+3.98s).
+20:22:30
+20:22:30  Completed successfully
+20:22:30
+20:22:30  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/cohorts.sql
+SELECT cohort, MAX(cohort_size) AS size,
+       MAX(IFF(months_after = 1, retention_pct, NULL)) AS m1,
+       MAX(IFF(months_after = 2, retention_pct, NULL)) AS m2,
+       MAX(IFF(months_after = 3, retention_pct, NULL)) AS m3,
+       MAX(IFF(months_after = 4, retention_pct, NULL)) AS m4,
+       MAX(IFF(months_after = 5, retention_pct, NULL)) AS m5
+FROM BI.MART_COHORTS WHERE cohort <= '2026-06'
+GROUP BY 1 ORDER BY 1;
++---------------------------------------------------+
+| COHORT  | SIZE | M1   | M2   | M3   | M4   | M5   |
+|---------+------+------+------+------+------+------|
+| 2026-01 | 905  | 46.1 | 47.2 | 48.5 | 49.9 | 45.4 |
+| 2026-02 | 356  | 40.4 | 40.7 | 38.8 | 41.0 | 39.9 |
+| 2026-03 | 247  | 35.6 | 34.4 | 32.0 | 38.9 | 38.9 |
+| 2026-04 | 149  | 31.5 | 30.9 | 33.6 | 37.6 | 37.6 |
+| 2026-05 | 118  | 34.7 | 28.8 | 39.8 | 39.0 | 27.1 |
+| 2026-06 | 73   | 35.6 | 38.4 | 37.0 | 45.2 | 50.7 |
++---------------------------------------------------+

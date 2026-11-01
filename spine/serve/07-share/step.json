@@ -1,0 +1,1 @@
+{"from": "serve/06-secure-view", "changes": ["govern/share.sql", "govern/reader.sh", "govern/reader_locator.sh", "govern/as-brightline.sh", "govern/brightline.sql"], "snowflake": true, "time": "2026-11-19 10:00:00", "venv": true}

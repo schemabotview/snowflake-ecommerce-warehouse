@@ -1,0 +1,37 @@
+$ cd dbt
+$ dbt run --select mart_revenue
+20:22:00  Running with dbt=1.12.6
+20:22:01  Registered adapter: snowflake=1.12.4
+20:22:01  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:22:03  Found 24 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:22:03
+20:22:03  Concurrency: 4 threads (target='prod')
+20:22:03
+20:22:05  1 of 1 START sql table model BI.mart_revenue  [RUN]
+20:22:07  1 of 1 OK created sql table model BI.mart_revenue  [SUCCESS 2186 in 2.
+08s]
+20:22:08
+20:22:08  Finished running 1 table model in 0 hours 0 minutes and 5.14 seconds (
+5.14s).
+20:22:08
+20:22:08  Completed successfully
+20:22:08
+20:22:08  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/revenue.sql
+SELECT date, SUM(revenue_eur) AS revenue_eur, COUNT(*) AS categories
+FROM BI.MART_REVENUE
+WHERE date BETWEEN '2026-11-23' AND '2026-11-29'
+GROUP BY 1 ORDER BY 1;
++---------------------------------------+
+| DATE       | REVENUE_EUR | CATEGORIES |
+|------------+-------------+------------|
+| 2026-11-23 | 4359.47     | 6          |
+| 2026-11-24 | 4153.77     | 6          |
+| 2026-11-25 | 5320.50     | 6          |
+| 2026-11-26 | 3854.34     | 6          |
+| 2026-11-27 | 98089.62    | 6          |
+| 2026-11-28 | 7186.59     | 6          |
+| 2026-11-29 | 5459.66     | 6          |
++---------------------------------------+

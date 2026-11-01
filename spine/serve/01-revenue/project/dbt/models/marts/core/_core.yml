@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fct_order_lines
+    description: One row per order line.
+    columns:
+      - name: order_line_key
+        tests: [unique, not_null]
+      - name: customer_key
+        tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_customer'), field: customer_key}
+      - name: product_key
+        tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_product'), field: product_key}
+      - name: order_status
+        tests:
+          - accepted_values:
+              arguments: {values: [paid, placed, cancelled]}
+  - name: dim_customer
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
+  - name: dim_product
+    columns:
+      - name: product_key
+        tests: [unique, not_null]
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [unique, not_null]

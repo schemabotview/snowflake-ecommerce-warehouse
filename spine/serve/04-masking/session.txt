@@ -1,0 +1,81 @@
+$ snow sql -f setup/masking_grants.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE MASKING POLICY ON SCHEMA ANALYTICS.MARTS TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+$ bash model/as-transformer.sh -f govern/masking.sql
+CREATE MASKING POLICY IF NOT EXISTS PII_EMAIL AS (email VARCHAR)
+  RETURNS VARCHAR ->
+  CASE WHEN CURRENT_ROLE() = 'TRANSFORMER' THEN email
+       ELSE '*****@' || SPLIT_PART(email, '@', 2) END;
++------------------------------------------------+
+| status                                         |
+|------------------------------------------------|
+| Masking policy PII_EMAIL successfully created. |
++------------------------------------------------+
+SHOW MASKING POLICIES ->> SELECT "name", "owner" FROM $1;
++-------------------------+
+| name      | owner       |
+|-----------+-------------|
+| PII_EMAIL | TRANSFORMER |
++-------------------------+
+$ cd dbt
+$ dbt run --select dim_customer
+20:23:28  Running with dbt=1.12.6
+20:23:29  Registered adapter: snowflake=1.12.4
+20:23:29  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:23:31  Found 26 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:23:31
+20:23:31  Concurrency: 4 threads (target='prod')
+20:23:31
+20:23:33  1 of 1 START sql table model MARTS.dim_customer  [RUN]
+20:23:34  1 of 1 OK created sql table model MARTS.dim_customer  [SUCCESS 2834 in
+ 1.82s]
+20:23:35
+20:23:35  Finished running 1 table model in 0 hours 0 minutes and 4.08 seconds (
+4.08s).
+20:23:35
+20:23:35  Completed successfully
+20:23:35
+20:23:35  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/masked.sql
+SELECT DISTINCT customer_id, email FROM DIM_CUSTOMER WHERE customer_id = 81;
++--------------------------------------+
+| CUSTOMER_ID | EMAIL                  |
+|-------------+------------------------|
+| 81          | customer81@example.com |
++--------------------------------------+
+USE ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_BI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT DISTINCT customer_id, email FROM DIM_CUSTOMER WHERE customer_id = 81;
++---------------------------------+
+| CUSTOMER_ID | EMAIL             |
+|-------------+-------------------|
+| 81          | *****@example.com |
++---------------------------------+

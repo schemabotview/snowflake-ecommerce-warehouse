@@ -1,0 +1,116 @@
+$ snow sql -f setup/region_role.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE ROW ACCESS POLICY ON SCHEMA ANALYTICS.MARTS
+  TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE ROLE IF NOT EXISTS REGION_MANAGER
+  COMMENT = 'Country managers: the marts, for their own countries';
++-------------------------------------------+
+| status                                    |
+|-------------------------------------------|
+| Role REGION_MANAGER successfully created. |
++-------------------------------------------+
+GRANT ROLE ANALYST TO ROLE REGION_MANAGER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE REGION_MANAGER TO ROLE SYSADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+$ bash model/as-transformer.sh -f govern/row_access.sql
+CREATE TABLE IF NOT EXISTS REGION_COUNTRIES (
+  ROLE_NAME VARCHAR, COUNTRY VARCHAR);
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| Table REGION_COUNTRIES successfully created. |
++----------------------------------------------+
+INSERT OVERWRITE INTO REGION_COUNTRIES
+  VALUES ('REGION_MANAGER', 'DE'), ('REGION_MANAGER', 'AT');
++-------------------------+
+| number of rows inserted |
+|-------------------------|
+| 2                       |
++-------------------------+
+CREATE ROW ACCESS POLICY IF NOT EXISTS BY_REGION AS (country VARCHAR)
+  RETURNS BOOLEAN ->
+  CURRENT_ROLE() IN ('TRANSFORMER', 'ANALYST')
+  OR EXISTS (SELECT 1 FROM ANALYTICS.MARTS.REGION_COUNTRIES AS r
+             WHERE r.role_name = CURRENT_ROLE() AND r.country = country);
++--------------------------------------------------------+
+| status                                                 |
+|--------------------------------------------------------|
+| Row access policy 'BY_REGION' is successfully created. |
++--------------------------------------------------------+
+$ cd dbt
+$ dbt run --select dim_customer
+20:24:10  Running with dbt=1.12.6
+20:24:11  Registered adapter: snowflake=1.12.4
+20:24:11  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:24:13  Found 26 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:24:13
+20:24:13  Concurrency: 4 threads (target='prod')
+20:24:13
+20:24:16  1 of 1 START sql table model MARTS.dim_customer  [RUN]
+20:24:17  1 of 1 OK created sql table model MARTS.dim_customer  [SUCCESS 2834 in
+ 1.45s]
+20:24:17
+20:24:17  Finished running 1 table model in 0 hours 0 minutes and 3.99 seconds (
+3.99s).
+20:24:17
+20:24:17  Completed successfully
+20:24:17
+20:24:17  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/regions.sql
+SELECT country, COUNT(DISTINCT customer_id) AS customers
+FROM DIM_CUSTOMER GROUP BY 1 ORDER BY 2 DESC LIMIT 4;
++---------------------+
+| COUNTRY | CUSTOMERS |
+|---------+-----------|
+| DE      | 494       |
+| FR      | 329       |
+| GB      | 215       |
+| IT      | 180       |
++---------------------+
+USE ROLE REGION_MANAGER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_BI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT country, COUNT(DISTINCT customer_id) AS customers
+FROM DIM_CUSTOMER GROUP BY 1 ORDER BY 2 DESC LIMIT 4;
++---------------------+
+| COUNTRY | CUSTOMERS |
+|---------+-----------|
+| DE      | 494       |
+| AT      | 68        |
++---------------------+

@@ -102,6 +102,8 @@ QUERY_ID = re.compile(r'\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-
 # (an order's time) or SQL in an echoed statement, and is never touched.
 STAMP = re.compile(r'\b(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(\.\d{1,9})?( ?[+-]\d{2}:?\d{2}\b| ?Z\b)')
 SHOWN_ACCOUNT, SHOWN_HOST, SHOWN_USER, SHOWN_LOCATOR = 'SHOPWAVE-DW', 'shopwave-dw.snowflakecomputing.com', 'ANA', 'SW12345'
+# Reader accounts the provider manages (11.7: Brightline's), by name → the locator a frame shows.
+SHOWN_READERS = {'BRIGHTLINE': 'BL67890'}
 
 
 # ── the step graph ───────────────────────────────────────────────────────────────────────────────
@@ -319,6 +321,19 @@ def connection() -> dict[str, str]:
     return {k: v for k, v in shown.items() if k}
 
 
+def readers() -> dict[str, str]:
+    """The provider's reader accounts (SHOW MANAGED ACCOUNTS), {real locator: shown}. Asked after
+    every step, because a step may have just created one (11.7). A reader not in SHOWN_READERS
+    gets no name, so its locator is refused rather than shown."""
+    probe = as_ana('snow sql --role ACCOUNTADMIN --format json -q "SHOW MANAGED ACCOUNTS"', environment(), HOME)
+    try:
+        rows = [{k.lower(): v for k, v in r.items()} for r in json.loads(probe.stdout)]
+    except (ValueError, AttributeError):
+        sys.exit(f'✗ SHOW MANAGED ACCOUNTS failed (output withheld): exit {probe.returncode}')
+    get = lambda r, k: r.get(f'account_{k}', r.get(k, ''))  # the docs' column names, or the older ones
+    return {get(r, 'locator'): SHOWN_READERS.get(get(r, 'name'), 'XX00000') for r in rows if get(r, 'locator')}
+
+
 def lay_out(step: Path) -> Path:
     project = HOME / PROJECT
     shutil.rmtree(project, ignore_errors=True)
@@ -530,6 +545,7 @@ def main() -> int:
                     print(f'✗ {name}: {earlier[-1].relative_to(ROOT)} is not recorded as it is now — record the chain in order')
                     return 1
             transcript, captured = run(step)
+            names = {**names, **readers()}
             clock = config_of(step).get('time', '2026-11-09 09:00:00')
             transcript = normalise(transcript, names, clock)
             captured = {k: normalise(v, names, clock) for k, v in captured.items()}

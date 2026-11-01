@@ -1,0 +1,38 @@
+$ bash model/as-transformer.sh -f queries/dashboard.sql
+USE ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_BI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT category, revenue_eur, orders, aov_eur
+FROM BI.MART_REVENUE WHERE date = '2026-11-27' ORDER BY 2 DESC;
++----------------------------------------------+
+| CATEGORY    | REVENUE_EUR | ORDERS | AOV_EUR |
+|-------------+-------------+--------+---------|
+| electronics | 31233.39    | 287    | 108.83  |
+| beauty      | 28776.66    | 437    | 65.85   |
+| sports      | 10882.98    | 130    | 83.72   |
+| home        | 10601.21    | 123    | 86.19   |
+| fashion     | 9345.15     | 72     | 129.79  |
+| books       | 7250.23     | 225    | 32.22   |
++----------------------------------------------+
+SELECT SUM(revenue_eur) AS black_friday_eur
+FROM BI.MART_REVENUE WHERE date = '2026-11-27';
++------------------+
+| BLACK_FRIDAY_EUR |
+|------------------|
+| 98089.62         |
++------------------+

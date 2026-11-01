@@ -67,10 +67,10 @@ shopwave-dw/
                          fct_order_lines                                               (6 → 8)
     models/marts/        fct_order_lifecycle, fct_returns, fct_sessions, fct_funnel,
                          fct_customer_monthly, fct_eligibility                         (9)
-    models/marts/bi/     mart_revenue, mart_cohorts, metrics                           (11)
+    models/marts/bi/     mart_revenue, mart_cohorts, metrics_monthly, campaign_stats  (11)
     snapshots/           snap_customers, snap_products                                 (8)
     tests/               the planted-fault tests                                       (7 →)
-  govern/                masking.sql, row_access.sql, share.sql                        (11)
+  govern/                masking.sql, row_access.sql, share.sql, reader.sh, as-brightline.sh (11)
   ops/                   tasks.sql, ci.yml                                             (12)
 ```
 
@@ -131,7 +131,8 @@ identifier, URLs and user names are never shown: the recorder normalises them to
 | stage | `RAW.SHOPWAVE.LANDING` (internal); file formats `FF_CSV`, `FF_CSV_LATIN1`, `FF_JSON`, `FF_PARQUET` |
 | core star | `fct_order_lines` (grain: one order line), `dim_customer` (SCD2), `dim_product` (SCD2), `dim_date`, `dim_currency` |
 | PII | customer email masked for every role but `TRANSFORMER`; row access by country for `REGION_MANAGER` |
-| share | `SHOPWAVE_CAMPAIGNS` to Brightline: campaign performance only, through a secure view |
+| share | `SHOPWAVE_CAMPAIGNS` to Brightline: campaign performance only, through the secure view `BI.CAMPAIGN_STATS` |
+| Brightline's account | a READER account Shopwave manages (`CREATE MANAGED ACCOUNT BRIGHTLINE`); its real locator is normalised by the recorder to `BL67890` (`SHOWN_READERS`); admin `BRIGHTLINE_ADMIN`, its password generated into `~/.keys/brightline.pw` and swapped for a key pair (`~/.keys/brightline.p8`) on first use |
 | the opening answer | Black Friday (2026-11-27) revenue by category, in EUR, from `mart_revenue` |
 
 Numbers (revenues, counts) are frozen when the pilot is recorded and added here then.
@@ -378,6 +379,17 @@ M model.
   of 8.2, but it would have dropped their early orders from 8.4's point-in-time fact. Off the record,
   SNAP_CUSTOMERS, CUSTOMER_CHANGES and CUSTOMER_STATE were dropped; 8.2 now snapshots at the start
   of 2026 and at every month end (13 runs).
+- **Course 11 as recorded (2026-11-01).** Policies use `CURRENT_ROLE()`, not `IS_ROLE_IN_SESSION`:
+  Ana's secondary roles always include TRANSFORMER (the secondary-roles note above, resolved). dbt
+  replaces `dim_customer` every run, so its `post_hook` re-attaches both policies. 11.7 uses a reader
+  account (the owner's choice): the first recording reached it by locator alone and got a 404; it is
+  reached as `<org>-BRIGHTLINE`. Off the record: the admin's key was registered by a password login
+  run by hand when that failed; the share was dropped, and then (renaming `campaign_performance` →
+  `campaign_stats`, too long for the explorer) the old view, the share, and the reader's
+  `BRIGHTLINE_WH` and `SHOPWAVE` database were dropped so 11.6–11.8 re-record as first creations.
+  The reader account remains: 11.7 skips creating it when its password file exists (that creation
+  prints nothing, so its transcript is the same). On a new machine, `~/.keys/brightline.*` are gone:
+  drop the managed account first (a dropped reader blocks its name for 7 days).
 - **Course 10 as recorded (2026-11-01).** Every table is 8 partitions at depth 8 (an off-record,
   read-only probe before authoring), so 10.2 reads 8 of 8 and 10.3's `cluster_by` takes it to depth 1,
   2 of 8. 10.4's load test (96 async dashboard queries) started a SECOND cluster on WH_BI; its history
@@ -421,8 +433,6 @@ M model.
   flat (1899 × 510 natural), so its frame stacks a fixed strip UNDER the map, not beside it.
 - Course 3 also rests on: `INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION()` returning `query_tag`,
   `warehouse_size`, `bytes_scanned`, `percentage_scanned_from_cache`; `PUT` to a table stage from `snow sql`.
-- 11.7 needs a consumer account for Brightline: a second trial, or a reader account if the trial
-  allows one.
 - 5.9 shows Snowpipe with `ALTER PIPE … REFRESH` on an internal stage; auto-ingest needs an external
   stage with cloud event notifications (no AWS account here), so it is `doc-cited`.
 - Whether 12.5's CI runs on GitHub Actions in this repo (needs the key pair as a repository secret).

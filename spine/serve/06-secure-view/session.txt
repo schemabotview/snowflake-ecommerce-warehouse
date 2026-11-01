@@ -1,0 +1,76 @@
+$ cd dbt
+$ dbt run --select campaign_stats
+20:41:32  Running with dbt=1.12.6
+20:41:32  Registered adapter: snowflake=1.12.4
+20:41:32  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+20:41:34  Found 27 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+20:41:34
+20:41:34  Concurrency: 4 threads (target='prod')
+20:41:34
+20:41:37  1 of 1 START sql view model BI.campaign_stats  [RUN]
+20:41:37  1 of 1 OK created sql view model BI.campaign_stats  [SUCCESS 1 in 0.64
+s]
+20:41:38
+20:41:38  Finished running 1 view model in 0 hours 0 minutes and 3.51 seconds (3
+.51s).
+20:41:38
+20:41:38  Completed successfully
+20:41:38
+20:41:38  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/secure.sql
+USE ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_BI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT campaign_id, SUM(visits) AS visits, SUM(buying_visits) AS buying
+FROM BI.CAMPAIGN_STATS GROUP BY 1 ORDER BY 2 DESC;
++--------------------------------+
+| CAMPAIGN_ID  | VISITS | BUYING |
+|--------------+--------+--------|
+| newsletter   | 11485  | 2845   |
+| retarget     | 11382  | 2763   |
+| black-friday | 971    | 229    |
+| spring-sale  | 869    | 218    |
++--------------------------------+
+SHOW VIEWS LIKE 'CAMPAIGN_STATS' IN SCHEMA ANALYTICS.BI
+  ->> SELECT "name", "is_secure", LEFT("text", 24) AS text FROM $1;
++-----------------------------------+
+| name           | is_secure | TEXT |
+|----------------+-----------+------|
+| CAMPAIGN_STATS | true      |      |
++-----------------------------------+
+USE ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_TRANSFORM;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW VIEWS LIKE 'CAMPAIGN_STATS' IN SCHEMA ANALYTICS.BI
+  ->> SELECT "name", "is_secure", LEFT("text", 24) AS text FROM $1;
++-------------------------------------------------------+
+| name           | is_secure | TEXT                     |
+|----------------+-----------+--------------------------|
+| CAMPAIGN_STATS | true      | create or replace secure |
++-------------------------------------------------------+

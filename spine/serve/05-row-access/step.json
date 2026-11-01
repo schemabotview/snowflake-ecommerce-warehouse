@@ -1,0 +1,1 @@
+{"from": "serve/04-masking", "changes": ["setup/region_role.sql", "govern/row_access.sql", "dbt/models/marts/core/dim_customer.sql", "queries/regions.sql"], "snowflake": true, "time": "2026-11-19 09:40:00", "venv": true}

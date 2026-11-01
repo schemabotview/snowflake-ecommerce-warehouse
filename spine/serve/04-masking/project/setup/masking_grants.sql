@@ -1,0 +1,3 @@
+-- Course 11: the analytics team writes Shopwave's data policies.
+USE ROLE SECURITYADMIN;
+GRANT CREATE MASKING POLICY ON SCHEMA ANALYTICS.MARTS TO ROLE TRANSFORMER;

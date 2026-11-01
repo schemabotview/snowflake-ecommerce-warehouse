@@ -1,0 +1,1 @@
+{"from": "serve/05-row-access", "changes": ["dbt/models/marts/bi/campaign_stats.sql", "queries/secure.sql"], "snowflake": true, "time": "2026-11-19 09:50:00", "venv": true}
