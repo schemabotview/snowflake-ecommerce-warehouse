@@ -1,0 +1,2 @@
+{"from": "start/02-databases", "changes": ["load/products.sql", "queries/categories.sql"], "snowflake": true, "time": "2026-11-10 09:10:00",
+ "setup": ["dropdb --if-exists shopwave", "createdb shopwave", "psql -X -q -v ON_ERROR_STOP=1 -d shopwave -f shop/schema.sql -f shop/load.sql"]}

@@ -1,0 +1,4 @@
+$ snow sql -f queries/sizing.sql
+$ snow sql -f queries/state.sql
+$ sleep 90
+$ snow sql -f queries/state.sql

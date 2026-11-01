@@ -27,7 +27,7 @@ export function fromRun(session: string, re: RegExp, what = re.source): string {
 export function cell(session: string, column: string, row = 0, after = 0): string {
   if (!isRecorded(session)) return PENDING
   const lines = session.split('\n')
-  const split = (l: string) => l.split(/[│┃|]/).slice(1, -1).map((c) => c.trim())
+  const split = splitRow
   let seen = 0
   for (let i = 0; i < lines.length; i++) {
     const cells = split(lines[i])
@@ -39,4 +39,54 @@ export function cell(session: string, column: string, row = 0, after = 0): strin
     return split(data[row])[at]
   }
   throw new Error(`recorded.ts: no ${column} (row ${row}) in the recorded session`)
+}
+
+/**
+ * Every data row of the first result table whose header names `column` (after the `after`-th such
+ * table), as cells. Before recording: one row of PENDING cells, `width` wide, so a scene's table keeps
+ * its shape (`pending` rows of them: how many the step is expected to return).
+ */
+export function rowsOf(session: string, column: string, width: number, after = 0, pending = 1): string[][] {
+  if (!isRecorded(session)) return Array.from({ length: pending }, () => Array(width).fill(PENDING))
+  const out: string[][] = []
+  for (let r = 0; ; r++) {
+    try {
+      out.push(Array.from({ length: width }, (_, c) => cellAt(session, column, r, c, after)))
+    } catch {
+      break
+    }
+  }
+  if (!out.length) throw new Error(`recorded.ts: no rows under ${column} in the recorded session`)
+  return out
+}
+
+/** Column `col` (0-based, counted from the header column named `column`) of data row `row`. */
+function cellAt(session: string, column: string, row: number, col: number, after: number): string {
+  const lines = session.split('\n')
+  const split = splitRow
+  let seen = 0
+  for (let i = 0; i < lines.length; i++) {
+    const cells = split(lines[i])
+    const at = cells.findIndex((c) => c.toUpperCase() === column.toUpperCase())
+    if (at < 0 || seen++ < after) continue
+    const data = []
+    for (const l of lines.slice(i + 1)) {
+      if (/^[\s─━\-+┼╪╋├┤┡┩└┘┴┌┐┬╭╮╰╯═╞╡╤╧]*$/.test(l) && l.trim()) continue  // a rule row
+      if (l.startsWith('$ ') || (!/[│┃|]/.test(l) && l.trim())) break
+      if (split(l).length === cells.length && !/^[\s─━\-+┼╪╋├┤┡┩└┘┴│┃|]*$/.test(l)) data.push(l)
+    }
+    if (data[row] === undefined || split(data[row])[at + col] === undefined) break
+    return split(data[row])[at + col]
+  }
+  throw new Error('no such cell')
+}
+
+/** A result row's cells: the Snowflake CLI draws an outer border (│ a │ b │), psql does not
+ *  ( a | b ). A line with no column rule has no cells. */
+function splitRow(l: string): string[] {
+  if (!/[│┃|]/.test(l)) return []
+  const parts = l.split(/[│┃|]/)
+  if (/^\s*[│┃|]/.test(l)) parts.shift()
+  if (/[│┃|]\s*$/.test(l)) parts.pop()
+  return parts.map((c) => c.trim())
 }

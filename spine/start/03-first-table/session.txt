@@ -1,0 +1,4 @@
+$ mkdir -p exports
+$ psql -d shopwave -c "\copy products TO 'exports/products.csv' CSV HEADER"
+$ snow sql -f load/products.sql
+$ snow sql -f queries/categories.sql

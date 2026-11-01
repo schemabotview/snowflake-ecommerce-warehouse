@@ -1,0 +1,1 @@
+$ snow sql -f setup/databases.sql

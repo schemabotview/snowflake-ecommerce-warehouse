@@ -28,7 +28,7 @@ Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/s
 normaliser and its refusal — written, unit-tested on a fake account, NEVER yet run against Snowflake);
 `scripts/setup-postgres.sh` (PostgreSQL 18.6). Next, in order:
 
-1. Map frame (map + side pane) and star frame, with their first sections (3.7, 6.4).
+1. Star frame, with its first section (6.4). The map frame (`mapFrame`: the map over a fixed strip) is built (3.7).
    The Snowflake chain starts at `how-snowflake-runs/01-layers` (`first`), on the fresh trial.
 2. Author every course's scripts and dbt models BEFORE opening the trial (COURSE-PLAN, "The spine").
 3. Open the trial; pilot = Course 7 `transform` plus the ◆ grain scene from Course 6 → owner review.
@@ -39,7 +39,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 |---|---|---|---|
 | 1 | `intro` | 3 | authored, rendered and looked at; not narrated (wavs) — 1.1 and 1.2 run locally, 1.3 concept |
 | 2 | `how-snowflake-runs` | 7 | authored and rendered; 2.5 doc-cited and 2.7 (model, runs locally) final; 2.1–2.4, 2.6 scripted, NOT RECORDED (their terminals show only the commands, read values `…`): re-read every frame and its narration after recording |
-| 3 | `start` | 7 | planned |
+| 3 | `start` | 7 | authored and rendered; 3.1 runs locally (final), 3.7 concept (its inventory reads 3.3 and 3.5), 3.2–3.6 scripted, NOT RECORDED |
 | 4 | `secure` | 8 | planned |
 | 5 | `load` | 9 | planned |
 | 6 | `model` | 9 | planned |

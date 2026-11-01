@@ -1,0 +1,8 @@
+$ psql -d shopwave -f queries/shop_tables.sql
+ table_name  | rows  |  size
+-------------+-------+---------
+ orders      | 20024 | 2088 kB
+ order_items | 35043 | 3744 kB
+ customers   |  2000 | 392 kB
+ products    |    50 | 48 kB
+(4 rows)

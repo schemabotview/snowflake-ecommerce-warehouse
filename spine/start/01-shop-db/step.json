@@ -1,0 +1,1 @@
+{"from": "how-snowflake-runs/06-clients", "changes": ["shop/", "queries/shop_tables.sql"], "generated": {"sf": 0.01, "from": "2026-01-01", "to": "2026-12-31", "only": ["customers", "products", "orders", "order_items"]}, "setup": ["dropdb --if-exists shopwave", "createdb shopwave", "psql -X -q -v ON_ERROR_STOP=1 -d shopwave -f shop/schema.sql -f shop/load.sql"]}

@@ -99,3 +99,38 @@ export const MAP_EDGES: Edge[] = [
 export function mapScene(built: string[], extra: Partial<SceneModel> = {}): SceneModel {
   return { nodes: [warehouseMap(built)], edges: MAP_EDGES, ...extra }
 }
+
+// ── the map frame ─────────────────────────────────────────────────────────────────────────────────
+//
+//   the map (MAP_W × MAP_H, fixed)
+//   ───────────────────────────────
+//   side strip (MAP_W × SIDE_H, fixed): what the section adds — a terminal, a diagram
+//
+// The map is wide and flat (measured 1899 × 510 natural on graphl-flow 0.8), so its frame stacks the
+// side pane UNDER it rather than beside it (aws-ecommerce's map was tall, so its side pane was on the
+// right). Both boxes are FIXED, width and height, so every map frame has the same natural box, the
+// same fit (check-render asserts it) and the map's parts at the same pixels in every course. The
+// strip's height is what a 16:9 frame leaves: MAP_W / SCENE_ASPECT − MAP_H − the gap.
+
+export const MAP_W = 1900
+export const MAP_H = 510
+export const SIDE_H = Math.round(MAP_W / (16 / 9)) - MAP_H - 10
+
+export interface MapFrame {
+  /** What exists before or during this section (BUILT of the previous course, plus this course's so far). */
+  built: string[]
+  /** The strip under the map: a terminal, then a small diagram, side by side. */
+  side: SceneNode[]
+  /** Edges inside the strip. */
+  edges?: Edge[]
+}
+
+export function mapFrame({ built, side, edges = [] }: MapFrame): SceneModel {
+  return {
+    nodes: [
+      { type: 'group', id: 'map-pane', bare: true, w: MAP_W, h: MAP_H, children: [warehouseMap(built)] },
+      { type: 'group', id: 'map-side', bare: true, dir: 'row', w: MAP_W, h: SIDE_H, children: side },
+    ],
+    edges: [...MAP_EDGES, ...edges],
+  }
+}

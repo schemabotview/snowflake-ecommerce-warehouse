@@ -1,0 +1,1 @@
+{"from": "start/01-shop-db", "changes": ["setup/databases.sql"], "snowflake": true, "time": "2026-11-10 09:00:00"}
