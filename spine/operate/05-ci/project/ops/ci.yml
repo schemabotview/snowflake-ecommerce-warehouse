@@ -1,0 +1,21 @@
+# CI for every pull request: build and test the change on a clone of
+# production, then drop the clone. In this course its steps run by hand
+# (ops/ci.sh); on GitHub, SVC_DBT's key would be a repository secret.
+name: dbt CI
+on: pull_request
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      PR: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install dbt-core==1.12.6 dbt-snowflake==1.12.4
+      - run: pip install snowflake-cli==3.31.0
+      - run: |
+          mkdir -p ~/.keys
+          echo "${{ secrets.SVC_DBT_KEY }}" > ~/.keys/svc_dbt.p8
+      - run: bash ops/ci.sh

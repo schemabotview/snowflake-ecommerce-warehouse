@@ -1,0 +1,4 @@
+-- The warehouse's monthly returns file: one row per returned line.
+CREATE TABLE IF NOT EXISTS RETURNS (
+  RETURN_ID VARCHAR, ORDER_ID NUMBER, PRODUCT_ID NUMBER,
+  REASON VARCHAR, RETURNED_ON DATE);

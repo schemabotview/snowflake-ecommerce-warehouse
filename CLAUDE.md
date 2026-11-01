@@ -18,7 +18,7 @@
 
 ## Status
 
-Plan v1 written 2026-11-01. Courses 1–11 authored; Courses 2–11 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: author Course 12, recording each as it is authored.
+Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: the owner's review of Courses 8–12, then narration audio (Colab), record:all, film.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
@@ -48,7 +48,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | 9 | `facts` | 8 | RECORDED; 9.1 doc-cited; 9.5 teaches a funnel that widens (three lone purchase clicks after midnight); 9.7 AOV per customer |
 | 10 | `perform` | 7 | RECORDED at SF 0.01; 10.1 a full scene from the run; 10.4 started a second WH_BI cluster; 10.6 ineligible (doc-cited why) |
 | 11 | `serve` | 8 | RECORDED; masking and row access by CURRENT_ROLE(); 11.7 shared to a reader account (Brightline, BL67890); 11.8 a map frame |
-| 12 | `operate` | 7 | planned |
+| 12 | `operate` | 7 | RECORDED; nightly graph runs dbt inside Snowflake and FAILS on the planted faults (the alarm working); 12.3 a full scene; 12.5 CI steps run here; 12.7 doc-cited map frame |
 
 ## The machine
 

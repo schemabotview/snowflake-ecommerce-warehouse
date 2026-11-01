@@ -1,0 +1,25 @@
+# How dbt reaches Snowflake: as SVC_DBT, by key pair, as TRANSFORMER.
+shopwave:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: SVC_DBT
+      private_key_path: "{{ env_var('HOME') }}/.keys/svc_dbt.p8"
+      role: TRANSFORMER
+      warehouse: WH_TRANSFORM
+      database: ANALYTICS
+      schema: MARTS
+      threads: 4
+    # CI: the same, on a pull request's clone of production (ops/ci.sh).
+    ci:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: SVC_DBT
+      private_key_path: "{{ env_var('HOME') }}/.keys/svc_dbt.p8"
+      role: TRANSFORMER
+      warehouse: WH_TRANSFORM
+      database: "{{ env_var('CI_DATABASE', 'ANALYTICS_CI') }}"
+      schema: MARTS
+      threads: 4

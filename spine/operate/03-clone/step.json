@@ -1,0 +1,1 @@
+{"from": "operate/02-nightly", "changes": ["ops/clone.sql"], "snowflake": true, "time": "2026-11-20 09:20:00", "venv": true}

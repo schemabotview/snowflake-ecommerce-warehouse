@@ -1,0 +1,14 @@
+version: 2
+
+# Pull request 42: the revenue mart gets tests. CI proves them on a clone.
+models:
+  - name: mart_revenue
+    columns:
+      - name: category
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [beauty, books, electronics, fashion, home, sports]
+      - name: revenue_eur
+        tests: [not_null]

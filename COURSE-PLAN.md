@@ -71,7 +71,7 @@ shopwave-dw/
     snapshots/           snap_customers, snap_products                                 (8)
     tests/               the planted-fault tests                                       (7 →)
   govern/                masking.sql, row_access.sql, share.sql, reader.sh, as-brightline.sh (11)
-  ops/                   tasks.sql, ci.yml                                             (12)
+  ops/                   tasks.sql, deploy.sh, nightly.sh, clone.sql, undrop.sql, ci.sh, ci.yml, usage.sql (12)
 ```
 
 | After course | The warehouse can… |
@@ -334,13 +334,13 @@ M model.
 
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
-| 1 | Tasks | a task graph: load → dbt build | the task DAG | S |
-| 2 | Scheduling dbt | `dbt build` from a task | one nightly run, its results | S |
+| 1 | Tasks | the dbt project deployed INTO Snowflake (`snow dbt deploy SHOPWAVE_DBT`, dbt 1.10.15 there); a task graph: snapshot → build (loading is Snowpipe's, 5.9) | the task DAG | S |
+| 2 | Scheduling dbt | `EXECUTE TASK` on the root; the build FAILS on Course 7's planted faults (191, 55), 15 skipped | one nightly run, its results | S |
 | 3 | ◆ full scene: zero-copy clone | `ANALYTICS_DEV` cloned from `ANALYTICS` | two names, one set of micro-partitions | S |
 | 4 | Time travel and `UNDROP` | a dropped mart restored | versions over the retention period | S |
-| 5 | CI on a clone | a pull request builds on a clone, tests, drops it | PR → clone → build → test → drop | S |
+| 5 | CI on a clone | `ops/ci.yml` shown; its steps run here by `ops/ci.sh` (the owner's choice: no repository secret): clone, `dbt build --select mart_revenue+` with PR 42's three tests, drop | PR → clone → build → test → drop | S |
 | 6 | Usage views | `ACCOUNT_USAGE`: cost, failed tasks, logins | what the account did last night | S |
-| 7 | Where next | concept | Iceberg tables, Snowpark, Cortex — each on the map | D |
+| 7 | Where next | concept, a map frame (no part added) | Iceberg tables, Snowpark, Cortex — each on the map | D |
 
 ## Decisions
 
@@ -379,6 +379,15 @@ M model.
   of 8.2, but it would have dropped their early orders from 8.4's point-in-time fact. Off the record,
   SNAP_CUSTOMERS, CUSTOMER_CHANGES and CUSTOMER_STATE were dropped; 8.2 now snapshots at the start
   of 2026 and at every month end (13 runs).
+- **Course 12 as recorded (2026-11-01).** One task graph has one owner role, and 11.5's row access
+  lets only TRANSFORMER and ANALYST read every customer: so the graph is TRANSFORMER's and runs
+  snapshot → build (loading stays with Snowpipe). dbt runs inside Snowflake (a dbt project object,
+  dbt 1.10.15 there; 1.12.6 here). Fixed and re-recorded: CREATE DATABASE needs ACCOUNTADMIN to grant
+  (the project and tasks were dropped off the record first); 12.2's output was tidied and the graph
+  ran a second time; 12.3's storage view has `TABLE_DROPPED`, not `DELETED`, and listed the failed
+  attempt's clone (ANALYTICS_DEV dropped off the record). The clone's storage reading after its
+  update still says 0: computed in the background, said in the frame. 12.6 was recorded once
+  ACCOUNT_USAGE showed the failed task (it runs ~45 minutes behind or more).
 - **Course 11 as recorded (2026-11-01).** Policies use `CURRENT_ROLE()`, not `IS_ROLE_IN_SESSION`:
   Ana's secondary roles always include TRANSFORMER (the secondary-roles note above, resolved). dbt
   replaces `dim_customer` every run, so its `post_hook` re-attaches both policies. 11.7 uses a reader
@@ -435,4 +444,3 @@ M model.
   `warehouse_size`, `bytes_scanned`, `percentage_scanned_from_cache`; `PUT` to a table stage from `snow sql`.
 - 5.9 shows Snowpipe with `ALTER PIPE … REFRESH` on an internal stage; auto-ingest needs an external
   stage with cloud event notifications (no AWS account here), so it is `doc-cited`.
-- Whether 12.5's CI runs on GitHub Actions in this repo (needs the key pair as a repository secret).

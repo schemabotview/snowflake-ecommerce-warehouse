@@ -1,0 +1,57 @@
+$ bash model/as-transformer.sh -f ops/clone.sql
+CREATE OR REPLACE DATABASE ANALYTICS_DEV CLONE ANALYTICS;
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| Database ANALYTICS_DEV successfully created. |
++----------------------------------------------+
+SELECT 'ANALYTICS' AS db, COUNT(*) AS order_lines
+FROM ANALYTICS.MARTS.FCT_ORDER_LINES
+UNION ALL
+SELECT 'ANALYTICS_DEV', COUNT(*) FROM ANALYTICS_DEV.MARTS.FCT_ORDER_LINES;
++-----------------------------+
+| DB            | ORDER_LINES |
+|---------------+-------------|
+| ANALYTICS     | 35043       |
+| ANALYTICS_DEV | 35043       |
++-----------------------------+
+SELECT table_catalog AS db, active_bytes, clone_group_id = id AS original
+FROM ANALYTICS.INFORMATION_SCHEMA.TABLE_STORAGE_METRICS
+WHERE table_name = 'FCT_ORDER_LINES' AND table_schema = 'MARTS'
+  AND COALESCE(catalog_dropped, schema_dropped, table_dropped) IS NULL
+  AND table_catalog IN ('ANALYTICS', 'ANALYTICS_DEV') ORDER BY 1;
++-----------------------------------------+
+| DB            | ACTIVE_BYTES | ORIGINAL |
+|---------------+--------------+----------|
+| ANALYTICS     | 1157120      | True     |
+| ANALYTICS_DEV | 0            | False    |
++-----------------------------------------+
+UPDATE ANALYTICS_DEV.MARTS.FCT_ORDER_LINES SET qty = qty
+WHERE order_id = 18000;
++--------------------------------------------------------------+
+| number of rows updated | number of multi-joined rows updated |
+|------------------------+-------------------------------------|
+| 1                      | 0                                   |
++--------------------------------------------------------------+
+SELECT 'ANALYTICS' AS db, SUM(qty) AS order_18000_qty
+FROM ANALYTICS.MARTS.FCT_ORDER_LINES WHERE order_id = 18000
+UNION ALL
+SELECT 'ANALYTICS_DEV', SUM(qty)
+FROM ANALYTICS_DEV.MARTS.FCT_ORDER_LINES WHERE order_id = 18000;
++---------------------------------+
+| DB            | ORDER_18000_QTY |
+|---------------+-----------------|
+| ANALYTICS     | 1               |
+| ANALYTICS_DEV | 1               |
++---------------------------------+
+SELECT table_catalog AS db, active_bytes, clone_group_id = id AS original
+FROM ANALYTICS.INFORMATION_SCHEMA.TABLE_STORAGE_METRICS
+WHERE table_name = 'FCT_ORDER_LINES' AND table_schema = 'MARTS'
+  AND COALESCE(catalog_dropped, schema_dropped, table_dropped) IS NULL
+  AND table_catalog IN ('ANALYTICS', 'ANALYTICS_DEV') ORDER BY 1;
++-----------------------------------------+
+| DB            | ACTIVE_BYTES | ORIGINAL |
+|---------------+--------------+----------|
+| ANALYTICS     | 1157120      | True     |
+| ANALYTICS_DEV | 0            | False    |
++-----------------------------------------+

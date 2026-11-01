@@ -1,0 +1,75 @@
+$ snow sql -f setup/ops_grants.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE TASK, CREATE DBT PROJECT, CREATE STAGE
+  ON SCHEMA ANALYTICS.MARTS TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT EXECUTE TASK ON ACCOUNT TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE DATABASE ON ACCOUNT TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+$ bash ops/deploy.sh
+Creating temporary stage
+Copying project files to stage
+  Copied 38 files
+Creating DBT project
++------------------------------------+
+| status                             |
+|------------------------------------|
+| SHOPWAVE_DBT successfully created. |
++------------------------------------+
+$ bash model/as-transformer.sh -f ops/tasks.sql
+CREATE OR REPLACE TASK NIGHTLY_SNAPSHOT
+  WAREHOUSE = WH_TRANSFORM
+  SCHEDULE = 'USING CRON 0 2 * * * Europe/Berlin'
+AS EXECUTE DBT PROJECT SHOPWAVE_DBT ARGS = 'snapshot';
++---------------------------------------------+
+| status                                      |
+|---------------------------------------------|
+| Task NIGHTLY_SNAPSHOT successfully created. |
++---------------------------------------------+
+CREATE OR REPLACE TASK NIGHTLY_BUILD
+  WAREHOUSE = WH_TRANSFORM
+  AFTER NIGHTLY_SNAPSHOT
+AS EXECUTE DBT PROJECT SHOPWAVE_DBT ARGS = 'build';
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Task NIGHTLY_BUILD successfully created. |
++------------------------------------------+
+ALTER TASK NIGHTLY_BUILD RESUME;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW TASKS LIKE 'NIGHTLY%'
+  ->> SELECT "name", "schedule", "state" FROM $1;
++-------------------------------------------------------------------+
+| name             | schedule                           | state     |
+|------------------+------------------------------------+-----------|
+| NIGHTLY_BUILD    | None                               | started   |
+| NIGHTLY_SNAPSHOT | USING CRON 0 2 * * * Europe/Berlin | suspended |
++-------------------------------------------------------------------+

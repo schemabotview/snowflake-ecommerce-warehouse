@@ -1,0 +1,46 @@
+$ bash model/as-transformer.sh -f ops/undrop.sql
+SELECT COUNT(*) AS row_count FROM BI.MART_COHORTS;
++-----------+
+| ROW_COUNT |
+|-----------|
+| 78        |
++-----------+
+DROP TABLE BI.MART_COHORTS;
++------------------------------------+
+| status                             |
+|------------------------------------|
+| MART_COHORTS successfully dropped. |
++------------------------------------+
+SHOW TABLES HISTORY LIKE 'MART_COHORTS' IN SCHEMA ANALYTICS.BI
+  ->> SELECT "name", "rows", "dropped_on" FROM $1;
++--------------------------------------------------------+
+| name         | rows | dropped_on                       |
+|--------------+------+----------------------------------|
+| MART_COHORTS | 78   | 2026-11-20 09:30:00.000000+00:00 |
++--------------------------------------------------------+
+UNDROP TABLE BI.MART_COHORTS;
++-------------------------------------------+
+| status                                    |
+|-------------------------------------------|
+| Table MART_COHORTS successfully restored. |
++-------------------------------------------+
+SELECT COUNT(*) AS row_count FROM BI.MART_COHORTS;
++-----------+
+| ROW_COUNT |
+|-----------|
+| 78        |
++-----------+
+SELECT COUNT(*) AS rows_5_minutes_ago
+FROM BI.MART_COHORTS AT(OFFSET => -300);
++--------------------+
+| ROWS_5_MINUTES_AGO |
+|--------------------|
+| 78                 |
++--------------------+
+SHOW PARAMETERS LIKE 'DATA_RETENTION_TIME_IN_DAYS' IN DATABASE ANALYTICS
+  ->> SELECT "key", "value", "level" FROM $1;
++---------------------------------------------+
+| key                         | value | level |
+|-----------------------------+-------+-------|
+| DATA_RETENTION_TIME_IN_DAYS | 1     |       |
++---------------------------------------------+

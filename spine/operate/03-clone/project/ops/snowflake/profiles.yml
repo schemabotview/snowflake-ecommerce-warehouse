@@ -1,0 +1,14 @@
+# The profile dbt uses INSIDE Snowflake, as a dbt project object: no
+# account, user or key. It runs as whoever executes it, in their session.
+shopwave:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: ""
+      user: ""
+      role: TRANSFORMER
+      warehouse: WH_TRANSFORM
+      database: ANALYTICS
+      schema: MARTS
+      threads: 4

@@ -1,0 +1,38 @@
+$ bash ops/nightly.sh
+EXECUTE TASK NIGHTLY_SNAPSHOT
++--------------------------------------------------------+
+| status                                                 |
+|--------------------------------------------------------|
+| Task NIGHTLY_SNAPSHOT is scheduled to run immediately. |
++--------------------------------------------------------+
+the task graph has finished
+SELECT name, state, LEFT(REPLACE(error_message, '\n', ' '), 34) AS error
+FROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY())
+WHERE name IN ('NIGHTLY_SNAPSHOT', 'NIGHTLY_BUILD')
+QUALIFY ROW_NUMBER() OVER (PARTITION BY name
+                           ORDER BY scheduled_time DESC) = 1
+ORDER BY scheduled_time;
++-------------------------------------------------------------------+
+| NAME             | STATE     | ERROR                              |
+|------------------+-----------+------------------------------------|
+| NIGHTLY_SNAPSHOT | SUCCEEDED | None                               |
+| NIGHTLY_BUILD    | FAILED    | DBT job failed. Last output lines: |
++-------------------------------------------------------------------+
+SET build = (SELECT query_id FROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY(
+  TASK_NAME => 'NIGHTLY_BUILD')) ORDER BY scheduled_time DESC LIMIT 1);
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT REGEXP_REPLACE(REGEXP_SUBSTR(f.value::string, ']: (.*)', 1, 1, 'e'),
+                      ' [.]{3,}', '') AS dbt_said
+FROM TABLE(FLATTEN(SPLIT(SYSTEM$GET_DBT_LOG($build), '\n'))) AS f
+WHERE f.value::string LIKE ANY ('%FAIL %', '%Done.%');
++----------------------------------------------------------+
+| DBT_SAID                                                 |
+|----------------------------------------------------------|
+| 18 of 42 FAIL 55 assert_paid_once [FAIL 55 in 0.81s]     |
+| 17 of 42 FAIL 191 assert_has_payment [FAIL 191 in 1.58s] |
+| Done. PASS=25 WARN=0 ERROR=2 SKIP=15 NO-OP=0 TOTAL=42    |
++----------------------------------------------------------+
