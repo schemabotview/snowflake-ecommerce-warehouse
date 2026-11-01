@@ -253,14 +253,14 @@ M model.
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
 | 1 | Kimball's four steps | concept | process → grain → dimensions → facts | D |
-| 2 | ◆ full scene: the grain | one order, three possible grains | one row per order line, and why | S |
+| 2 | ◆ full scene: the grain | `WH_TRANSFORM` created (moved from Course 7: the hand-built star needs compute); order 2293 (3 lines, paid twice) at three grains: order, line, line × payment (doubled) | one row per order line, and why | S |
 | 3 | The bus matrix | concept | processes × conformed dimensions | D |
 | 4 | The fact table | `fct_order_lines` by hand-written SQL | the star frame: the fact | S |
 | 5 | Dimensions | `dim_customer`, `dim_product`, `dim_date` | the star, three points | S |
 | 6 | Surrogate keys | natural vs surrogate | why the warehouse owns its keys | S |
 | 7 | ◆ full scene: star vs snowflake schema | category split out, the query compared | joins vs redundancy | S |
-| 8 | Degenerate and role-playing dimensions | order id in the fact; order date vs ship date | one `dim_date`, two roles | S |
-| 9 | The first answer | revenue by product by month | the star, lit by the query | S |
+| 8 | Degenerate and role-playing dimensions | order id in the fact; order date vs PAID date (the first payment; no ship date is loaded before Course 9) | one `dim_date`, two roles | S |
+| 9 | The first answer | Course 1's question (revenue by category by month, PIVOT) asked of the star; November set beside 1.1's | the star, lit by the query | S |
 
 **7. `transform` · dbt on Snowflake · 9**
 

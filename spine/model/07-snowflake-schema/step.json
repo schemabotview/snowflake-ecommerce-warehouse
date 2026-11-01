@@ -1,0 +1,1 @@
+{"from": "model/06-keys", "changes": ["queries/star_vs_snowflake.sql"], "snowflake": true, "time": "2026-11-13 09:40:00"}

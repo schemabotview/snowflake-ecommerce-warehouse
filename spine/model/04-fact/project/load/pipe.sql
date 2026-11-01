@@ -1,0 +1,11 @@
+-- Payments arrive every day: a pipe loads them as they land.
+CREATE TABLE IF NOT EXISTS PAYMENTS (
+  PAYMENT_ID VARCHAR, ORDER_ID NUMBER, PAID_TS TIMESTAMP_NTZ,
+  CURRENCY VARCHAR(3), AMOUNT NUMBER(12, 2), METHOD VARCHAR);
+CREATE PIPE IF NOT EXISTS PIPE_PAYMENTS AS
+  COPY INTO PAYMENTS FROM @LANDING/payments/
+  FILE_FORMAT = (FORMAT_NAME = FF_PARQUET)
+  MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
+-- An internal stage sends no events: ask the pipe to look.
+ALTER PIPE PIPE_PAYMENTS REFRESH ->> SELECT "status", COUNT(*) AS files
+                                     FROM $1 GROUP BY 1;

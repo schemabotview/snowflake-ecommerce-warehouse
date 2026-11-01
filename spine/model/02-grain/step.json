@@ -1,0 +1,1 @@
+{"from": "load/09-snowpipe", "changes": ["setup/warehouses.sql", "setup/transform_grants.sql", "model/as-transformer.sh", "queries/grain.sql"], "snowflake": true, "time": "2026-11-13 09:00:00"}

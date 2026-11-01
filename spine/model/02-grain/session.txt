@@ -1,0 +1,3 @@
+$ snow sql -f setup/warehouses.sql
+$ snow sql -f setup/transform_grants.sql
+$ bash model/as-transformer.sh -f queries/grain.sql

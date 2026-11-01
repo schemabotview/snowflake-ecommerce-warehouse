@@ -1,0 +1,1 @@
+{"from": "model/05-dims", "changes": ["model/dim_customer.sql", "model/dim_product.sql", "model/fct_order_lines.sql", "queries/keys.sql"], "snowflake": true, "time": "2026-11-13 09:30:00"}

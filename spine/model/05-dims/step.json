@@ -1,0 +1,1 @@
+{"from": "model/04-fact", "changes": ["model/dim_date.sql", "model/dim_customer.sql", "model/dim_product.sql", "queries/dims.sql"], "snowflake": true, "time": "2026-11-13 09:20:00"}

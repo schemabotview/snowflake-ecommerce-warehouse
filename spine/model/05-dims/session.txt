@@ -1,0 +1,4 @@
+$ bash model/as-transformer.sh -f model/dim_date.sql
+$ bash model/as-transformer.sh -f model/dim_customer.sql
+$ bash model/as-transformer.sh -f model/dim_product.sql
+$ bash model/as-transformer.sh -f queries/dims.sql

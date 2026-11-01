@@ -3,6 +3,7 @@ import { howSnowflakeRuns } from './how-snowflake-runs'
 import { start } from './start'
 import { secure } from './secure'
 import { load } from './load'
+import { model } from './model'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. One course per chapter of COURSE-PLAN.md; a course is
@@ -13,6 +14,7 @@ export const COURSES: Record<string, Course> = {
   [start.id]: start,
   [secure.id]: secure,
   [load.id]: load,
+  [model.id]: model,
 }
 
 export type { Course, Section }

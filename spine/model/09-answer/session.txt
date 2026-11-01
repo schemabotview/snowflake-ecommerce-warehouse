@@ -1,0 +1,1 @@
+$ bash model/as-transformer.sh -f queries/revenue_by_month.sql

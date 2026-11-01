@@ -1,0 +1,1 @@
+{"from": "model/07-snowflake-schema", "changes": ["model/fct_order_lines.sql", "queries/two_dates.sql"], "snowflake": true, "time": "2026-11-13 09:50:00"}
