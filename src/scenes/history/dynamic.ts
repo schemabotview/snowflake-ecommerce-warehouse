@@ -13,13 +13,14 @@ export const historyDynamic: SceneModel = ideFrame({
   tree: historyTree('queries/dynamic.sql', 'queries/dynamic.sql', ['setup/dynamic_grants.sql', 'queries/dynamic.sql']),
   editor: { file: 'queries/dynamic.sql', code: sql },
   session,
+  keep: ['$ snow sql -f setup/dynamic_grants.sql', '$ bash model/as-transformer.sh -f queries/dynamic.sql', 'DT_DAILY_REVENUE successfully created', ['| name', '| DT_DAILY_REVENUE'], 'ALTER DYNAMIC TABLE DT_DAILY_REVENUE SUSPEND'],
   side: [
     {
       type: 'group', id: 'cmp', badge: 1, title: 'Two ways to keep a table fresh', tone: 'infra', children: [
         { type: 'table', id: 'vs', columns: ['', 'dbt incremental', 'dynamic'], rows: [
           ['run by', 'a schedule', 'Snowflake'],
           ['fresh', 'per run', 'TARGET_LAG'],
-          ['rebuilds', 'your filter', 'what changed'],
+          ['rebuilds', 'your filter', 'Snowflake decides'],
           ['tests, docs', 'yes', 'no'],
         ] },
       ],

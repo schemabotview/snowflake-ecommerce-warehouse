@@ -1,3 +1,62 @@
 $ bash load/as-loader.sh -f load/customer_changes.sql
+CREATE TABLE IF NOT EXISTS CUSTOMER_CHANGES (
+  CUSTOMER_ID NUMBER, CHANGED_AT TIMESTAMP_NTZ, FIELD VARCHAR,
+  COUNTRY VARCHAR(2), LOYALTY_TIER VARCHAR);
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| Table CUSTOMER_CHANGES successfully created. |
++----------------------------------------------+
+COPY INTO CUSTOMER_CHANGES FROM @LANDING/customer_changes.csv
+  FILE_FORMAT = (FORMAT_NAME = FF_CSV);
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-------------------+
+| file                         | status | rows_parsed | rows_loaded | error_limi
+t | errors_seen | first_error | first_error_line | first_error_character | first
+_error_column_name |
+|------------------------------+--------+-------------+-------------+-----------
+--+-------------+-------------+------------------+-----------------------+------
+-------------------|
+| landing/customer_changes.csv | LOADED | 836         | 836         | 1         
+  | 0           | None        | None             | None                  | None 
+                   |
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-------------------+
+CREATE TABLE IF NOT EXISTS CUSTOMER_STATE (
+  CUSTOMER_ID NUMBER, COUNTRY VARCHAR(2), LOYALTY_TIER VARCHAR,
+  SIGNUP_DATE DATE, EMAIL VARCHAR, UPDATED_AT TIMESTAMP_NTZ);
++--------------------------------------------+
+| status                                     |
+|--------------------------------------------|
+| Table CUSTOMER_STATE successfully created. |
++--------------------------------------------+
 $ bash load/month_ends.sh
+2025-12-31: CUSTOMER_STATE replicated, snapshot taken
+2026-01-31: CUSTOMER_STATE replicated, snapshot taken
+2026-02-28: CUSTOMER_STATE replicated, snapshot taken
+2026-03-31: CUSTOMER_STATE replicated, snapshot taken
+2026-04-30: CUSTOMER_STATE replicated, snapshot taken
+2026-05-31: CUSTOMER_STATE replicated, snapshot taken
+2026-06-30: CUSTOMER_STATE replicated, snapshot taken
+2026-07-31: CUSTOMER_STATE replicated, snapshot taken
+2026-08-31: CUSTOMER_STATE replicated, snapshot taken
+2026-09-30: CUSTOMER_STATE replicated, snapshot taken
+2026-10-31: CUSTOMER_STATE replicated, snapshot taken
+2026-11-30: CUSTOMER_STATE replicated, snapshot taken
+2026-12-31: CUSTOMER_STATE replicated, snapshot taken
 $ bash model/as-transformer.sh -f queries/customer_81.sql
+SELECT customer_id, country, loyalty_tier,
+       dbt_valid_from::date AS valid_from, dbt_valid_to::date AS valid_to
+FROM ANALYTICS.STAGING.SNAP_CUSTOMERS
+WHERE customer_id = 81
+ORDER BY dbt_valid_from;
++----------------------------------------------------------------+
+| CUSTOMER_ID | COUNTRY | LOYALTY_TIER | VALID_FROM | VALID_TO   |
+|-------------+---------+--------------+------------+------------|
+| 81          | ES      | bronze       | 2026-01-01 | 2026-01-16 |
+| 81          | AT      | bronze       | 2026-01-16 | 2026-03-21 |
+| 81          | AT      | silver       | 2026-03-21 | 2026-05-21 |
+| 81          | AT      | gold         | 2026-05-21 | None       |
++----------------------------------------------------------------+

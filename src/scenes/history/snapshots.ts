@@ -13,6 +13,7 @@ export const historySnapshots: SceneModel = ideFrame({
   tree: historyTree('queries/customer_81.sql', 'load/month_ends.sh', ['load/customer_changes.sql', 'load/customers_as_of.sql', 'load/month_ends.sh', 'dbt/snapshots/snap_customers.yml', 'queries/customer_81.sql']),
   editor: { file: 'load/month_ends.sh', code, lang: 'shell' },
   session,
+  keep: ['$ bash load/month_ends.sh', '2025-12-31: CUSTOMER_STATE', '2026-12-31: CUSTOMER_STATE', ['| CUSTOMER_ID', '| 81          | AT      | gold']],
   side: [
     {
       type: 'group', id: 'how', badge: 1, title: 'A snapshot, run every night', tone: 'infra', children: [

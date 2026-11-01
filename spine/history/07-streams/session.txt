@@ -1,2 +1,65 @@
 $ snow sql -f setup/stream_grants.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE STREAM ON SCHEMA RAW.SHOPWAVE TO ROLE LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
 $ bash load/as-loader.sh -f load/order_changes.sql
+CREATE TABLE IF NOT EXISTS ORDER_CHANGES (
+  OP VARCHAR, ORDER_ID NUMBER, STATUS VARCHAR, CHANGED_AT TIMESTAMP_NTZ);
++-------------------------------------------+
+| status                                    |
+|-------------------------------------------|
+| Table ORDER_CHANGES successfully created. |
++-------------------------------------------+
+CREATE STREAM IF NOT EXISTS ORDER_CHANGES_STREAM ON TABLE ORDER_CHANGES;
++---------------------------------------------------+
+| status                                            |
+|---------------------------------------------------|
+| Stream ORDER_CHANGES_STREAM successfully created. |
++---------------------------------------------------+
+COPY INTO ORDER_CHANGES FROM (
+  SELECT $1:op, $1:order_id, $1:status, $1:changed_at
+  FROM @LANDING/order_changes/) FILE_FORMAT = (FORMAT_NAME = FF_JSON)
+  PATTERN = '.*changes-2026-12-0[1-7].jsonl'
+  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS row_count FROM $1;
++-------------------+
+| FILES | ROW_COUNT |
+|-------+-----------|
+| 7     | 1976      |
++-------------------+
+SELECT METADATA$ACTION AS action, status, COUNT(*) AS changes
+FROM ORDER_CHANGES_STREAM GROUP BY 1, 2 ORDER BY 2;
++------------------------------+
+| ACTION | STATUS    | CHANGES |
+|--------+-----------+---------|
+| INSERT | delivered | 1253    |
+| INSERT | shipped   | 723     |
++------------------------------+
+CREATE TABLE IF NOT EXISTS ORDER_STATUS (ORDER_ID NUMBER, STATUS VARCHAR,
+                                          CHANGED_AT TIMESTAMP_NTZ);
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Table ORDER_STATUS successfully created. |
++------------------------------------------+
+INSERT INTO ORDER_STATUS SELECT order_id, status, changed_at
+FROM ORDER_CHANGES_STREAM;
++-------------------------+
+| number of rows inserted |
+|-------------------------|
+| 1976                    |
++-------------------------+
+SELECT COUNT(*) AS left_in_stream FROM ORDER_CHANGES_STREAM;
++----------------+
+| LEFT_IN_STREAM |
+|----------------|
+| 0              |
++----------------+

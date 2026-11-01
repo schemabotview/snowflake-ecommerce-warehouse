@@ -1,5 +1,65 @@
 $ bash load/as-loader.sh -f load/product_prices.sql
+CREATE TABLE IF NOT EXISTS PRODUCT_PRICES (
+  PRODUCT_ID NUMBER, PRICE NUMBER(10, 2), VALID_FROM DATE);
++--------------------------------------------+
+| status                                     |
+|--------------------------------------------|
+| Table PRODUCT_PRICES successfully created. |
++--------------------------------------------+
+COPY INTO PRODUCT_PRICES FROM @LANDING/product_prices.csv
+  FILE_FORMAT = (FORMAT_NAME = FF_CSV);
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-----------------+
+| file                       | status | rows_parsed | rows_loaded | error_limit 
+| errors_seen | first_error | first_error_line | first_error_character | first_e
+rror_column_name |
+|----------------------------+--------+-------------+-------------+-------------
++-------------+-------------+------------------+-----------------------+--------
+-----------------|
+| landing/product_prices.csv | LOADED | 66          | 66          | 1           
+| 0           | None        | None             | None                  | None   
+                 |
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-----------------+
 $ cd dbt
 $ dbt run --select stg_product_prices dim_product
+19:18:05  Running with dbt=1.12.6
+19:18:05  Registered adapter: snowflake=1.12.4
+19:18:05  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:18:08  Found 14 models, 15 data tests, 1 snapshot, 10 sources, 564 macros
+19:18:08
+19:18:08  Concurrency: 4 threads (target='prod')
+19:18:08
+19:18:09  1 of 2 START sql view model STAGING.stg_product_prices  [RUN]
+19:18:09  1 of 2 OK created sql view model STAGING.stg_product_prices  [SUCCESS 
+1 in 0.36s]
+19:18:09  2 of 2 START sql table model MARTS.dim_product  [RUN]
+19:18:11  2 of 2 OK created sql table model MARTS.dim_product  [SUCCESS 66 in 1.
+28s]
+19:18:11
+19:18:11  Finished running 1 table model, 1 view model in 0 hours 0 minutes and 
+3.29 seconds (3.29s).
+19:18:11
+19:18:11  Completed successfully
+19:18:11
+19:18:11  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
 $ cd ..
 $ bash model/as-transformer.sh -f queries/price_history.sql
+SELECT product_id, product_name, list_price_eur, valid_from, valid_to
+FROM ANALYTICS.MARTS.DIM_PRODUCT
+QUALIFY COUNT(*) OVER (PARTITION BY product_id) = 3
+ORDER BY product_id, valid_from
+LIMIT 6;
++---------------------------------------------------------------------------+
+| PRODUCT_ID | PRODUCT_NAME      | LIST_PRICE_EUR | VALID_FROM | VALID_TO   |
+|------------+-------------------+----------------+------------+------------|
+| 10         | Merida Desk Lamp  | 43.87          | 2026-01-01 | 2026-02-23 |
+| 10         | Merida Desk Lamp  | 50.45          | 2026-02-23 | 2026-11-28 |
+| 10         | Merida Desk Lamp  | 55.50          | 2026-11-28 | 9999-12-31 |
+| 17         | Merida Sunglasses | 82.07          | 2026-01-01 | 2026-07-07 |
+| 17         | Merida Sunglasses | 65.66          | 2026-07-07 | 2026-07-31 |
+| 17         | Merida Sunglasses | 52.53          | 2026-07-31 | 9999-12-31 |
++---------------------------------------------------------------------------+

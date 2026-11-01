@@ -14,6 +14,7 @@ export const historyCurrency: SceneModel = ideFrame({
   tree: historyTree('queries/currency.sql', 'dbt/models/marts/core/fct_payments.sql', ['dbt/models/marts/core/dim_currency.sql', 'dbt/models/marts/core/fct_payments.sql', 'queries/currency.sql']),
   editor: { file: 'dbt/models/marts/core/fct_payments.sql', code: sql },
   session,
+  keep: ['$ dbt run --select dim_currency fct_payments', 'Done. PASS=2', ['| CODE', '| None']],
   side: [
     s.node,
     {

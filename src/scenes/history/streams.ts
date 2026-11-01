@@ -14,6 +14,7 @@ export const historyStreams: SceneModel = ideFrame({
   tree: historyTree('load/order_changes.sql', 'load/order_changes.sql', ['setup/stream_grants.sql', 'load/order_changes.sql']),
   editor: { file: 'load/order_changes.sql', code: sql, ...view(sql, 'CREATE TABLE IF NOT EXISTS ORDER_CHANGES', undefined, 0) },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/order_changes.sql', '| 7     | 1976', ['| ACTION', '| INSERT | shipped'], '| 0              |'],
   side: [
     {
       type: 'group', id: 'how', badge: 1, title: 'A stream: an offset on a table', tone: 'infra', children: [

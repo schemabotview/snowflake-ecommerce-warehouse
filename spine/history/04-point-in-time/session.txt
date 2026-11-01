@@ -1,4 +1,53 @@
 $ cd dbt
 $ dbt run --select dim_customer fct_order_lines --full-refresh
+19:18:34  Running with dbt=1.12.6
+19:18:35  Registered adapter: snowflake=1.12.4
+19:18:35  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:18:37  Found 14 models, 15 data tests, 1 snapshot, 10 sources, 564 macros
+19:18:37
+19:18:37  Concurrency: 4 threads (target='prod')
+19:18:37
+19:18:39  1 of 2 START sql table model MARTS.dim_customer  [RUN]
+19:18:40  1 of 2 OK created sql table model MARTS.dim_customer  [SUCCESS 2834 in
+ 1.08s]
+19:18:40  2 of 2 START sql incremental model MARTS.fct_order_lines  [RUN]
+19:18:43  2 of 2 OK created sql incremental model MARTS.fct_order_lines  [SUCCES
+S 35043 in 2.84s]
+19:18:43
+19:18:43  Finished running 1 incremental model, 1 table model in 0 hours 0 minut
+es and 6.15 seconds (6.15s).
+19:18:44
+19:18:44  Completed successfully
+19:18:44
+19:18:44  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
 $ cd ..
 $ bash model/as-transformer.sh -f queries/point_in_time.sql
+SELECT f.order_id, d.date AS ordered, c.country AS country_then,
+       c.loyalty_tier AS tier_then, now.country AS country_now
+FROM ANALYTICS.MARTS.FCT_ORDER_LINES AS f
+JOIN ANALYTICS.MARTS.DIM_DATE AS d ON d.date_key = f.order_date_key
+JOIN ANALYTICS.MARTS.DIM_CUSTOMER AS c ON c.customer_key = f.customer_key
+JOIN ANALYTICS.MARTS.DIM_CUSTOMER AS now
+  ON now.customer_id = c.customer_id AND now.valid_to = '9999-12-31'
+WHERE c.customer_id = 81 AND f.line = 1
+ORDER BY ordered LIMIT 6;
++----------------------------------------------------------------+
+| ORDER_ID | ORDERED    | COUNTRY_THEN | TIER_THEN | COUNTRY_NOW |
+|----------+------------+--------------+-----------+-------------|
+| 342      | 2026-01-06 | ES           | bronze    | AT          |
+| 1348     | 2026-01-23 | AT           | bronze    | AT          |
+| 2364     | 2026-02-13 | AT           | bronze    | AT          |
+| 2709     | 2026-02-20 | AT           | bronze    | AT          |
+| 3856     | 2026-03-15 | AT           | bronze    | AT          |
+| 4175     | 2026-03-21 | AT           | silver    | AT          |
++----------------------------------------------------------------+
+SELECT COUNT(*) AS lines,
+       COUNT_IF(f.unit_price = p.list_price_eur) AS priced_as_listed
+FROM ANALYTICS.MARTS.FCT_ORDER_LINES AS f
+JOIN ANALYTICS.MARTS.DIM_PRODUCT AS p ON p.product_key = f.product_key;
++--------------------------+
+| LINES | PRICED_AS_LISTED |
+|-------+------------------|
+| 35043 | 35043            |
++--------------------------+

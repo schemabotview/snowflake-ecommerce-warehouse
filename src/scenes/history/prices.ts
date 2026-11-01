@@ -12,6 +12,7 @@ export const historyPrices: SceneModel = ideFrame({
   tree: historyTree('queries/price_history.sql', 'dbt/models/marts/core/dim_product.sql', ['load/product_prices.sql', 'dbt/models/staging/stg_product_prices.sql', 'dbt/models/marts/core/dim_product.sql', 'queries/price_history.sql']),
   editor: { file: 'dbt/models/marts/core/dim_product.sql', code: sql },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/product_prices.sql', '$ dbt run --select stg_product_prices dim_product', 'Done. PASS=2', ['| PRODUCT_ID', '| 10         | Merida Desk Lamp  | 55.50']],
   side: [
     {
       type: 'group', id: 'two', badge: 1, title: 'Where history comes from', tone: 'infra', dir: 'row', children: [

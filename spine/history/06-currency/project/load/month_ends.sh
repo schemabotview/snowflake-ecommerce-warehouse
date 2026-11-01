@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# A year of nights, compressed: at each month end, the shop's customers
-# table as it then stood, and a dbt snapshot of it.
+# A year of nights, compressed: the shop's customers table as it stood at
+# the start of 2026 and at each month end, and a dbt snapshot of each.
 set -euo pipefail
-for month in 01 02 03 04 05 06 07 08 09 10 11 12; do
-  day=$(date -d "2026-$month-01 +1 month -1 day" +%F)
+for day in 2025-12-31 $(for m in $(seq -w 1 12); do
+    date -d "2026-$m-01 +1 month -1 day" +%F; done); do
   bash load/as-loader.sh -f load/customers_as_of.sql -D "day=$day" \
     > /dev/null
   (cd dbt && dbt --quiet snapshot)

@@ -13,6 +13,7 @@ export const historyLate: SceneModel = ideFrame({
   tree: historyTree('queries/late.sql', 'queries/late.sql'),
   editor: { file: 'queries/late.sql', code: sql },
   session,
+  keep: ['$ bash model/as-transformer.sh', ['| DAYS_LATE', '| 3 ']],
   side: [
     {
       type: 'group', id: 'when', badge: 1, title: 'Two dates on every event', tone: 'infra', children: [

@@ -371,6 +371,11 @@ M model.
   (which clears its load history), PIPE_PAYMENTS and PAYMENTS dropped (5.8, 5.9 re-recorded). No row a
   transcript shows came from the failed run. The recorder's timestamp rule was narrowed the same day:
   only zoned (wall-clock) stamps are replaced; it had rewritten a date literal inside a query.
+- **8.2 re-recorded:** its first recording snapshotted only at month ends, so the first snapshot
+  (Jan 31) already saw customer 81 in Austria and their Spanish version was never kept: the lesson
+  of 8.2, but it would have dropped their early orders from 8.4's point-in-time fact. Off the record,
+  SNAP_CUSTOMERS, CUSTOMER_CHANGES and CUSTOMER_STATE were dropped; 8.2 now snapshots at the start
+  of 2026 and at every month end (13 runs).
 - **5.8 found more than planned:** 767 return lines sent, 185 loaded, 24 rejected. Each month's
   unclosed quote turns the rest of its file into ONE rejected record; the narration teaches
   reconciliation. The day-first dates are among the swallowed lines.

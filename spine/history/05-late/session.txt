@@ -1,1 +1,14 @@
 $ bash model/as-transformer.sh -f queries/late.sql
+SELECT DATEDIFF(day, V:event_ts::date,
+                SPLIT_PART(_file, '/', 2)::date) AS days_late,
+       COUNT(*) AS events
+FROM RAW.SHOPWAVE.CLICKS
+GROUP BY 1 ORDER BY 1;
++--------------------+
+| DAYS_LATE | EVENTS |
+|-----------+--------|
+| 0         | 374900 |
+| 1         | 1259   |
+| 2         | 1180   |
+| 3         | 836    |
++--------------------+

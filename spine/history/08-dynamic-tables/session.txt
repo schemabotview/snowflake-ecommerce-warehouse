@@ -1,2 +1,62 @@
 $ snow sql -f setup/dynamic_grants.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT CREATE DYNAMIC TABLE ON SCHEMA ANALYTICS.MARTS TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
 $ bash model/as-transformer.sh -f queries/dynamic.sql
+CREATE OR REPLACE DYNAMIC TABLE DT_DAILY_REVENUE
+  TARGET_LAG = '1 hour'
+  WAREHOUSE = WH_TRANSFORM
+AS
+SELECT d.date, SUM(f.amount_eur) AS revenue_eur
+FROM FCT_ORDER_LINES AS f
+JOIN DIM_DATE AS d ON d.date_key = f.order_date_key
+WHERE f.order_status = 'paid'
+GROUP BY d.date;
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------+
+| status                                                                        
+                                                                                
+                                                                                
+                                                                                
+                                                                    |
+|-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------|
+| Dynamic table DT_DAILY_REVENUE successfully created. FULL refresh mode was sel
+ected because: This dynamic table contains a complex query. Refresh mode has bee
+n automatically set to FULL for more predictable performance. To use INCREMENTAL
+, re-create the dynamic table with REFRESH_MODE=INCREMENTAL. See https://docs.sn
+owflake.com/user-guide/dynamic-table-performance-guide for details. |
++-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------+
+SHOW DYNAMIC TABLES LIKE 'DT_DAILY_REVENUE'
+  ->> SELECT "name", "target_lag", "refresh_mode", "scheduling_state"
+      FROM $1;
++-----------------------------------------------------------------+
+| name             | target_lag | refresh_mode | scheduling_state |
+|------------------+------------+--------------+------------------|
+| DT_DAILY_REVENUE | 1 hour     | FULL         | ACTIVE           |
++-----------------------------------------------------------------+
+ALTER DYNAMIC TABLE DT_DAILY_REVENUE SUSPEND;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+

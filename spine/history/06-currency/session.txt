@@ -1,4 +1,39 @@
 $ cd dbt
 $ dbt run --select dim_currency fct_payments
+19:19:22  Running with dbt=1.12.6
+19:19:22  Registered adapter: snowflake=1.12.4
+19:19:22  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:19:25  Found 16 models, 15 data tests, 1 snapshot, 10 sources, 564 macros
+19:19:25
+19:19:25  Concurrency: 4 threads (target='prod')
+19:19:25
+19:19:26  1 of 2 START sql table model MARTS.dim_currency  [RUN]
+19:19:27  1 of 2 OK created sql table model MARTS.dim_currency  [SUCCESS 4 in 0.
+83s]
+19:19:27  2 of 2 START sql table model MARTS.fct_payments  [RUN]
+19:19:28  2 of 2 OK created sql table model MARTS.fct_payments  [SUCCESS 19265 i
+n 1.17s]
+19:19:29
+19:19:29  Finished running 2 table models in 0 hours 0 minutes and 4.01 seconds 
+(4.01s).
+19:19:29
+19:19:29  Completed successfully
+19:19:29
+19:19:29  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
 $ cd ..
 $ bash model/as-transformer.sh -f queries/currency.sql
+SELECT c.code, COUNT(*) AS payments, SUM(p.amount) AS amount,
+       SUM(p.amount_eur) AS amount_eur
+FROM ANALYTICS.MARTS.FCT_PAYMENTS AS p
+JOIN ANALYTICS.MARTS.DIM_CURRENCY AS c ON c.currency_key = p.currency_key
+GROUP BY ROLLUP (c.code) ORDER BY c.code NULLS LAST;
++-------------------------------------------+
+| CODE | PAYMENTS | AMOUNT     | AMOUNT_EUR |
+|------+----------+------------+------------|
+| EUR  | 16346    | 1970612.96 | 1970612.96 |
+| GBP  | 1897     | 196767.63  | 223020.67  |
+| INR  | 445      | 5069965.87 | 56565.36   |
+| USD  | 577      | 78494.38   | 74615.39   |
+| None | 19265    | 7315840.84 | 2324814.38 |
++-------------------------------------------+

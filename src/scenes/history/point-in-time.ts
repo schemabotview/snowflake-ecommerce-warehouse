@@ -14,6 +14,7 @@ export const historyPointInTime: SceneModel = ideFrame({
   tree: historyTree('queries/point_in_time.sql', 'dbt/models/marts/core/fct_order_lines.sql', ['dbt/models/marts/core/dim_customer.sql', 'dbt/models/marts/core/fct_order_lines.sql', 'queries/point_in_time.sql']),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, 'from {{ ref', '{% endif %}', 0) },
   session,
+  keep: ['$ dbt run --select dim_customer fct_order_lines --full-refresh', 'Done. PASS=2', ['| ORDER_ID', '| 342 '], '| 4175', '| 35043'],
   side: [
     {
       type: 'group', id: 'join', badge: 1, title: 'An order finds the version valid that day', tone: 'infra', children: [
