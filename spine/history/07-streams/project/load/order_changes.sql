@@ -6,7 +6,7 @@ COPY INTO ORDER_CHANGES FROM (
   SELECT $1:op, $1:order_id, $1:status, $1:changed_at
   FROM @LANDING/order_changes/) FILE_FORMAT = (FORMAT_NAME = FF_JSON)
   PATTERN = '.*changes-2026-12-0[1-7].jsonl'
-  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS rows FROM $1;
+  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS row_count FROM $1;
 SELECT METADATA$ACTION AS action, status, COUNT(*) AS changes
 FROM ORDER_CHANGES_STREAM GROUP BY 1, 2 ORDER BY 2;
 -- Consume: a DML statement that reads the stream moves its offset on.

@@ -1,2 +1,51 @@
 $ bash model/as-transformer.sh -f model/fct_order_lines.sql
+CREATE OR REPLACE TABLE FCT_ORDER_LINES AS
+SELECT
+    i.order_id,
+    i.line,
+    TO_NUMBER(TO_CHAR(o.order_ts, 'YYYYMMDD')) AS order_date_key,
+    TO_NUMBER(TO_CHAR(pay.paid_ts, 'YYYYMMDD')) AS paid_date_key,
+    c.customer_key,
+    p.product_key,
+    o.status                AS order_status,
+    i.qty,
+    i.unit_price,
+    i.qty * i.unit_price    AS amount_eur
+FROM RAW.SHOPWAVE.ORDER_ITEMS AS i
+JOIN RAW.SHOPWAVE.ORDERS AS o ON o.order_id = i.order_id
+JOIN DIM_CUSTOMER AS c ON c.customer_id = o.customer_id
+JOIN DIM_PRODUCT AS p ON p.product_id = i.product_id
+LEFT JOIN (
+    SELECT order_id, MIN(paid_ts) AS paid_ts
+    FROM RAW.SHOPWAVE.PAYMENTS GROUP BY order_id
+) AS pay ON pay.order_id = i.order_id;
++---------------------------------------------+
+| status                                      |
+|---------------------------------------------|
+| Table FCT_ORDER_LINES successfully created. |
++---------------------------------------------+
 $ bash model/as-transformer.sh -f queries/two_dates.sql
+SELECT od.date AS ordered, pd.date AS paid,
+       COUNT(DISTINCT f.order_id) AS orders
+FROM FCT_ORDER_LINES AS f
+JOIN DIM_DATE AS od ON od.date_key = f.order_date_key
+JOIN DIM_DATE AS pd ON pd.date_key = f.paid_date_key
+WHERE od.date <> pd.date
+GROUP BY 1, 2 ORDER BY 1 LIMIT 5;
++----------------------------------+
+| ORDERED    | PAID       | ORDERS |
+|------------+------------+--------|
+| 2026-01-15 | 2026-01-16 | 1      |
+| 2026-01-17 | 2026-01-18 | 1      |
+| 2026-01-26 | 2026-01-27 | 1      |
+| 2026-02-22 | 2026-02-23 | 1      |
+| 2026-03-18 | 2026-03-19 | 1      |
++----------------------------------+
+SELECT COUNT(DISTINCT order_id) AS orders,
+       COUNT(DISTINCT IFF(paid_date_key IS NULL, order_id, NULL)) AS unpaid
+FROM FCT_ORDER_LINES;
++-----------------+
+| ORDERS | UNPAID |
+|--------+--------|
+| 20024  | 814    |
++-----------------+

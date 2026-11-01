@@ -1,3 +1,77 @@
 $ snow sql -f setup/warehouses.sql
+CREATE WAREHOUSE IF NOT EXISTS WH_LOAD
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: loading raw data';
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| WH_LOAD already exists, statement succeeded. |
++----------------------------------------------+
+CREATE WAREHOUSE IF NOT EXISTS WH_BI
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: dashboards and analysts';
++--------------------------------------------+
+| status                                     |
+|--------------------------------------------|
+| WH_BI already exists, statement succeeded. |
++--------------------------------------------+
+CREATE WAREHOUSE IF NOT EXISTS WH_TRANSFORM
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: building ANALYTICS';
++---------------------------------------------------+
+| status                                            |
+|---------------------------------------------------|
+| WH_TRANSFORM already exists, statement succeeded. |
++---------------------------------------------------+
 $ snow sql -f setup/transform_grants.sql
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER WAREHOUSE WH_TRANSFORM SET RESOURCE_MONITOR = RM_MONTHLY;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON WAREHOUSE WH_TRANSFORM TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
 $ bash model/as-transformer.sh -f queries/grain.sql
+SELECT 'one row per order' AS grain, COUNT(*) AS row_count, SUM(total) AS eur
+FROM RAW.SHOPWAVE.ORDERS WHERE order_id = 2293
+UNION ALL
+SELECT 'one row per order line', COUNT(*), SUM(qty * unit_price)
+FROM RAW.SHOPWAVE.ORDER_ITEMS WHERE order_id = 2293
+UNION ALL
+SELECT 'order lines x payments', COUNT(*), SUM(i.qty * i.unit_price)
+FROM RAW.SHOPWAVE.ORDER_ITEMS AS i
+JOIN RAW.SHOPWAVE.PAYMENTS AS p ON p.order_id = i.order_id
+WHERE i.order_id = 2293;
++---------------------------------------------+
+| GRAIN                  | ROW_COUNT | EUR    |
+|------------------------+-----------+--------|
+| one row per order      | 1         | 140.99 |
+| one row per order line | 3         | 140.99 |
+| order lines x payments | 6         | 281.98 |
++---------------------------------------------+

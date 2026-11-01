@@ -19,6 +19,7 @@ export const modelAnswer: SceneModel = ideFrame({
   tree: modelTree('queries/revenue_by_month.sql', 'queries/revenue_by_month.sql'),
   editor: { file: 'queries/revenue_by_month.sql', code: sql },
   session,
+  keep: ['$ bash model/as-transformer.sh', '| MONTH', '| 2026-01', '| 2026-11', '| 2026-12'],
   side: [
     s.node,
     {

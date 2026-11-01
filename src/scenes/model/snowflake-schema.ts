@@ -1,11 +1,13 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { terminal } from '../ide'
+import { keepLines, terminal } from '../ide'
 import { rowsOf } from '../recorded'
 import session from '../../../spine/model/07-snowflake-schema/session.txt?raw'
 
 // §6.7 — ◆ star vs snowflake schema: category split out of the product dimension into its own
 // (temporary) table, the same question asked of both (recorded on Snowflake).
 const answers = rowsOf(session, 'MODEL', 3, 0, 2)
+const term = terminal(session)
+const keep = keepLines(term, ['$ bash', 'Table DIM_CATEGORY successfully', 'Table DIM_PRODUCT_SF successfully', ['| MODEL', '| snowflake: 2 joins']])
 const t = (id: string, title: string, rows: string[], tone: 'serve' | 'store' | 'consume') => ({ type: 'table' as const, id, title, tone, rows: rows.map((r) => ({ id: r, cells: [r] })) })
 
 export const modelSnowflakeSchema: SceneModel = {
@@ -49,7 +51,7 @@ export const modelSnowflakeSchema: SceneModel = {
     },
     {
       type: 'group', id: 'proof', title: 'The run', icon: 'terminal', tone: 'neutral', children: [
-        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: terminal(session) },
+        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: term, show: keep },
       ],
     },
   ],

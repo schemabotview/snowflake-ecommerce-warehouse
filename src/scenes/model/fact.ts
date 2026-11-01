@@ -14,6 +14,7 @@ export const modelFact: SceneModel = ideFrame({
   tree: modelTree('queries/fact_check.sql', 'model/fct_order_lines.sql', ['model/fct_order_lines.sql', 'queries/fact_check.sql']),
   editor: { file: 'model/fct_order_lines.sql', code: sql },
   session,
+  keep: ['$ bash model/as-transformer.sh -f model/fct_order_lines.sql', 'Table FCT_ORDER_LINES successfully created', '$ bash model/as-transformer.sh -f queries/fact_check.sql', ['| FACT_ROWS', '| 35043']],
   side: [
     s.node,
     {

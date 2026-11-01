@@ -1,4 +1,61 @@
 $ bash model/as-transformer.sh -f model/dim_customer.sql
+CREATE OR REPLACE TABLE DIM_CUSTOMER AS
+SELECT
+    MD5(TO_VARCHAR(customer_id))      AS customer_key,
+    customer_id,
+    country,
+    CASE WHEN country = 'GB' THEN 'GBP' WHEN country = 'US' THEN 'USD'
+         WHEN country = 'IN' THEN 'INR' ELSE 'EUR' END AS home_currency,
+    signup_date,
+    email
+FROM RAW.SHOPWAVE.CUSTOMERS;
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Table DIM_CUSTOMER successfully created. |
++------------------------------------------+
 $ bash model/as-transformer.sh -f model/dim_product.sql
+CREATE OR REPLACE TABLE DIM_PRODUCT AS
+SELECT MD5(TO_VARCHAR(product_id)) AS product_key,
+       product_id, sku, name, brand, category, price AS list_price
+FROM RAW.SHOPWAVE.PRODUCTS;
++-----------------------------------------+
+| status                                  |
+|-----------------------------------------|
+| Table DIM_PRODUCT successfully created. |
++-----------------------------------------+
 $ bash model/as-transformer.sh -f model/fct_order_lines.sql
+CREATE OR REPLACE TABLE FCT_ORDER_LINES AS
+SELECT
+    i.order_id,
+    i.line,
+    TO_NUMBER(TO_CHAR(o.order_ts, 'YYYYMMDD')) AS order_date_key,
+    c.customer_key,
+    p.product_key,
+    o.status                AS order_status,
+    i.qty,
+    i.unit_price,
+    i.qty * i.unit_price    AS amount_eur
+FROM RAW.SHOPWAVE.ORDER_ITEMS AS i
+JOIN RAW.SHOPWAVE.ORDERS AS o ON o.order_id = i.order_id
+JOIN DIM_CUSTOMER AS c ON c.customer_id = o.customer_id
+JOIN DIM_PRODUCT AS p ON p.product_id = i.product_id;
++---------------------------------------------+
+| status                                      |
+|---------------------------------------------|
+| Table FCT_ORDER_LINES successfully created. |
++---------------------------------------------+
 $ bash model/as-transformer.sh -f queries/keys.sql
+SELECT COUNT(*) AS fact_rows,
+       COUNT(d.date_key) AS with_date,
+       COUNT(c.customer_key) AS with_customer,
+       COUNT(p.product_key) AS with_product
+FROM FCT_ORDER_LINES AS f
+LEFT JOIN DIM_DATE AS d ON d.date_key = f.order_date_key
+LEFT JOIN DIM_CUSTOMER AS c ON c.customer_key = f.customer_key
+LEFT JOIN DIM_PRODUCT AS p ON p.product_key = f.product_key;
++------------------------------------------------------+
+| FACT_ROWS | WITH_DATE | WITH_CUSTOMER | WITH_PRODUCT |
+|-----------+-----------+---------------+--------------|
+| 35043     | 35043     | 35043         | 35043        |
++------------------------------------------------------+

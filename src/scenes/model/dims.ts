@@ -14,6 +14,7 @@ export const modelDims: SceneModel = ideFrame({
   tree: modelTree('queries/dims.sql', 'model/dim_date.sql', ['model/dim_date.sql', 'model/dim_customer.sql', 'model/dim_product.sql', 'queries/dims.sql']),
   editor: { file: 'model/dim_date.sql', code: sql },
   session,
+  keep: ['$ bash model/as-transformer.sh -f model/dim_date.sql', 'Table DIM_DATE successfully created', '$ bash model/as-transformer.sh -f queries/dims.sql', ['| DIM ', '| DIM_PRODUCT']],
   side: [
     s.node,
     {

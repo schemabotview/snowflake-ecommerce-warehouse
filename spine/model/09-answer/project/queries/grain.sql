@@ -1,5 +1,5 @@
 -- One order, three ways to count it. Order 2293 was paid twice.
-SELECT 'one row per order' AS grain, COUNT(*) AS rows, SUM(total) AS eur
+SELECT 'one row per order' AS grain, COUNT(*) AS row_count, SUM(total) AS eur
 FROM RAW.SHOPWAVE.ORDERS WHERE order_id = 2293
 UNION ALL
 SELECT 'one row per order line', COUNT(*), SUM(qty * unit_price)

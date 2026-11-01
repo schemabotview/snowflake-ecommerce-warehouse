@@ -1,2 +1,29 @@
 $ bash model/as-transformer.sh -f model/fct_order_lines.sql
+CREATE OR REPLACE TABLE FCT_ORDER_LINES AS
+SELECT
+    i.order_id,
+    i.line,
+    o.order_ts::date        AS order_date,
+    o.customer_id,
+    i.product_id,
+    o.status                AS order_status,
+    i.qty,
+    i.unit_price,
+    i.qty * i.unit_price    AS amount_eur
+FROM RAW.SHOPWAVE.ORDER_ITEMS AS i
+JOIN RAW.SHOPWAVE.ORDERS AS o ON o.order_id = i.order_id;
++---------------------------------------------+
+| status                                      |
+|---------------------------------------------|
+| Table FCT_ORDER_LINES successfully created. |
++---------------------------------------------+
 $ bash model/as-transformer.sh -f queries/fact_check.sql
+SELECT COUNT(*) AS fact_rows,
+       COUNT(DISTINCT order_id, line) AS order_lines,
+       (SELECT COUNT(*) FROM RAW.SHOPWAVE.ORDER_ITEMS) AS raw_lines
+FROM FCT_ORDER_LINES;
++-------------------------------------+
+| FACT_ROWS | ORDER_LINES | RAW_LINES |
+|-----------+-------------+-----------|
+| 35043     | 35043       | 35043     |
++-------------------------------------+

@@ -1,4 +1,59 @@
 $ bash model/as-transformer.sh -f model/dim_date.sql
+CREATE OR REPLACE TABLE DIM_DATE AS
+SELECT
+    TO_NUMBER(TO_CHAR(d, 'YYYYMMDD'))   AS date_key,
+    d                                   AS date,
+    DAYNAME(d)                          AS day_name,
+    DAYOFWEEKISO(d) >= 6                AS is_weekend,
+    TO_CHAR(d, 'YYYY-MM')               AS month,
+    'Q' || QUARTER(d)                   AS quarter,
+    YEAR(d)                             AS year,
+    d = '2026-11-27'                    AS is_black_friday
+FROM (
+    SELECT DATEADD(day, SEQ4(), '2026-01-01'::date) AS d
+    FROM TABLE(GENERATOR(ROWCOUNT => 365))
+);
++--------------------------------------+
+| status                               |
+|--------------------------------------|
+| Table DIM_DATE successfully created. |
++--------------------------------------+
 $ bash model/as-transformer.sh -f model/dim_customer.sql
+CREATE OR REPLACE TABLE DIM_CUSTOMER AS
+SELECT
+    customer_id,
+    country,
+    CASE WHEN country = 'GB' THEN 'GBP' WHEN country = 'US' THEN 'USD'
+         WHEN country = 'IN' THEN 'INR' ELSE 'EUR' END AS home_currency,
+    signup_date,
+    email
+FROM RAW.SHOPWAVE.CUSTOMERS;
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Table DIM_CUSTOMER successfully created. |
++------------------------------------------+
 $ bash model/as-transformer.sh -f model/dim_product.sql
+CREATE OR REPLACE TABLE DIM_PRODUCT AS
+SELECT product_id, sku, name, brand, category, price AS list_price
+FROM RAW.SHOPWAVE.PRODUCTS;
++-----------------------------------------+
+| status                                  |
+|-----------------------------------------|
+| Table DIM_PRODUCT successfully created. |
++-----------------------------------------+
 $ bash model/as-transformer.sh -f queries/dims.sql
+SELECT 'DIM_DATE' AS dim, COUNT(*) AS row_count, COUNT(DISTINCT date_key) AS key
+s
+FROM DIM_DATE
+UNION ALL
+SELECT 'DIM_CUSTOMER', COUNT(*), COUNT(DISTINCT customer_id) FROM DIM_CUSTOMER
+UNION ALL
+SELECT 'DIM_PRODUCT', COUNT(*), COUNT(DISTINCT product_id) FROM DIM_PRODUCT;
++---------------------------------+
+| DIM          | ROW_COUNT | KEYS |
+|--------------+-----------+------|
+| DIM_DATE     | 365       | 365  |
+| DIM_CUSTOMER | 2000      | 2000 |
+| DIM_PRODUCT  | 50        | 50   |
++---------------------------------+

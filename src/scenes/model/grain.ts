@@ -1,11 +1,14 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { terminal } from '../ide'
+import { keepLines, terminal } from '../ide'
 import { rowsOf } from '../recorded'
 import session from '../../../spine/model/02-grain/session.txt?raw'
 
 // §6.2 — ◆ the grain. Order 2293 (a German order, 3 lines, paid twice by the generator's planted
 // double payment) counted at three grains (recorded on Snowflake). WH_TRANSFORM is created here.
 const grains = rowsOf(session, 'GRAIN', 3, 0, 3)
+const term = terminal(session)
+// Keep the commands and the answer; the warehouse's creation and grants fold.
+const keep = keepLines(term, ['$ snow sql -f setup/warehouses.sql', '$ snow sql -f setup/transform_grants.sql', '$ bash model/as-transformer.sh -f queries/grain.sql', ['| GRAIN', '| order lines x payments']])
 
 export const modelGrain: SceneModel = {
   title: 'The grain: what one row means',
@@ -43,7 +46,7 @@ export const modelGrain: SceneModel = {
     },
     {
       type: 'group', id: 'proof', title: 'The run', icon: 'terminal', tone: 'neutral', children: [
-        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: terminal(session) },
+        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: term, show: keep },
       ],
     },
   ],

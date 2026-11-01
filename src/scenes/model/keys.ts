@@ -16,6 +16,7 @@ export const modelKeys: SceneModel = ideFrame({
   tree: modelTree('queries/keys.sql', 'model/fct_order_lines.sql', ['model/dim_customer.sql', 'model/dim_product.sql', 'model/fct_order_lines.sql', 'queries/keys.sql']),
   editor: { file: 'model/fct_order_lines.sql', code: sql, ...view(sql, 'CREATE OR REPLACE', undefined, 1) },
   session,
+  keep: ['$ bash model/as-transformer.sh -f model/dim_customer.sql', '$ bash model/as-transformer.sh -f model/dim_product.sql', '$ bash model/as-transformer.sh -f model/fct_order_lines.sql', '$ bash model/as-transformer.sh -f queries/keys.sql', ['| FACT_ROWS', '| 35043']],
   side: [
     s.node,
     {

@@ -1,5 +1,5 @@
 -- Each dimension: its rows, and one key per row.
-SELECT 'DIM_DATE' AS dim, COUNT(*) AS rows, COUNT(DISTINCT date_key) AS keys
+SELECT 'DIM_DATE' AS dim, COUNT(*) AS row_count, COUNT(DISTINCT date_key) AS keys
 FROM DIM_DATE
 UNION ALL
 SELECT 'DIM_CUSTOMER', COUNT(*), COUNT(DISTINCT customer_id) FROM DIM_CUSTOMER

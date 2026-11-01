@@ -16,6 +16,7 @@ export const modelRoles: SceneModel = ideFrame({
   tree: modelTree('queries/two_dates.sql', 'queries/two_dates.sql', ['model/fct_order_lines.sql', 'queries/two_dates.sql']),
   editor: { file: 'queries/two_dates.sql', code: sql },
   session,
+  keep: ['$ bash model/as-transformer.sh -f model/fct_order_lines.sql', '$ bash model/as-transformer.sh -f queries/two_dates.sql', ['| ORDERED', '| 2026-01-17'], ['| ORDERS | UNPAID', '| 20024']],
   side: [
     s.node,
     {
@@ -23,7 +24,7 @@ export const modelRoles: SceneModel = ideFrame({
         { type: 'table', id: 'pairs', columns: ['ordered', 'paid', 'orders'], rows: crossed },
       ],
     },
-    { type: 'note', id: 'unpaid', tone: 'consume', text: `Orders with no paid date at all: ${unpaid[0]}. The planted unpaid orders: Course 7 turns them into a failing test.` },
+    { type: 'note', id: 'unpaid', tone: 'consume', text: `Orders with no paid date at all: ${unpaid[0]}: the cancelled ones, and the planted unpaid orders. Course 7 turns the second kind into a failing test.` },
   ],
   edges: s.edges,
 })
