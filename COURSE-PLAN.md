@@ -215,10 +215,10 @@ M model.
 | --- | --- | --- | --- | --- |
 | 1 | Shopwave's database | psql: `orders`, `order_items`, `customers`, `products` | the OLTP ER diagram | L |
 | 2 | Databases and schemas | `RAW`, `ANALYTICS` | account → databases → schemas → objects | S |
-| 3 | A first table and query | load `products`; query it | the round trip: client → services → warehouse → storage | S |
-| 4 | Sizing and auto-suspend | the same query on XS and S; auto-suspend 60 s | warehouse states over time: running, suspended | S |
+| 3 | A first table and query | `products` exported from PostgreSQL, `PUT` to the table's own stage `@%PRODUCTS`, `COPY INTO`; queried (5.1 builds the named stage) | the round trip: client → services → warehouse → storage | S |
+| 4 | Sizing and auto-suspend | one query over TPC-H SF10 `LINEITEM` (result cache off) on XS then S, timed by `QUERY_HISTORY_BY_SESSION`; `sleep 90`, then the state again | warehouse states over time: running, suspended | S |
 | 5 | A budget that stops spend | `RM_MONTHLY`: notify 80%, suspend 100% | monitor → warehouses; thresholds | S |
-| 6 | ◆ full scene: three caches | the same query three times | result cache, warehouse cache, metadata | S |
+| 6 | ◆ full scene: three caches | one TPC-H query: cold (after `SUSPEND`), warm, then twice with the result cache on; `QUERY_HISTORY_BY_SESSION` | result cache, warehouse cache, metadata | S |
 | 7 | The project map | concept | the map, with what exists lit | S |
 
 **4. `secure` · Roles before data · 8**
@@ -368,8 +368,10 @@ M model.
   every 1.12 command. The plan pins dbt Core 1.12 (`dbt-core` + `dbt-snowflake`, as agreed); the owner
   decides before Course 7 is authored whether the course teaches v2 instead. Either way the notice
   is real output and will appear in dbt panes unless the course says how to silence it.
-- Map frame (map + side pane) and star frame: built when their first section is (3.7 and 6.4); the
-  map's parts and `BUILT` per course are fixed now in `src/scenes/map.ts`.
+- Star frame: built with its first section (6.4). The map frame is built (3.7): the map is wide and
+  flat (1899 × 510 natural), so its frame stacks a fixed strip UNDER the map, not beside it.
+- Course 3 also rests on: `INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION()` returning `query_tag`,
+  `warehouse_size`, `bytes_scanned`, `percentage_scanned_from_cache`; `PUT` to a table stage from `snow sql`.
 - 11.7 needs a consumer account for Brightline: a second trial, or a reader account if the trial
   allows one.
 - 5.9 shows Snowpipe with `ALTER PIPE … REFRESH` on an internal stage; auto-ingest needs an external
