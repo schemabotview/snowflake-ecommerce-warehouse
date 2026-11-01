@@ -12,6 +12,7 @@ export const secureCustomRoles: SceneModel = ideFrame({
   tree: secureTree('setup/roles.sql', 'setup/roles.sql'),
   editor: { file: 'setup/roles.sql', code: sql },
   session,
+  keep: ['$ snow sql -f setup/roles.sql', ['| granted_to', '| ROLE       | SYSADMIN']],
   side: [
     { type: 'item', id: 'c-sys', icon: 'users', title: 'SYSADMIN', sub: 'inherits every team role: the admins keep control', tone: 'store' },
     {

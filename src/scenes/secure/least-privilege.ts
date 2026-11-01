@@ -14,6 +14,7 @@ export const secureLeastPrivilege: SceneModel = ideFrame({
   tree: secureTree('queries/matrix.sql', 'queries/matrix.sql'),
   editor: { file: 'queries/matrix.sql', code: sql },
   session,
+  keep: ['$ snow sql', 'SHOW GRANTS TO ROLE ANALYST', ['| privilege', '| USAGE     | WAREHOUSE']],
   side: [
     {
       type: 'group', id: 'matrix', badge: 1, title: 'Role × object', sub: 'setup/grants.sql, as a table', tone: 'infra', children: [

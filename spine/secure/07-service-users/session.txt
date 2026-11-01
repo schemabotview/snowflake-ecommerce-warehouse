@@ -1,3 +1,72 @@
 $ bash setup/keys.sh
-$ bash queries/whoami.sh svc_loader
-$ bash queries/whoami.sh svc_dbt
+svc_loader: key pair in ~/.keys
+svc_dbt: key pair in ~/.keys
+USE ROLE USERADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE OR REPLACE USER SVC_LOADER
+  TYPE = SERVICE
+  RSA_PUBLIC_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArk/fXB6mT8VdxwiP
+UpmSq98koPesi+39kVt5gOmfgUTai+oBevH6ycNNVPIWNWsifsBslW6jlnJPj9B39NC78JfmJ3FSbOzQ
+z6XoaUU4JlBg9JubxSGofY5w/xpTSshKmeMFQp4NZT4vuZ2tVb+3bJLuR7UcUrzCw+bXwzLaCkv5VP6Z
+aR69WOAzc48VzAL3ZR/5lK/x0Th/q6kPG6+SdRo8cvupfbhOlPiaIm5Ul6qHTof3YoGgzaUDdXgILQjw
+qzzCZbetnS548bwFCt5FU9z7Bu1Tc1Uv1vp1stwF8VkgxKmj4htlECgF2/bhuu+WIxMPphXR0JVnHEkZ
+ZMlNEwIDAQAB'
+  DEFAULT_ROLE = LOADER
+  DEFAULT_WAREHOUSE = WH_LOAD
+  COMMENT = 'Loads RAW: Course 5';
++---------------------------------------+
+| status                                |
+|---------------------------------------|
+| User SVC_LOADER successfully created. |
++---------------------------------------+
+CREATE OR REPLACE USER SVC_DBT
+  TYPE = SERVICE
+  RSA_PUBLIC_KEY = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmwdzTYTkiH6fkY7Y
+ozS/AkUt9gk/pIhIyfAwZNNQeCfrNyYlRpzXwrakPKPYJbOpJbaSPpj9XXhfeCw3JhhczBWCK09PxzOC
+Qes2LJFtTJa/vOm5zTTJKvIeYIaAQ7qj2kSYGwd8zY49awh+vToK9JmkvR34hGdfZnjxV5ulDDnn6F4q
+0vQXfUZZ9IvjLZwzG7ma2eCpJtsrtM1twUoepZdUq9fcXydG2KVLh7I2qShZcS6dXqwA8fbHrlcTjrhd
+O1ShPQSzSNyHMi6Md2oazPg4GJ8WD9SI1mJjfUba72OdaVzFhU9ev7RE5xKIz3DAGMu3c0vjZYl8Dg98
+PVj+TQIDAQAB'
+  DEFAULT_ROLE = TRANSFORMER
+  COMMENT = 'Runs dbt: Course 7';
++------------------------------------+
+| status                             |
+|------------------------------------|
+| User SVC_DBT successfully created. |
++------------------------------------+
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE LOADER TO USER SVC_LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE TRANSFORMER TO USER SVC_DBT;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+$ bash queries/whoami.sh svc_loader LOADER
+SELECT CURRENT_USER() AS who, CURRENT_ROLE() AS role
++---------------------+
+| WHO        | ROLE   |
+|------------+--------|
+| SVC_LOADER | LOADER |
++---------------------+
+$ bash queries/whoami.sh svc_dbt TRANSFORMER
+SELECT CURRENT_USER() AS who, CURRENT_ROLE() AS role
++-----------------------+
+| WHO     | ROLE        |
+|---------+-------------|
+| SVC_DBT | TRANSFORMER |
++-----------------------+

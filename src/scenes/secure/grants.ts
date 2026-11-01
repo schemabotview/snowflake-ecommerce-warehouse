@@ -14,6 +14,7 @@ export const secureGrants: SceneModel = ideFrame({
   tree: secureTree('queries/future.sql', 'setup/grants.sql', ['setup/grants.sql', 'queries/future.sql', 'setup/warehouses.sql']),
   editor: { file: 'setup/grants.sql', code: sql, ...view(sql, '-- LOADER', '-- ANALYST', 0) },
   session,
+  keep: ['$ snow sql -f setup/warehouses.sql', '$ snow sql -f setup/grants.sql', '$ snow sql -f queries/future.sql', ['| privilege', '| SELECT    | TABLE    | TRANSFORMER']],
   side: [
     {
       type: 'group', id: 'shape', badge: 1, title: 'A grant: a privilege, on an object, to a role', tone: 'infra', children: [

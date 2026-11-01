@@ -1,2 +1,41 @@
 $ snow sql --role ANALYST -f queries/refused.sql
+USE WAREHOUSE WH_BI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT CURRENT_ROLE() AS role, CURRENT_SECONDARY_ROLES() AS secondary;
++------------------------------------------------------------------------------+
+| ROLE    | SECONDARY                                                          |
+|---------+--------------------------------------------------------------------|
+| ANALYST | {"roles":"TRANSFORMER,ORGADMIN,LOADER,ACCOUNTADMIN","value":"ALL"} |
++------------------------------------------------------------------------------+
+SELECT COUNT(*) AS products FROM RAW.SHOPWAVE.PRODUCTS;
++----------+
+| PRODUCTS |
+|----------|
+| 50       |
++----------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+UPDATE RAW.SHOPWAVE.PRODUCTS SET PRICE = 59.00 WHERE PRODUCT_ID = 1;
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ 002003 (02000): 01c0ffee-0000-0000-0000-000000000001: SQL compilation error: │
+│ Database 'RAW' does not exist or not authorized. Your primary role ANALYST   │
+│ must have USAGE or any other privilege granted on DATABASE RAW.              │
+╰──────────────────────────────────────────────────────────────────────────────╯
 $ snow sql -f queries/raw_grants.sql
+SHOW GRANTS ON DATABASE RAW
+  ->> SELECT "privilege", "grantee_name" FROM $1 ORDER BY 2, 1;
++--------------------------+
+| privilege | grantee_name |
+|-----------+--------------|
+| USAGE     | LOADER       |
+| OWNERSHIP | SYSADMIN     |
+| USAGE     | TRANSFORMER  |
++--------------------------+

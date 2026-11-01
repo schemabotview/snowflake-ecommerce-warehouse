@@ -1,3 +1,196 @@
 $ snow sql -f setup/warehouses.sql
+CREATE WAREHOUSE IF NOT EXISTS WH_LOAD
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: loading raw data';
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| WH_LOAD already exists, statement succeeded. |
++----------------------------------------------+
+CREATE WAREHOUSE IF NOT EXISTS WH_BI
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Shopwave: dashboards and analysts';
++---------------------------------------+
+| status                                |
+|---------------------------------------|
+| Warehouse WH_BI successfully created. |
++---------------------------------------+
 $ snow sql -f setup/grants.sql
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER WAREHOUSE WH_BI SET RESOURCE_MONITOR = RM_MONTHLY;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON WAREHOUSE WH_LOAD TO ROLE LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON DATABASE RAW TO ROLE LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE, CREATE TABLE, CREATE STAGE, CREATE FILE FORMAT, CREATE PIPE
+  ON SCHEMA RAW.SHOPWAVE TO ROLE LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA RAW.SHOPWAVE TO ROLE LOADER;
++------------------------------------------------------+
+| status                                               |
+|------------------------------------------------------|
+| Statement executed successfully. 1 objects affected. |
++------------------------------------------------------+
+GRANT SELECT, INSERT ON FUTURE TABLES IN SCHEMA RAW.SHOPWAVE TO ROLE LOADER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON DATABASE RAW TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON SCHEMA RAW.SHOPWAVE TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON ALL TABLES IN SCHEMA RAW.SHOPWAVE TO ROLE TRANSFORMER;
++------------------------------------------------------+
+| status                                               |
+|------------------------------------------------------|
+| Statement executed successfully. 1 objects affected. |
++------------------------------------------------------+
+GRANT SELECT ON FUTURE TABLES IN SCHEMA RAW.SHOPWAVE TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON DATABASE ANALYTICS TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE, CREATE TABLE, CREATE VIEW ON SCHEMA ANALYTICS.STAGING
+  TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE, CREATE TABLE, CREATE VIEW ON SCHEMA ANALYTICS.MARTS
+  TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE, CREATE TABLE, CREATE VIEW ON SCHEMA ANALYTICS.BI
+  TO ROLE TRANSFORMER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON WAREHOUSE WH_BI TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON DATABASE ANALYTICS TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON SCHEMA ANALYTICS.MARTS TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT USAGE ON SCHEMA ANALYTICS.BI TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON FUTURE TABLES IN SCHEMA ANALYTICS.MARTS TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA ANALYTICS.MARTS TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON FUTURE TABLES IN SCHEMA ANALYTICS.BI TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA ANALYTICS.BI TO ROLE ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
 $ snow sql -f queries/future.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW FUTURE GRANTS IN SCHEMA RAW.SHOPWAVE
+  ->> SELECT "privilege", "grant_on", "grantee_name" FROM $1 ORDER BY 3, 1;
++-------------------------------------+
+| privilege | grant_on | grantee_name |
+|-----------+----------+--------------|
+| INSERT    | TABLE    | LOADER       |
+| SELECT    | TABLE    | LOADER       |
+| SELECT    | TABLE    | TRANSFORMER  |
++-------------------------------------+
+SHOW FUTURE GRANTS IN SCHEMA ANALYTICS.MARTS
+  ->> SELECT "privilege", "grant_on", "grantee_name" FROM $1 ORDER BY 3, 2;
++-------------------------------------+
+| privilege | grant_on | grantee_name |
+|-----------+----------+--------------|
+| SELECT    | TABLE    | ANALYST      |
+| SELECT    | VIEW     | ANALYST      |
++-------------------------------------+

@@ -1,2 +1,40 @@
 $ snow sql -f setup/users.sql
+USE ROLE USERADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE USER IF NOT EXISTS RAVI
+  LOGIN_NAME = 'ravi'
+  DISPLAY_NAME = 'Ravi (BI)'
+  DEFAULT_ROLE = PUBLIC
+  COMMENT = 'Shopwave BI analyst';
++---------------------------------+
+| status                          |
+|---------------------------------|
+| User RAVI successfully created. |
++---------------------------------+
 $ snow sql -f queries/who.sql
+SELECT CURRENT_USER() AS me, CURRENT_ROLE() AS role;
++----------------+
+| ME  | ROLE     |
+|-----+----------|
+| ANA | SYSADMIN |
++----------------+
+SELECT VALUE::string AS my_roles
+FROM TABLE(FLATTEN(PARSE_JSON(CURRENT_AVAILABLE_ROLES())))
+ORDER BY 1;
++-------------------------+
+| MY_ROLES                |
+|-------------------------|
+| ACCOUNTADMIN            |
+| ORGADMIN                |
+| PUBLIC                  |
+| SECURITYADMIN           |
+| SNOWFLAKE_LEARNING_ROLE |
+| SYSADMIN                |
+| USERADMIN               |
++-------------------------+
+SHOW GRANTS TO USER RAVI ->> SELECT "role" AS ravis_roles FROM $1;
+No data

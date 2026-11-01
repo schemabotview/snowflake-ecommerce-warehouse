@@ -1,1 +1,32 @@
 $ snow sql -f queries/matrix.sql
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW GRANTS TO ROLE LOADER
+  ->> SELECT "privilege", "granted_on", "name" FROM $1 ORDER BY 2, 3, 1;
++---------------------------------------------------------+
+| privilege          | granted_on | name                  |
+|--------------------+------------+-----------------------|
+| USAGE              | DATABASE   | RAW                   |
+| CREATE FILE FORMAT | SCHEMA     | RAW.SHOPWAVE          |
+| CREATE PIPE        | SCHEMA     | RAW.SHOPWAVE          |
+| CREATE STAGE       | SCHEMA     | RAW.SHOPWAVE          |
+| CREATE TABLE       | SCHEMA     | RAW.SHOPWAVE          |
+| USAGE              | SCHEMA     | RAW.SHOPWAVE          |
+| INSERT             | TABLE      | RAW.SHOPWAVE.PRODUCTS |
+| SELECT             | TABLE      | RAW.SHOPWAVE.PRODUCTS |
+| USAGE              | WAREHOUSE  | WH_LOAD               |
++---------------------------------------------------------+
+SHOW GRANTS TO ROLE ANALYST
+  ->> SELECT "privilege", "granted_on", "name" FROM $1 ORDER BY 2, 3, 1;
++------------------------------------------+
+| privilege | granted_on | name            |
+|-----------+------------+-----------------|
+| USAGE     | DATABASE   | ANALYTICS       |
+| USAGE     | SCHEMA     | ANALYTICS.BI    |
+| USAGE     | SCHEMA     | ANALYTICS.MARTS |
+| USAGE     | WAREHOUSE  | WH_BI           |
++------------------------------------------+

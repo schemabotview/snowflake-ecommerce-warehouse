@@ -1,1 +1,87 @@
 $ snow sql -f setup/roles.sql
+USE ROLE USERADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE ROLE IF NOT EXISTS LOADER COMMENT = 'Data team: loads RAW';
++-----------------------------------+
+| status                            |
+|-----------------------------------|
+| Role LOADER successfully created. |
++-----------------------------------+
+CREATE ROLE IF NOT EXISTS TRANSFORMER COMMENT = 'Analytics: builds ANALYTICS';
++----------------------------------------+
+| status                                 |
+|----------------------------------------|
+| Role TRANSFORMER successfully created. |
++----------------------------------------+
+CREATE ROLE IF NOT EXISTS ANALYST COMMENT = 'BI and finance: read marts';
++------------------------------------+
+| status                             |
+|------------------------------------|
+| Role ANALYST successfully created. |
++------------------------------------+
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE LOADER TO ROLE SYSADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE TRANSFORMER TO ROLE SYSADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE ANALYST TO ROLE SYSADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE ANALYST TO USER RAVI;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SET me = CURRENT_USER();
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE LOADER TO USER IDENTIFIER($me);
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE TRANSFORMER TO USER IDENTIFIER($me);
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT ROLE ANALYST TO USER IDENTIFIER($me);
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW GRANTS OF ROLE ANALYST ->> SELECT "granted_to", "grantee_name" FROM $1;
++---------------------------+
+| granted_to | grantee_name |
+|------------+--------------|
+| USER       | ANA          |
+| USER       | RAVI         |
+| ROLE       | SYSADMIN     |
++---------------------------+

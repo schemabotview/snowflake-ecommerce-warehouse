@@ -13,6 +13,7 @@ export const secureServiceUsers: SceneModel = ideFrame({
   tree: secureTree('queries/whoami.sh', 'setup/keys.sh', ['setup/keys.sh', 'setup/service_users.sql', 'queries/whoami.sh']),
   editor: { file: 'setup/keys.sh', code, lang: 'shell' },
   session,
+  keep: ['$ bash setup/keys.sh', 'svc_loader: key pair', 'svc_dbt: key pair', '$ bash queries/whoami.sh svc_loader LOADER', '| SVC_LOADER', '$ bash queries/whoami.sh svc_dbt TRANSFORMER', '| SVC_DBT'],
   side: [
     {
       type: 'group', id: 'jwt', badge: 1, title: 'A login with no password', sub: 'key pair authentication', tone: 'infra', children: [

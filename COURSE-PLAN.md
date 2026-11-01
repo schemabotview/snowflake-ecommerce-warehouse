@@ -359,6 +359,15 @@ M model.
 
 ## Open
 
+- **Secondary roles.** New users get `DEFAULT_SECONDARY_ROLES = ('ALL')`: Ana's sessions count every role
+  she holds, whatever `--role` says. 4.6 teaches it (the analyst session reads RAW; `USE SECONDARY ROLES
+  NONE`, then refused). Service users hold one role each, so loads and dbt are unaffected; Ana's own
+  `as-transformer.sh` sessions still carry her other roles: revisit before Course 11 (masking and
+  row access read the session's roles).
+- **One off-record repair (2026-11-01):** the first recording of 4.6, before secondary roles were
+  understood, really UPDATEd product 1's price in RAW (59.99 → 59.00). It was set back to 59.99 off
+  the record, and 4.6 re-recorded. No transcript shows the wrong price.
+
 - The service users' private keys live in `/home/ana/.keys` on the recording machine (4.7). Course 7's
   dbt profile reads `svc_dbt.p8` from there: record 4.7 → 7 on one machine, or re-record 4.7 (a new
   key; only its fingerprint changes) before Course 7 on a new one.

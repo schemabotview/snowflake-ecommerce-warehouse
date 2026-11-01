@@ -1,1 +1,32 @@
 $ snow sql -f queries/roles.sql
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW ROLES
+  ->> SELECT "name", "granted_roles" AS inherits,
+             "assigned_to_users" AS users
+      FROM $1 ORDER BY 1;
++--------------------------------------------+
+| name                    | INHERITS | USERS |
+|-------------------------+----------+-------|
+| ACCOUNTADMIN            | 2        | 1     |
+| ORGADMIN                | 0        | 1     |
+| PUBLIC                  | 1        | 0     |
+| SECURITYADMIN           | 1        | 0     |
+| SNOWFLAKE_LEARNING_ROLE | 0        | 0     |
+| SYSADMIN                | 0        | 0     |
+| USERADMIN               | 0        | 0     |
++--------------------------------------------+
+SHOW GRANTS TO ROLE ACCOUNTADMIN
+  ->> SELECT "name" AS granted_role FROM $1
+      WHERE "granted_on" = 'ROLE' ORDER BY 1;
++-------------------------+
+| GRANTED_ROLE            |
+|-------------------------|
+| SECURITYADMIN           |
+| SNOWFLAKE_LEARNING_ROLE |
+| SYSADMIN                |
++-------------------------+
