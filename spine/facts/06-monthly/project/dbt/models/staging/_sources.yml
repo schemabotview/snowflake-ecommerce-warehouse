@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: shopwave
+    database: RAW
+    schema: SHOPWAVE
+    description: Shopwave's sources, as loaded in Course 5. Never edited.
+    tables:
+      - name: orders
+      - name: order_items
+      - name: customers
+      - name: products
+      - name: payments
+      - name: clicks
+      - name: returns
+      - name: fx_rates
+      - name: customer_state
+      - name: product_prices
+      - name: order_changes

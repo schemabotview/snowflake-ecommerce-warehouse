@@ -18,7 +18,7 @@
 
 ## Status
 
-Plan v1 written 2026-11-01. Courses 1–8 authored; Courses 2–8 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: author Courses 9–12, recording each as it is authored.
+Plan v1 written 2026-11-01. Courses 1–9 authored; Courses 2–9 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: author Courses 10–12, recording each as it is authored.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
@@ -45,7 +45,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | 6 | `model` | 9 | RECORDED; 6.1, 6.3 doc-cited; the star frame is built |
 | 7 | `transform` | 9 | RECORDED (pilot) — APPROVED by the owner; 7.4 runs locally; 13 tests pass, the 2 custom tests fail on 191 and 55 planted rows |
 | 8 | `history` | 8 | RECORDED; 8.1 runs locally; 8.2 snapshots from the start of the year (the first recording, at month ends only, lost customer 81's first version: re-recorded) |
-| 9 | `facts` | 8 | planned |
+| 9 | `facts` | 8 | RECORDED; 9.1 doc-cited; 9.5 teaches a funnel that widens (three lone purchase clicks after midnight); 9.7 AOV per customer |
 | 10 | `perform` | 7 | planned |
 | 11 | `serve` | 8 | planned |
 | 12 | `operate` | 7 | planned |

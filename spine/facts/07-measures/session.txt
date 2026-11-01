@@ -1,0 +1,24 @@
+$ bash model/as-transformer.sh -f queries/measures.sql
+WITH per_customer AS (
+    SELECT customer_key, SUM(amount_eur) AS revenue,
+           COUNT(DISTINCT order_id) AS orders
+    FROM FCT_ORDER_LINES WHERE order_status = 'paid' GROUP BY 1
+)
+SELECT SUM(orders) AS orders,
+       ROUND(SUM(revenue) / SUM(orders), 2) AS aov_right,
+       ROUND(AVG(revenue / orders), 2) AS aov_averaged_wrong
+FROM per_customer;
++-----------------------------------------+
+| ORDERS | AOV_RIGHT | AOV_AVERAGED_WRONG |
+|--------+-----------+--------------------|
+| 18014  | 120.92    | 129.23             |
++-----------------------------------------+
+SELECT SUM(IFF(tier_at_month_end = 'gold', 1, 0)) AS gold_summed_wrong,
+       COUNT_IF(tier_at_month_end = 'gold' AND month = '2026-12')
+         AS gold_at_year_end
+FROM FCT_CUSTOMER_MONTHLY;
++--------------------------------------+
+| GOLD_SUMMED_WRONG | GOLD_AT_YEAR_END |
+|-------------------+------------------|
+| 624               | 134              |
++--------------------------------------+

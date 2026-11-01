@@ -1,0 +1,1 @@
+{"from": "facts/02-lifecycle", "changes": ["dbt/models/marts/fct_returns.sql", "queries/returns.sql"], "snowflake": true, "time": "2026-11-17 09:10:00", "venv": true}

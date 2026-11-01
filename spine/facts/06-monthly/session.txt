@@ -1,0 +1,40 @@
+$ cd dbt
+$ dbt run --select fct_customer_monthly
+19:34:37  Running with dbt=1.12.6
+19:34:37  Registered adapter: snowflake=1.12.4
+19:34:37  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:34:40  Found 22 models, 15 data tests, 1 snapshot, 11 sources, 564 macros
+19:34:40
+19:34:40  Concurrency: 4 threads (target='prod')
+19:34:40
+19:34:41  1 of 1 START sql table model MARTS.fct_customer_monthly  [RUN]
+19:34:43  1 of 1 OK created sql table model MARTS.fct_customer_monthly  [SUCCESS
+ 24000 in 1.78s]
+19:34:43
+19:34:43  Finished running 1 table model in 0 hours 0 minutes and 3.81 seconds (
+3.81s).
+19:34:43
+19:34:43  Completed successfully
+19:34:43
+19:34:43  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/monthly.sql
+SELECT COUNT(*) AS rows_in_table FROM FCT_CUSTOMER_MONTHLY;
++---------------+
+| ROWS_IN_TABLE |
+|---------------|
+| 24000         |
++---------------+
+SELECT month, orders, tier_at_month_end AS tier
+FROM FCT_CUSTOMER_MONTHLY WHERE customer_id = 81 ORDER BY month LIMIT 6;
++---------------------------+
+| MONTH   | ORDERS | TIER   |
+|---------+--------+--------|
+| 2026-01 | 2      | bronze |
+| 2026-02 | 2      | bronze |
+| 2026-03 | 2      | silver |
+| 2026-04 | 3      | silver |
+| 2026-05 | 5      | gold   |
+| 2026-06 | 1      | gold   |
++---------------------------+

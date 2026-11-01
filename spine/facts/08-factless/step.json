@@ -1,0 +1,1 @@
+{"from": "facts/07-measures", "changes": ["load/campaigns.sql", "dbt/models/staging/_sources.yml", "dbt/models/marts/fct_eligibility.sql", "queries/eligibility.sql"], "snowflake": true, "time": "2026-11-17 10:00:00", "venv": true}

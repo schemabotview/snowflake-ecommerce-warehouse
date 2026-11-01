@@ -1,0 +1,3 @@
+-- The loader may track changes to its own tables.
+USE ROLE SECURITYADMIN;
+GRANT CREATE STREAM ON SCHEMA RAW.SHOPWAVE TO ROLE LOADER;

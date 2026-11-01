@@ -1,0 +1,32 @@
+$ cd dbt
+$ dbt run --select fct_sessions
+19:27:29  Running with dbt=1.12.6
+19:27:29  Registered adapter: snowflake=1.12.4
+19:27:29  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:27:31  Found 20 models, 15 data tests, 1 snapshot, 11 sources, 564 macros
+19:27:31
+19:27:31  Concurrency: 4 threads (target='prod')
+19:27:31
+19:27:33  1 of 1 START sql table model MARTS.fct_sessions  [RUN]
+19:27:35  1 of 1 OK created sql table model MARTS.fct_sessions  [SUCCESS 79776 i
+n 1.48s]
+19:27:35
+19:27:35  Finished running 1 table model in 0 hours 0 minutes and 3.64 seconds (
+3.64s).
+19:27:35
+19:27:35  Completed successfully
+19:27:35
+19:27:35  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/sessions.sql
+SELECT (SELECT COUNT(*) FROM ANALYTICS.STAGING.STG_CLICKS) AS clicks,
+       (SELECT COUNT(*) FROM ANALYTICS.STAGING.STG_CLICKS
+        WHERE anon_id = 'anon-bot-7f3a') AS bot_clicks,
+       COUNT(*) AS sessions, ROUND(AVG(events), 1) AS events_per_session
+FROM FCT_SESSIONS;
++-----------------------------------------------------+
+| CLICKS | BOT_CLICKS | SESSIONS | EVENTS_PER_SESSION |
+|--------+------------+----------+--------------------|
+| 376285 | 30119      | 79776    | 4.3                |
++-----------------------------------------------------+

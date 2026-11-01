@@ -1,0 +1,1 @@
+{"from": "facts/03-returns", "changes": ["dbt/models/marts/fct_sessions.sql", "queries/sessions.sql"], "snowflake": true, "time": "2026-11-17 09:20:00", "venv": true}

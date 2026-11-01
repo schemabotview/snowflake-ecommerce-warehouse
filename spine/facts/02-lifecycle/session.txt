@@ -1,0 +1,54 @@
+$ bash load/as-loader.sh -f load/order_changes_all.sql
+COPY INTO ORDER_CHANGES FROM (
+  SELECT $1:op, $1:order_id, $1:status, $1:changed_at
+  FROM @LANDING/order_changes/) FILE_FORMAT = (FORMAT_NAME = FF_JSON)
+  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS row_count FROM $1;
++-------------------+
+| FILES | ROW_COUNT |
+|-------+-----------|
+| 358   | 33780     |
++-------------------+
+$ cd dbt
+$ dbt run --select stg_order_changes fct_order_lifecycle
+19:26:00  Running with dbt=1.12.6
+19:26:01  Registered adapter: snowflake=1.12.4
+19:26:01  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:26:03  Found 18 models, 15 data tests, 1 snapshot, 11 sources, 564 macros
+19:26:03
+19:26:03  Concurrency: 4 threads (target='prod')
+19:26:03
+19:26:05  1 of 2 START sql view model STAGING.stg_order_changes  [RUN]
+19:26:05  1 of 2 OK created sql view model STAGING.stg_order_changes  [SUCCESS 1
+ in 0.32s]
+19:26:05  2 of 2 START sql table model MARTS.fct_order_lifecycle  [RUN]
+19:26:07  2 of 2 OK created sql table model MARTS.fct_order_lifecycle  [SUCCESS 
+20024 in 2.36s]
+19:26:08
+19:26:08  Finished running 1 table model, 1 view model in 0 hours 0 minutes and 
+4.48 seconds (4.48s).
+19:26:08
+19:26:08  Completed successfully
+19:26:08
+19:26:08  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
+$ cd ..
+$ bash model/as-transformer.sh -f queries/lifecycle.sql
+SELECT COUNT(*) AS orders, COUNT(paid_at) AS paid,
+       COUNT(shipped_at) AS shipped, COUNT(delivered_at) AS delivered,
+       COUNT(returned_on) AS returned,
+       ROUND(AVG(days_to_deliver), 1) AS avg_days_to_deliver
+FROM FCT_ORDER_LIFECYCLE;
++-----------------------------------------------------------------------+
+| ORDERS | PAID  | SHIPPED | DELIVERED | RETURNED | AVG_DAYS_TO_DELIVER |
+|--------+-------+---------+-----------+----------+---------------------|
+| 20024  | 19210 | 17931   | 17825     | 185      | 4.5                 |
++-----------------------------------------------------------------------+
+SELECT order_id, placed_at::date AS placed, paid_at::date AS paid,
+       shipped_at::date AS shipped, delivered_at::date AS delivered
+FROM FCT_ORDER_LIFECYCLE WHERE order_id IN (18000, 20020) ORDER BY 1;
++--------------------------------------------------------------+
+| ORDER_ID | PLACED     | PAID       | SHIPPED    | DELIVERED  |
+|----------+------------+------------+------------+------------|
+| 18000    | 2026-12-01 | 2026-12-01 | 2026-12-02 | 2026-12-03 |
+| 20020    | 2026-12-31 | 2026-12-31 | None       | None       |
++--------------------------------------------------------------+

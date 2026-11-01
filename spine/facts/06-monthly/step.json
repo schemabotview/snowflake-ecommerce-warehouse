@@ -1,0 +1,1 @@
+{"from": "facts/05-funnel", "changes": ["dbt/models/marts/fct_customer_monthly.sql", "queries/monthly.sql"], "snowflake": true, "time": "2026-11-17 09:40:00", "venv": true}

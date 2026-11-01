@@ -1,0 +1,1 @@
+{"from": "facts/04-sessions", "changes": ["dbt/models/marts/fct_funnel.sql", "queries/funnel.sql"], "snowflake": true, "time": "2026-11-17 09:30:00", "venv": true}

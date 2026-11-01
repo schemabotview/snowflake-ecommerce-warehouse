@@ -66,7 +66,7 @@ shopwave-dw/
     models/marts/core/   dim_customer, dim_product, dim_date, dim_currency,
                          fct_order_lines                                               (6 → 8)
     models/marts/        fct_order_lifecycle, fct_returns, fct_sessions, fct_funnel,
-                         fct_customer_monthly, fct_campaign_eligibility                (9)
+                         fct_customer_monthly, fct_eligibility                         (9)
     models/marts/bi/     mart_revenue, mart_cohorts, metrics                           (11)
     snapshots/           snap_customers, snap_products                                 (8)
     tests/               the planted-fault tests                                       (7 →)
@@ -300,7 +300,7 @@ M model.
 | 5 | The funnel | `fct_funnel`: view → cart → checkout → paid | the funnel, real counts | S |
 | 6 | A periodic snapshot | `fct_customer_monthly` | one row per customer per month | S |
 | 7 | Measures | additive, semi-additive, non-additive (AOV) | which sums are allowed | S |
-| 8 | A factless fact | `fct_campaign_eligibility` | who could have used a campaign, and did not | S |
+| 8 | A factless fact | `fct_eligibility` (campaign × customer; named to fit the explorer) | who could have used a campaign, and did not | S |
 
 **10. `perform` · Fast and cheap · 7**
 
@@ -376,6 +376,18 @@ M model.
   of 8.2, but it would have dropped their early orders from 8.4's point-in-time fact. Off the record,
   SNAP_CUSTOMERS, CUSTOMER_CHANGES and CUSTOMER_STATE were dropped; 8.2 now snapshots at the start
   of 2026 and at every month end (13 runs).
+- **Course 9 as recorded (2026-11-01).** `fct_returns`' first version compared the product with a
+  correlated subquery inside the join; Snowflake refused it ("Unsupported subquery type"), and nothing
+  was built: the model now joins `dim_product` first, re-recorded. 9.7's AOV compared per DAY at
+  first (120.92 vs 120.94: no lesson); it now averages per CUSTOMER (120.92 vs 129.23). 9.5 found the
+  funnel WIDENING (19,872 purchases, 19,870 checkouts): three sessions are a lone purchase click just
+  after midnight. `shopwave_gen` stamps a buying visit's earlier clicks before the purchase, and an
+  event stamped on the day before its source day is never emitted (`events_arriving`). The generator
+  is pinned, so the section teaches it: `queries/funnel.sql` lists the three, recorded.
+  Off the record, three times, RAW.SHOPWAVE.CAMPAIGNS and the factless table were dropped so 9.8
+  re-records from its true starting state (a second COPY skips the loaded file); the model was renamed
+  `fct_campaign_eligibility` → `fct_eligibility` to fit the explorer. One read-only query, off the
+  record, found the three sessions before the recorded query was written.
 - **5.8 found more than planned:** 767 return lines sent, 185 loaded, 24 rejected. Each month's
   unclosed quote turns the rest of its file into ONE rejected record; the narration teaches
   reconciliation. The day-first dates are among the swallowed lines.

@@ -6,6 +6,7 @@ import { load } from './load'
 import { model } from './model'
 import { transform } from './transform'
 import { history } from './history'
+import { facts } from './facts'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. One course per chapter of COURSE-PLAN.md; a course is
@@ -19,6 +20,7 @@ export const COURSES: Record<string, Course> = {
   [model.id]: model,
   [transform.id]: transform,
   [history.id]: history,
+  [facts.id]: facts,
 }
 
 export type { Course, Section }

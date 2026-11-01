@@ -1,0 +1,1 @@
+{"from": "facts/06-monthly", "changes": ["queries/measures.sql"], "snowflake": true, "time": "2026-11-17 09:50:00", "venv": true}

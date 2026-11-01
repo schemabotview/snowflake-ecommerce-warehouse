@@ -1,0 +1,55 @@
+$ bash load/as-loader.sh -f load/campaigns.sql
+CREATE TABLE IF NOT EXISTS CAMPAIGNS (
+  CAMPAIGN_ID VARCHAR, CHANNEL VARCHAR, STARTS DATE, ENDS DATE);
++---------------------------------------+
+| status                                |
+|---------------------------------------|
+| Table CAMPAIGNS successfully created. |
++---------------------------------------+
+COPY INTO CAMPAIGNS FROM (
+  SELECT $1:campaign_id, $1:channel, $1:start, $1:end
+  FROM @LANDING/campaigns.json)
+  FILE_FORMAT = (TYPE = JSON STRIP_OUTER_ARRAY = TRUE)
+  ->> SELECT "status", "rows_loaded" FROM $1;
++----------------------+
+| status | rows_loaded |
+|--------+-------------|
+| LOADED | 4           |
++----------------------+
+$ cd dbt
+$ dbt run --select fct_eligibility
+19:42:57  Running with dbt=1.12.6
+19:42:58  Registered adapter: snowflake=1.12.4
+19:42:58  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:43:00  Found 23 models, 15 data tests, 1 snapshot, 12 sources, 564 macros
+19:43:00
+19:43:00  Concurrency: 4 threads (target='prod')
+19:43:00
+19:43:02  1 of 1 START sql table model MARTS.fct_eligibility  [RUN]
+19:43:04  1 of 1 OK created sql table model MARTS.fct_eligibility  [SUCCESS 7412
+ in 1.91s]
+19:43:04
+19:43:04  Finished running 1 table model in 0 hours 0 minutes and 4.35 seconds (
+4.35s).
+19:43:04
+19:43:04  Completed successfully
+19:43:04
+19:43:04  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/eligibility.sql
+SELECT e.campaign_id, COUNT(DISTINCT e.customer_id) AS eligible,
+       COUNT(DISTINCT s.customer_id) AS bought_through_it
+FROM FCT_ELIGIBILITY AS e
+LEFT JOIN FCT_SESSIONS AS s
+  ON s.customer_id = e.customer_id AND s.campaign = e.campaign_id
+ AND s.purchased
+GROUP BY 1 ORDER BY 2 DESC, 1;
++---------------------------------------------+
+| CAMPAIGN_ID  | ELIGIBLE | BOUGHT_THROUGH_IT |
+|--------------+----------+-------------------|
+| newsletter   | 2000     | 1277              |
+| retarget     | 2000     | 1265              |
+| black-friday | 1727     | 201               |
+| spring-sale  | 1685     | 190               |
++---------------------------------------------+

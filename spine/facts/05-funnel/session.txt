@@ -1,0 +1,41 @@
+$ cd dbt
+$ dbt run --select fct_funnel
+19:34:20  Running with dbt=1.12.6
+19:34:21  Registered adapter: snowflake=1.12.4
+19:34:21  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:34:23  Found 21 models, 15 data tests, 1 snapshot, 11 sources, 564 macros
+19:34:23
+19:34:23  Concurrency: 4 threads (target='prod')
+19:34:23
+19:34:25  1 of 1 START sql table model MARTS.fct_funnel  [RUN]
+19:34:26  1 of 1 OK created sql table model MARTS.fct_funnel  [SUCCESS 365 in 1.
+24s]
+19:34:26
+19:34:26  Finished running 1 table model in 0 hours 0 minutes and 3.29 seconds (
+3.29s).
+19:34:26
+19:34:26  Completed successfully
+19:34:26
+19:34:26  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/funnel.sql
+SELECT SUM(sessions) AS sessions, SUM(viewed) AS viewed,
+       SUM(carted) AS carted, SUM(checked_out) AS checked_out,
+       SUM(purchased) AS purchased,
+       ROUND(100 * SUM(purchased) / SUM(sessions), 1) AS conversion_pct
+FROM FCT_FUNNEL;
++-----------------------------------------------------------------------+
+| SESSIONS | VIEWED | CARTED | CHECKED_OUT | PURCHASED | CONVERSION_PCT |
+|----------+--------+--------+-------------+-----------+----------------|
+| 79776    | 79753  | 49073  | 19870       | 19872     | 24.9           |
++-----------------------------------------------------------------------+
+SELECT started_at, events, checked_out, purchased
+FROM FCT_SESSIONS WHERE purchased AND NOT checked_out ORDER BY 1;
++--------------------------------------------------------+
+| STARTED_AT          | EVENTS | CHECKED_OUT | PURCHASED |
+|---------------------+--------+-------------+-----------|
+| 2026-01-08 00:01:01 | 1      | False       | True      |
+| 2026-03-22 00:01:23 | 1      | False       | True      |
+| 2026-03-30 00:00:59 | 1      | False       | True      |
++--------------------------------------------------------+
