@@ -1,0 +1,2 @@
+$ bash load/as-loader.sh -f queries/infer.sql
+$ bash load/as-loader.sh -f queries/both_shapes.sql

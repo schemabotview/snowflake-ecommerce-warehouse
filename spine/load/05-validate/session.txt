@@ -1,0 +1,2 @@
+$ bash load/as-loader.sh -f load/returns_table.sql
+$ bash load/as-loader.sh -f queries/validate_returns.sql

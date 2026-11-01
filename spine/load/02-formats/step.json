@@ -1,0 +1,1 @@
+{"from": "load/01-stage", "changes": ["setup/file_formats.sql", "queries/peek.sql"], "snowflake": true, "time": "2026-11-12 09:10:00"}

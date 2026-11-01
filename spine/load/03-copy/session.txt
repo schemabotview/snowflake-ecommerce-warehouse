@@ -1,0 +1,2 @@
+$ bash load/as-loader.sh -f load/tables.sql
+$ bash load/as-loader.sh -f load/copy.sql

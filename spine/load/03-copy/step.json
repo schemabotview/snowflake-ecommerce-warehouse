@@ -1,0 +1,1 @@
+{"from": "load/02-formats", "changes": ["load/tables.sql", "load/copy.sql"], "snowflake": true, "time": "2026-11-12 09:20:00"}

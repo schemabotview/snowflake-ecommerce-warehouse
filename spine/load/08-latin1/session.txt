@@ -1,0 +1,2 @@
+$ bash load/as-loader.sh -f load/returns.sql
+$ bash load/as-loader.sh -f queries/reasons.sql

@@ -1,0 +1,1 @@
+{"from": "load/06-variant", "changes": ["queries/infer.sql", "queries/both_shapes.sql"], "snowflake": true, "time": "2026-11-12 10:00:00"}

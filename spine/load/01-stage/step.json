@@ -1,0 +1,3 @@
+{"from": "secure/07-service-users", "changes": ["load/as-loader.sh", "setup/stage.sql", "load/upload.sh", "queries/landing.sql"], "snowflake": true, "time": "2026-11-12 09:00:00",
+ "generated": {"sf": 0.01, "from": "2026-01-01", "to": "2026-12-31", "dw": true,
+               "only": ["customers", "products", "product_prices", "fx_rates", "campaigns", "orders", "order_items", "payments", "clickstream", "returns", "order_changes"]}}

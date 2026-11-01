@@ -238,15 +238,15 @@ M model.
 
 | # | Section | Step | Side pane | Level |
 | --- | --- | --- | --- | --- |
-| 1 | Stages | `PUT` files to `RAW.SHOPWAVE.LANDING` | local file → internal stage | S |
+| 1 | Stages | `LANDING` (directory table on); every source file (≈10 k, 158 MB at SF 0.01) uploaded by `snow stage copy --recursive` AS `SVC_LOADER` (`load/as-loader.sh`, every Course 5 command) | local file → internal stage | S |
 | 2 | File formats | `FF_CSV`, `FF_JSON`, `FF_PARQUET` | a format as a contract | S |
-| 3 | `COPY INTO` | orders, items, customers, products | stage → table, file by file | S |
+| 3 | `COPY INTO` | orders, order_items, customers, fx_rates (products since 3.3), each row with `_FILE` / `_LOADED_AT`; per-file results summarised by `->>` | stage → table, file by file | S |
 | 4 | A file loads once | the same `COPY` again: 0 rows | load metadata: 64 days of memory | S |
-| 5 | `VALIDATION_MODE` and `ON_ERROR` | returns: the 3 bad rows | rows split: loaded / rejected | S |
+| 5 | `VALIDATION_MODE` and `ON_ERROR` | returns validated as plain UTF-8: two kinds of error (encoding, malformed); nothing loaded | two kinds of bad row; ON_ERROR's choices | S |
 | 6 | Semi-structured data | clicks into `VARIANT`; `:context.device` | JSON → one `VARIANT` column; paths | S |
 | 7 | The June 1 schema change | `INFER_SCHEMA`; both shapes queried | old and new fields side by side | S |
-| 8 | Latin-1 returns | `FF_CSV_LATIN1`: `Größe falsch` | bytes → encoding → text | S |
-| 9 | Snowpipe | a pipe on the stage, `ALTER PIPE … REFRESH` | file → pipe → table, continuous; auto-ingest needs cloud events | S |
+| 8 | Latin-1 returns | `FF_CSV_LATIN1` + `ON_ERROR = CONTINUE`: loaded / rejected; `Größe falsch` | bytes → encoding → text | S |
+| 9 | Snowpipe | `PAYMENTS` (Parquet) loaded only by `PIPE_PAYMENTS`, `ALTER PIPE … REFRESH`, `sleep 120` | file → pipe → table, continuous; auto-ingest needs cloud events | S |
 
 **6. `model` · Dimensional modelling · 9**
 

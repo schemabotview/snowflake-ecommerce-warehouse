@@ -1,0 +1,2 @@
+$ bash load/as-loader.sh -f load/clicks.sql
+$ bash load/as-loader.sh -f queries/devices.sql

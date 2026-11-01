@@ -1,0 +1,1 @@
+{"from": "load/04-once", "changes": ["load/returns_table.sql", "queries/validate_returns.sql"], "snowflake": true, "time": "2026-11-12 09:40:00"}

@@ -1,0 +1,1 @@
+$ bash load/as-loader.sh -f queries/copy_again.sql

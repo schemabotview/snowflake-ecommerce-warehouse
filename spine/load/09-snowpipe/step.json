@@ -1,0 +1,1 @@
+{"from": "load/08-latin1", "changes": ["load/pipe.sql", "queries/pipe_status.sql"], "snowflake": true, "time": "2026-11-12 10:20:00"}

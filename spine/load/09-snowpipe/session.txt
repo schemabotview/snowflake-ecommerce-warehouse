@@ -1,0 +1,3 @@
+$ bash load/as-loader.sh -f load/pipe.sql
+$ sleep 120
+$ bash load/as-loader.sh -f queries/pipe_status.sql
