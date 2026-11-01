@@ -1,0 +1,47 @@
+$ bash model/as-transformer.sh -f queries/profile.sql
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT d.date, p.category, SUM(f.amount_eur) AS revenue_eur
+FROM FCT_ORDER_LINES AS f
+JOIN DIM_DATE AS d ON d.date_key = f.order_date_key
+JOIN DIM_PRODUCT AS p ON p.product_key = f.product_key
+WHERE d.date BETWEEN '2026-11-01' AND '2026-11-30'
+  AND f.order_status = 'paid'
+GROUP BY 1, 2 ORDER BY 1, 2 LIMIT 4;
++----------------------------------------+
+| DATE       | CATEGORY    | REVENUE_EUR |
+|------------+-------------+-------------|
+| 2026-11-01 | beauty      | 2516.96     |
+| 2026-11-01 | books       | 547.08      |
+| 2026-11-01 | electronics | 1700.15     |
+| 2026-11-01 | fashion     | 1159.57     |
++----------------------------------------+
+SELECT operator_id AS id, operator_type AS operator,
+       parent_operators[0]::int AS parent,
+       operator_statistics:output_rows::int AS rows_out,
+       ROUND(100 * execution_time_breakdown:overall_percentage, 1) AS pct
+FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID()))
+ORDER BY operator_id;
++-----------------------------------------------+
+| ID | OPERATOR      | PARENT | ROWS_OUT | PCT  |
+|----+---------------+--------+----------+------|
+| 0  | Result        | None   | None     | 0.0  |
+| 1  | SortWithLimit | 0      | 4        | 0.0  |
+| 2  | Aggregate     | 1      | 180      | 0.0  |
+| 3  | Aggregate     | 2      | 834      | 0.0  |
+| 4  | Join          | 3      | 1899     | 0.0  |
+| 5  | Aggregate     | 4      | 66       | 0.0  |
+| 6  | TableScan     | 5      | 66       | 0.0  |
+| 7  | Aggregate     | 4      | 1899     | 0.0  |
+| 8  | Join          | 7      | 1899     | 0.0  |
+| 9  | Filter        | 8      | 30       | 0.0  |
+| 10 | TableScan     | 9      | 30       | 10.5 |
+| 11 | Aggregate     | 8      | 1899     | 0.0  |
+| 12 | Filter        | 11     | 4175     | 0.0  |
+| 13 | JoinFilter    | 12     | 4175     | 0.0  |
+| 14 | TableScan     | 13     | 4175     | 84.2 |
++-----------------------------------------------+

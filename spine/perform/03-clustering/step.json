@@ -1,0 +1,1 @@
+{"from": "perform/02-pruning", "changes": ["dbt/models/marts/core/fct_order_lines.sql", "queries/clustering.sql"], "snowflake": true, "time": "2026-11-18 09:20:00", "venv": true}

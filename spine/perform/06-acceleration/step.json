@@ -1,0 +1,1 @@
+{"from": "perform/05-mv", "changes": ["queries/acceleration.sql"], "snowflake": true, "time": "2026-11-18 09:50:00", "venv": true}

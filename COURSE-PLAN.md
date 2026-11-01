@@ -91,7 +91,9 @@ shopwave-dw/
 
 `shopwave_gen` from `spark-ecommerce-analytics`, pinned to a commit and imported, never copied: same
 seed and scale factor, same bytes as the Spark course. One year, 2026-01-01 → 2026-12-31, at SF 0.01
-(20 k orders, 378 k click events) for every step; SF 0.1 for the performance course.
+(20 k orders, 378 k click events) for every step, the performance course included: an XS warehouse
+writes even a 35 k-row table as 8 micro-partitions, each spanning the year, so pruning and clustering
+show at SF 0.01 (measured before Course 10 was authored; SF 0.1 was the earlier plan).
 
 The warehouse needs one thing Shopwave's generator does not have: **customers that change**. A small
 overlay, `shopwave_dw_gen`, adds them from its OWN random streams (keyed by seed and `'dw'`), so the
@@ -164,7 +166,7 @@ kinds of step:
   steps are ready; courses are then recorded in order. A transcript stays valid after the trial ends,
   because nothing is replayed. If a re-record is needed after the trial, a new account replays the
   chain from the start (its key changes nothing that was recorded).
-- **Credits are a budget**: XS warehouses, auto-suspend 60 s, SF 0.01 except Course 10.
+- **Credits are a budget**: XS warehouses (WH_TRANSFORM S from 10.4), auto-suspend 60 s, SF 0.01 throughout.
 - **Normalisation in the recorder**: account identifier, URLs, user names, query ids, timestamps,
   elapsed times. A transcript holding a fragment of a real id is refused.
 - Query timings and credits are `volatile`: a scene reads them from the transcript; narration never
@@ -310,8 +312,8 @@ M model.
 | 2 | Pruning | partitions scanned vs total, by date filter | the partitions skipped | S |
 | 3 | Clustering keys | cluster `fct_order_lines` by date; depth before and after | overlap shrinking | S |
 | 4 | Scale up vs scale out | XS vs S; a multi-cluster `WH_BI` under Black Friday load | bigger vs more | S |
-| 5 | Materialised views and search optimisation | one each, measured | what each speeds up, what each costs | S |
-| 6 | Query acceleration | a skewed scan | offloading part of a scan | S |
+| 5 | Materialised views and search optimisation | an MV measured (rows read) then dropped; search optimisation ESTIMATED, never enabled | what each speeds up, what each costs | S |
+| 6 | Query acceleration | `SYSTEM$ESTIMATE_QUERY_ACCELERATION` on a full scan of the clicks: ineligible (8 partitions) | offloading part of a scan | S |
 | 7 | Credits per model | `QUERY_HISTORY` by dbt model | where the credits went | S |
 
 **11. `serve` · Serving BI and a partner · 8**
@@ -376,6 +378,13 @@ M model.
   of 8.2, but it would have dropped their early orders from 8.4's point-in-time fact. Off the record,
   SNAP_CUSTOMERS, CUSTOMER_CHANGES and CUSTOMER_STATE were dropped; 8.2 now snapshots at the start
   of 2026 and at every month end (13 runs).
+- **Course 10 as recorded (2026-11-01).** Every table is 8 partitions at depth 8 (an off-record,
+  read-only probe before authoring), so 10.2 reads 8 of 8 and 10.3's `cluster_by` takes it to depth 1,
+  2 of 8. 10.4's load test (96 async dashboard queries) started a SECOND cluster on WH_BI; its history
+  query first counted itself (a row with no cluster) and was re-recorded filtering on success. 10.5's
+  view-scan operator is `Materialized View Scan`, not `TableScan`: re-recorded listing every operator.
+  10.1 names its TableScans by row count (66 = DIM_PRODUCT, 30 = November's days): the run did not
+  print table names. RM_MONTHLY stood at 1.47 of 50 credits before Course 10.
 - **Course 9 as recorded (2026-11-01).** `fct_returns`' first version compared the product with a
   correlated subquery inside the join; Snowflake refused it ("Unsupported subquery type"), and nothing
   was built: the model now joins `dim_product` first, re-recorded. 9.7's AOV compared per DAY at

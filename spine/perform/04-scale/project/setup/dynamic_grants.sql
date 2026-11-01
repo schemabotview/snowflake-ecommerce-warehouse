@@ -1,0 +1,3 @@
+-- The analytics team may create dynamic tables in its marts.
+USE ROLE SECURITYADMIN;
+GRANT CREATE DYNAMIC TABLE ON SCHEMA ANALYTICS.MARTS TO ROLE TRANSFORMER;

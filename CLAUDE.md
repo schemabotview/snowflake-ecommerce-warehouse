@@ -18,7 +18,7 @@
 
 ## Status
 
-Plan v1 written 2026-11-01. Courses 1–9 authored; Courses 2–9 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: author Courses 10–12, recording each as it is authored.
+Plan v1 written 2026-11-01. Courses 1–10 authored; Courses 2–10 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: author Courses 11–12, recording each as it is authored.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
@@ -46,7 +46,7 @@ normaliser and its refusal — written, unit-tested on a fake account, NEVER yet
 | 7 | `transform` | 9 | RECORDED (pilot) — APPROVED by the owner; 7.4 runs locally; 13 tests pass, the 2 custom tests fail on 191 and 55 planted rows |
 | 8 | `history` | 8 | RECORDED; 8.1 runs locally; 8.2 snapshots from the start of the year (the first recording, at month ends only, lost customer 81's first version: re-recorded) |
 | 9 | `facts` | 8 | RECORDED; 9.1 doc-cited; 9.5 teaches a funnel that widens (three lone purchase clicks after midnight); 9.7 AOV per customer |
-| 10 | `perform` | 7 | planned |
+| 10 | `perform` | 7 | RECORDED at SF 0.01; 10.1 a full scene from the run; 10.4 started a second WH_BI cluster; 10.6 ineligible (doc-cited why) |
 | 11 | `serve` | 8 | planned |
 | 12 | `operate` | 7 | planned |
 
@@ -70,8 +70,7 @@ See COURSE-PLAN, "The spine". The rules an author applies every step:
 - **Local steps replay; Snowflake steps are recorded once.** Never re-run a Snowflake step to check
   it: `check:spine` compares keys and hashes only. Re-record a changed step and every Snowflake step
   after it, in order.
-- **The trial is 30 days and its credits are finite**: XS warehouses, auto-suspend 60 s, SF 0.01
-  except Course 10; check `RM_MONTHLY` before a long recording.
+- **The trial is 30 days and its credits are finite**: XS warehouses (WH_TRANSFORM S from 10.4), auto-suspend 60 s, SF 0.01; check `RM_MONTHLY` before a long recording.
 - **Normalise in the recorder, never by hand**: account identifier, URLs, user names, query ids,
   timestamps, elapsed times → the values in COURSE-PLAN, "Facts". The recorder refuses a transcript
   holding a fragment of a real id.

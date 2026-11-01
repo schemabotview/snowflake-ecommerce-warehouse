@@ -1,0 +1,28 @@
+$ bash model/as-transformer.sh -f queries/acceleration.sql
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT v:context.campaign::string AS campaign, COUNT(*) AS clicks
+FROM RAW.SHOPWAVE.CLICKS GROUP BY 1 ORDER BY 2 DESC;
++-----------------------+
+| CAMPAIGN     | CLICKS |
+|--------------+--------|
+| None         | 270855 |
+| newsletter   | 50019  |
+| retarget     | 49150  |
+| black-friday | 4288   |
+| spring-sale  | 3863   |
++-----------------------+
+SELECT j:status::string AS status,
+       j:originalQueryTime::number(8, 3) AS seconds,
+       j:upperLimitScaleFactor::int AS scale_factor
+FROM (SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION(
+        LAST_QUERY_ID())) AS j);
++-------------------------------------+
+| STATUS     | SECONDS | SCALE_FACTOR |
+|------------+---------+--------------|
+| ineligible | 0.461   | 0            |
++-------------------------------------+

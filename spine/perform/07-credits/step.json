@@ -1,0 +1,1 @@
+{"from": "perform/06-acceleration", "changes": ["dbt/macros/set_query_tag.sql", "queries/credits.sql"], "snowflake": true, "time": "2026-11-18 10:00:00", "venv": true}

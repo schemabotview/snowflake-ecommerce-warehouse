@@ -1,0 +1,102 @@
+$ cd dbt
+$ dbt run
+19:58:51  Running with dbt=1.12.6
+19:58:51  Registered adapter: snowflake=1.12.4
+19:58:51  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:58:53  Found 23 models, 15 data tests, 1 snapshot, 12 sources, 565 macros
+19:58:53
+19:58:53  Concurrency: 4 threads (target='prod')
+19:58:53
+19:58:55  4 of 22 START sql view model STAGING.stg_clicks  [RUN]
+19:58:55  2 of 22 START sql table model MARTS.dim_customer  [RUN]
+19:58:55  1 of 22 START sql table model MARTS.dim_currency  [RUN]
+19:58:55  3 of 22 START sql table model MARTS.dim_date  [RUN]
+19:58:56  1 of 22 OK created sql table model MARTS.dim_currency  [SUCCESS 4 in 1
+.19s]
+19:58:56  5 of 22 START sql view model STAGING.stg_customers  [RUN]
+19:58:56  2 of 22 OK created sql table model MARTS.dim_customer  [SUCCESS 2834 i
+n 1.28s]
+19:58:56  6 of 22 START sql view model STAGING.stg_fx  [RUN]
+19:58:56  4 of 22 OK created sql view model STAGING.stg_clicks  [SUCCESS 1 in 1.
+50s]
+19:58:56  7 of 22 START sql view model STAGING.stg_order_changes  [RUN]
+19:58:57  5 of 22 OK created sql view model STAGING.stg_customers  [SUCCESS 1 in
+ 0.53s]
+19:58:57  8 of 22 START sql view model STAGING.stg_order_items  [RUN]
+19:58:57  3 of 22 OK created sql table model MARTS.dim_date  [SUCCESS 365 in 2.1
+8s]
+19:58:57  9 of 22 START sql view model STAGING.stg_orders  [RUN]
+19:58:57  6 of 22 OK created sql view model STAGING.stg_fx  [SUCCESS 1 in 0.93s]
+19:58:57  10 of 22 START sql view model STAGING.stg_payments  [RUN]
+19:58:57  8 of 22 OK created sql view model STAGING.stg_order_items  [SUCCESS 1 
+in 0.59s]
+19:58:57  11 of 22 START sql view model STAGING.stg_product_prices  [RUN]
+19:58:57  7 of 22 OK created sql view model STAGING.stg_order_changes  [SUCCESS 
+1 in 0.91s]
+19:58:57  12 of 22 START sql view model STAGING.stg_products  [RUN]
+19:58:57  10 of 22 OK created sql view model STAGING.stg_payments  [SUCCESS 1 in
+ 0.47s]
+19:58:57  13 of 22 START sql view model STAGING.stg_returns  [RUN]
+19:58:58  9 of 22 OK created sql view model STAGING.stg_orders  [SUCCESS 1 in 0.
+54s]
+19:58:58  14 of 22 START sql table model MARTS.fct_sessions  [RUN]
+19:58:58  11 of 22 OK created sql view model STAGING.stg_product_prices  [SUCCES
+S 1 in 0.47s]
+19:58:58  15 of 22 START sql table model MARTS.fct_payments  [RUN]
+19:58:58  12 of 22 OK created sql view model STAGING.stg_products  [SUCCESS 1 in
+ 0.60s]
+19:58:58  16 of 22 START sql table model MARTS.dim_product  [RUN]
+19:58:58  13 of 22 OK created sql view model STAGING.stg_returns  [SUCCESS 1 in 
+0.47s]
+19:58:58  17 of 22 START sql table model MARTS.fct_order_lifecycle  [RUN]
+19:58:59  14 of 22 OK created sql table model MARTS.fct_sessions  [SUCCESS 79776
+ in 1.41s]
+19:58:59  18 of 22 START sql table model MARTS.fct_eligibility  [RUN]
+19:58:59  15 of 22 OK created sql table model MARTS.fct_payments  [SUCCESS 19265
+ in 1.56s]
+19:58:59  19 of 22 START sql table model MARTS.fct_funnel  [RUN]
+19:58:59  16 of 22 OK created sql table model MARTS.dim_product  [SUCCESS 66 in 
+1.46s]
+19:58:59  20 of 22 START sql incremental model MARTS.fct_order_lines  [RUN]
+19:59:00  17 of 22 OK created sql table model MARTS.fct_order_lifecycle  [SUCCES
+S 20024 in 1.72s]
+19:59:00  21 of 22 START sql table model MARTS.fct_customer_monthly  [RUN]
+19:59:00  18 of 22 OK created sql table model MARTS.fct_eligibility  [SUCCESS 74
+12 in 1.27s]
+19:59:00  19 of 22 OK created sql table model MARTS.fct_funnel  [SUCCESS 365 in 
+1.10s]
+19:59:01  21 of 22 OK created sql table model MARTS.fct_customer_monthly  [SUCCE
+SS 24000 in 1.64s]
+19:59:02  20 of 22 OK created sql incremental model MARTS.fct_order_lines  [SUCC
+ESS 0 in 2.52s]
+19:59:02  22 of 22 START sql table model MARTS.fct_returns  [RUN]
+19:59:03  22 of 22 OK created sql table model MARTS.fct_returns  [SUCCESS 185 in
+ 1.28s]
+19:59:04
+19:59:04  Finished running 1 incremental model, 11 table models, 10 view models 
+in 0 hours 0 minutes and 10.30 seconds (10.30s).
+19:59:04
+19:59:04  Completed successfully
+19:59:04
+19:59:04  Done. PASS=22 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=22
+$ cd ..
+$ bash model/as-transformer.sh -f queries/credits.sql
+SELECT query_tag AS model, COUNT(*) AS queries,
+       ROUND(SUM(execution_time) / 1000, 1) AS seconds,
+       ROUND(100 * RATIO_TO_REPORT(SUM(execution_time)) OVER (), 1) AS pct
+FROM TABLE(ANALYTICS.INFORMATION_SCHEMA.QUERY_HISTORY_BY_WAREHOUSE(
+    WAREHOUSE_NAME => 'WH_TRANSFORM', RESULT_LIMIT => 1000))
+WHERE start_time > DATEADD(minute, -10, CURRENT_TIMESTAMP())
+  AND query_tag LIKE ANY ('fct%', 'dim%', 'stg%', 'int%')
+GROUP BY 1 ORDER BY 3 DESC LIMIT 6;
++------------------------------------------------+
+| MODEL                | QUERIES | SECONDS | PCT |
+|----------------------+---------+---------+-----|
+| dim_date             | 3       | 1.0     | 9.3 |
+| fct_sessions         | 3       | 0.9     | 8.5 |
+| fct_order_lifecycle  | 3       | 0.8     | 7.3 |
+| fct_payments         | 3       | 0.8     | 7.4 |
+| fct_funnel           | 1       | 0.7     | 6.5 |
+| fct_customer_monthly | 1       | 0.7     | 7.0 |
++------------------------------------------------+

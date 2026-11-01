@@ -1,0 +1,54 @@
+$ cd dbt
+$ dbt run --select fct_order_lines --full-refresh
+19:55:22  Running with dbt=1.12.6
+19:55:23  Registered adapter: snowflake=1.12.4
+19:55:23  Unable to do partial parsing because saved manifest not found. Startin
+g full parse.
+19:55:25  Found 23 models, 15 data tests, 1 snapshot, 12 sources, 564 macros
+19:55:25
+19:55:25  Concurrency: 4 threads (target='prod')
+19:55:25
+19:55:27  1 of 1 START sql incremental model MARTS.fct_order_lines  [RUN]
+19:55:30  1 of 1 OK created sql incremental model MARTS.fct_order_lines  [SUCCES
+S 1 in 3.20s]
+19:55:31
+19:55:31  Finished running 1 incremental model in 0 hours 0 minutes and 5.35 sec
+onds (5.35s).
+19:55:31
+19:55:31  Completed successfully
+19:55:31
+19:55:31  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+$ cd ..
+$ bash model/as-transformer.sh -f queries/clustering.sql
+SELECT j:total_partition_count::int AS partitions,
+       j:average_overlaps::number(6, 2) AS overlaps,
+       j:average_depth::number(6, 2) AS depth
+FROM (SELECT PARSE_JSON(SYSTEM$CLUSTERING_INFORMATION(
+        'FCT_ORDER_LINES', '(order_date_key)')) AS j);
++-------------------------------+
+| PARTITIONS | OVERLAPS | DEPTH |
+|------------+----------+-------|
+| 8          | 0.00     | 1.00  |
++-------------------------------+
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT SUM(amount_eur) AS november_eur FROM FCT_ORDER_LINES
+WHERE order_date_key BETWEEN 20261101 AND 20261130;
++--------------+
+| NOVEMBER_EUR |
+|--------------|
+| 322549.71    |
++--------------+
+SELECT operator_statistics:pruning:partitions_scanned::int AS scanned,
+       operator_statistics:pruning:partitions_total::int AS total
+FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID()))
+WHERE operator_type = 'TableScan';
++-----------------+
+| SCANNED | TOTAL |
+|---------+-------|
+| 2       | 8     |
++-----------------+

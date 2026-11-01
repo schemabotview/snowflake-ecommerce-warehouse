@@ -1,0 +1,1 @@
+{"from": "facts/08-factless", "changes": ["queries/profile.sql"], "snowflake": true, "time": "2026-11-18 09:00:00", "venv": true}

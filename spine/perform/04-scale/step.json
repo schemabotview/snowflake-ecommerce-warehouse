@@ -1,0 +1,1 @@
+{"from": "perform/03-clustering", "changes": ["setup/perform_grants.sql", "setup/scale.sql", "perform/black_friday.py"], "snowflake": true, "time": "2026-11-18 09:30:00", "venv": true}

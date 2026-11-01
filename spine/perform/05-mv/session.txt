@@ -1,0 +1,71 @@
+$ bash model/as-transformer.sh -f queries/mv.sql
+CREATE OR REPLACE MATERIALIZED VIEW MV_DAILY_REVENUE AS
+SELECT order_date_key, SUM(amount_eur) AS revenue_eur, COUNT(*) AS lines
+FROM FCT_ORDER_LINES WHERE order_status = 'paid'
+GROUP BY order_date_key;
++----------------------------------------------------------+
+| status                                                   |
+|----------------------------------------------------------|
+| Materialized view MV_DAILY_REVENUE successfully created. |
++----------------------------------------------------------+
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT SUM(amount_eur) AS november_eur FROM FCT_ORDER_LINES
+WHERE order_status = 'paid'
+  AND order_date_key BETWEEN 20261101 AND 20261130;
++--------------+
+| NOVEMBER_EUR |
+|--------------|
+| 287912.77    |
++--------------+
+SELECT operator_type AS operator,
+       operator_statistics:output_rows::int AS rows_out
+FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID())) ORDER BY operator_id;
++----------------------+
+| OPERATOR  | ROWS_OUT |
+|-----------+----------|
+| Result    | None     |
+| Aggregate | 1        |
+| Filter    | 4175     |
+| TableScan | 4175     |
++----------------------+
+SELECT SUM(revenue_eur) AS november_eur FROM MV_DAILY_REVENUE
+WHERE order_date_key BETWEEN 20261101 AND 20261130;
++--------------+
+| NOVEMBER_EUR |
+|--------------|
+| 287912.77    |
++--------------+
+SELECT operator_type AS operator,
+       operator_statistics:output_rows::int AS rows_out
+FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID())) ORDER BY operator_id;
++-----------------------------------+
+| OPERATOR               | ROWS_OUT |
+|------------------------+----------|
+| Result                 | None     |
+| Aggregate              | 1        |
+| Filter                 | 30       |
+| Materialized View Scan | 30       |
++-----------------------------------+
+SELECT f.value:name::string AS cost,
+       f.value:costs:value::number(10, 4) AS value,
+       f.value:costs:unit::string AS unit
+FROM TABLE(FLATTEN(PARSE_JSON(SYSTEM$ESTIMATE_SEARCH_OPTIMIZATION_COSTS(
+    'FCT_ORDER_LINES', 'EQUALITY(order_id)')):costPositions)) AS f;
++-------------------------------------+
+| COST             | VALUE  | UNIT    |
+|------------------+--------+---------|
+| BuildCosts       | 0.0002 | Credits |
+| StorageCosts     | 0.0000 | TB      |
+| MaintenanceCosts | None   | None    |
++-------------------------------------+
+DROP MATERIALIZED VIEW MV_DAILY_REVENUE;
++----------------------------------------+
+| status                                 |
+|----------------------------------------|
+| MV_DAILY_REVENUE successfully dropped. |
++----------------------------------------+
