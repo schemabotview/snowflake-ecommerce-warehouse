@@ -54,8 +54,8 @@ step.json (other keys, all optional):
   {"time": "2026-11-09 09:00:00"}  Snowflake: the clock its normalised timestamps start from
 
 NORMALISATION (Snowflake steps, COURSE-PLAN.md "Facts"): the real account identifier, locator,
-organisation, host names, user name and region locator become the course's (`SHOPWAVE-DW`,
-`shopwave-dw`, `ANA`); query ids become `01c0ffee-…-<n>` in order of first appearance; wall-clock
+organisation, host names and user name become the course's (`SHOPWAVE-DW`, `SHOPWAVE`, `DW`,
+`SW12345`, `ANA`; the recorder asks the account for its names off screen); query ids become `01c0ffee-…-<n>` in order of first appearance; wall-clock
 timestamps become the step's clock plus their order in seconds. A transcript that still holds a
 fragment (4 characters or more) of a real identifier after that is REFUSED and nothing is written.
 Durations (`in 1.84s`, `Elapsed`) stay as Snowflake printed them: they are `volatile` facts a scene
@@ -97,7 +97,7 @@ UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 # A Snowflake query id: 8-4-4-4-12 hex, the third group the deployment's (0000-…).
 QUERY_ID = re.compile(r'\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
 STAMP = re.compile(r'\b(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(\.\d{1,9})?( ?[+-]\d{4}| ?Z)?')
-SHOWN_ACCOUNT, SHOWN_HOST, SHOWN_USER = 'SHOPWAVE-DW', 'shopwave-dw.snowflakecomputing.com', 'ANA'
+SHOWN_ACCOUNT, SHOWN_HOST, SHOWN_USER, SHOWN_LOCATOR = 'SHOPWAVE-DW', 'shopwave-dw.snowflakecomputing.com', 'ANA', 'SW12345'
 
 
 # ── the step graph ───────────────────────────────────────────────────────────────────────────────
@@ -273,9 +273,11 @@ def snow_cli() -> None:
         os.chmod(SPINE_ROOT, 0o755)
 
 
-def connection() -> list[str]:
-    """Write ana's Snowflake connection from the environment's secrets (off screen). Returns the real
-    identifiers, which the normaliser removes and the refusal looks for."""
+def connection() -> dict[str, str]:
+    """Write ana's Snowflake connection from the environment's secrets (off screen), ask the account
+    for the names it prints (organisation, account name, locator), and return {real: shown} — what the
+    normaliser replaces and the refusal looks for. Facts (COURSE-PLAN.md): organisation SHOPWAVE,
+    account DW, identifier SHOPWAVE-DW, locator SW12345, user ANA."""
     missing = [v for v in ('SNOWFLAKE_ACCOUNT', 'SNOWFLAKE_USER', 'SNOWFLAKE_PRIVATE_KEY') if not os.environ.get(v)]
     if missing:
         sys.exit(f'✗ recording needs the environment secrets {", ".join(missing)} (CLAUDE.md, Identity)')
@@ -289,11 +291,18 @@ def connection() -> list[str]:
         f'private_key_file = "{cfg / "rsa_key.p8"}"\nrole = "SYSADMIN"\n')
     for p in (cfg, cfg / 'rsa_key.p8', cfg / 'config.toml'):
         os.chmod(p, 0o700 if p.is_dir() else 0o600)
-    shutil.chown(cfg, USER, USER)
-    for p in cfg.iterdir():
+    for p in (cfg, *cfg.iterdir()):
         shutil.chown(p, USER, USER)
-    secrets = {account, account.replace('-', '_'), user, *re.split(r'[-_.]', account)}
-    return sorted((s for s in secrets if len(s) >= 4), key=len, reverse=True)
+    probe = as_ana('snow sql --format json -q "SELECT CURRENT_ORGANIZATION_NAME() AS O, '
+                   'CURRENT_ACCOUNT_NAME() AS A, CURRENT_ACCOUNT() AS L"', environment(), HOME)
+    try:
+        row = json.loads(probe.stdout)[0]
+    except (ValueError, IndexError, KeyError):
+        sys.exit(f'✗ the connection does not work (output withheld: it may hold the account): exit {probe.returncode}')
+    org, name, locator = row['O'], row['A'], row['L']
+    shown = {f'{org}-{name}': SHOWN_ACCOUNT, f'{org}_{name}': SHOWN_ACCOUNT.replace('-', '_'), f'{org}.{name}': 'SHOPWAVE.DW',
+             account: SHOWN_ACCOUNT, org: 'SHOPWAVE', name: 'DW', locator: SHOWN_LOCATOR, user: SHOWN_USER}
+    return {k: v for k, v in shown.items() if k}
 
 
 def lay_out(step: Path) -> Path:
@@ -370,20 +379,20 @@ def wrap(text: str) -> str:
     return '\n'.join(out)
 
 
-def normalise(text: str, secrets: list[str], clock: str) -> str:
+def normalise(text: str, names: dict[str, str], clock: str) -> str:
     """The real account → the course's (COURSE-PLAN.md, "Facts"). See the module docstring."""
     text = re.sub(r'\b[\w-]+(\.[\w-]+)*\.snowflakecomputing\.com', SHOWN_HOST, text, flags=re.I)
-    user = os.environ.get('SNOWFLAKE_USER', '')
-    for s in sorted({*secrets, user} - {''}, key=len, reverse=True):  # the whole identifier before its parts
-        shown = SHOWN_USER if s.upper() == user.upper() else SHOWN_ACCOUNT
-        def sub(m: re.Match, shown: str = shown) -> str:
+    for real in sorted(names, key=len, reverse=True):  # the whole identifier before its parts
+        def sub(m: re.Match, shown: str = names[real]) -> str:
             # Keep a table column's width: pad a shorter name, or take a longer one's room from the
             # spaces after it, so psql's and snow's box tables stay aligned.
-            word, room = m.group(1), m.group(2)
+            word, room = m.group(1), m.group(2) or ''
             out = shown.lower() if word.islower() else shown
-            width = len(word) + len(room)
-            return out + ' ' * max(width - len(out), 1) if room else out
-        text = re.sub(rf'(?<![A-Za-z0-9])({re.escape(s)})(?![A-Za-z0-9])( *)', sub, text, flags=re.I)
+            if not room:  # prose, or a cell the name fills: no width to keep
+                return out + ' ' * max(len(word) - len(out), 0) if m.group(3) is not None else out
+            return out + ' ' * max(len(word) + len(room) - len(out), 1)
+        # group 2: the spaces after a name that run up to a table's column rule; group 3: a rule right after it
+        text = re.sub(rf'(?<![A-Za-z0-9])({re.escape(real)})(?![A-Za-z0-9])( +(?=[|│]))?((?=[|│]))?', sub, text, flags=re.I)
     ids: dict[str, str] = {}
     text = QUERY_ID.sub(lambda m: ids.setdefault(m.group(0), f'01c0ffee-0000-0000-0000-{len(ids) + 1:012d}'), text)
     base = datetime.fromisoformat(clock)
@@ -397,8 +406,11 @@ def normalise(text: str, secrets: list[str], clock: str) -> str:
     return STAMP.sub(stamp, text)
 
 
-def refused(text: str, secrets: list[str]) -> list[str]:
-    return [s for s in secrets if s.lower() in text.lower()]
+def refused(text: str, names: dict[str, str]) -> list[str]:
+    """Every real name, or fragment of one 4 characters or longer, still in the text."""
+    parts = {p for real in names for p in (real, *re.split(r'[-_.]', real)) if len(p) >= 4}
+    shown = ' '.join(names.values()).lower()
+    return sorted(p for p in parts if p.lower() in text.lower() and p.lower() not in shown)
 
 
 def masked(text: str, step: Path) -> str:
@@ -452,7 +464,7 @@ def main() -> int:
         if problem:
             print(f'✗ {problem}')
             return 1
-        secrets = connection()
+        names = connection()
         for step in targets:
             name = step.relative_to(ROOT)
             if step in key:  # the account must be in the state of the Snowflake step before it
@@ -462,9 +474,9 @@ def main() -> int:
                     return 1
             transcript, captured = run(step)
             clock = config_of(step).get('time', '2026-11-09 09:00:00')
-            transcript = normalise(transcript, secrets, clock)
-            captured = {k: normalise(v, secrets, clock) for k, v in captured.items()}
-            leaks = refused(transcript + ''.join(captured.values()), secrets)
+            transcript = normalise(transcript, names, clock)
+            captured = {k: normalise(v, names, clock) for k, v in captured.items()}
+            leaks = refused(transcript + ''.join(captured.values()), names)
             if leaks:
                 print(f'✗ {name}: the transcript still holds {len(leaks)} fragment(s) of a real identifier — nothing written')
                 return 1

@@ -1,0 +1,1 @@
+{"from": "how-snowflake-runs/01-layers", "changes": ["setup/warehouses.sql", "queries/wake.sql"], "snowflake": true, "time": "2026-11-09 09:10:00"}

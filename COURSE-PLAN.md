@@ -121,7 +121,7 @@ identifier, URLs and user names are never shown: the recorder normalises them to
 | fact | value |
 | --- | --- |
 | company | Shopwave (fictional online store); Ana, analytics engineer; teams: data (loading), analytics (dbt), BI and finance (reading); the marketing agency Brightline (a partner) |
-| account | shown as `shopwave-dw` (`SHOPWAVE-DW.snowflakecomputing.com`), Enterprise, AWS `eu-west-2` |
+| account | shown as `shopwave-dw` (`SHOPWAVE-DW.snowflakecomputing.com`): organisation `SHOPWAVE`, account name `DW`, locator `SW12345`, user `ANA`; Enterprise, AWS `eu-west-2`. The trial MUST be made in AWS eu-west-2: the region is real output, not normalised |
 | warehouses | `WH_LOAD` XS, `WH_TRANSFORM` XS (S in 10.4), `WH_BI` XS multi-cluster 1–3; auto-suspend 60 s |
 | budget | resource monitor `RM_MONTHLY`, 50 credits, notify 80%, suspend 100% |
 | databases | `RAW` (schema `SHOPWAVE`), `ANALYTICS` (schemas `STAGING`, `MARTS`, `BI`), `ANALYTICS_DEV` (a clone) |
@@ -203,10 +203,10 @@ M model.
 | --- | --- | --- | --- | --- |
 | 1 | ◆ full scene: three layers | `SHOW WAREHOUSES`, `SHOW DATABASES` | storage / compute / cloud services, separately scaled | S |
 | 2 | Virtual warehouses and credits | create `WH_LOAD` XS | sizes → credits per hour | S |
-| 3 | ◆ full scene: micro-partitions | `SYSTEM$CLUSTERING_INFORMATION` on a loaded table | a table as immutable columnar micro-partitions + metadata | S |
+| 3 | ◆ full scene: micro-partitions | TPC-H `LINEITEM` (the sample share) copied into a transient `LAB` database, measured (rows, bytes, `SYSTEM$CLUSTERING_INFORMATION`), dropped: no Shopwave table exists before Course 3 | a table as immutable columnar micro-partitions + metadata | S |
 | 4 | Organisations, accounts, clouds, regions | `SELECT CURRENT_ACCOUNT(), CURRENT_REGION()` | org → accounts → cloud and region | S |
 | 5 | Editions | concept | what Standard / Enterprise / Business Critical add; what this course needs | D |
-| 6 | Three clients | Snowsight, SnowSQL, `snow` — one query | every client → cloud services | S |
+| 6 | Three clients | `snow` and the Python connector ask `CURRENT_CLIENT()`; Snowsight drawn, never shown (SnowSQL is superseded by `snow`) | every client → cloud services | S |
 | 7 | What a query costs | lab: credits for a day of Shopwave | warehouse-seconds → credits; the 60-second minimum | M |
 
 **3. `start` · The source, and a first warehouse · 7**
@@ -358,6 +358,11 @@ M model.
    at 2,500 EUR. At SF 0.01: 48 movers, 654 silver, 134 gold, 11 customers with three versions.
 
 ## Open
+
+- Course 2 rests on four things a new trial is expected to have, confirmed only at recording: the
+  shared `SNOWFLAKE_SAMPLE_DATA` database (2.1–2.3), `->>` (pipe) after `SHOW`, `COUNT(*)` answered
+  from metadata, and the Python connector reading `connection_name` from `~/.snowflake/config.toml`.
+  Any that fails is real output: the section is rewritten around what the run printed.
 
 - **dbt v2.** dbt now prints "dbt v2 is available, and is the default for new installations" on
   every 1.12 command. The plan pins dbt Core 1.12 (`dbt-core` + `dbt-snowflake`, as agreed); the owner

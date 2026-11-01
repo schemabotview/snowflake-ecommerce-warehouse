@@ -1,0 +1,10 @@
+$ python cost.py
+a modelled day: per-second billing, 60 s minimum, AUTO_SUSPEND 60
+warehouse    size queries  working   billed  credits
+WH_LOAD      XS         1    240 s    300 s    0.083
+WH_TRANSFORM XS         1    420 s    480 s    0.133
+WH_BI        XS        41    123 s   2583 s    0.718
+the day                      783 s   3363 s    0.934
+a 30-day month: 28.0 credits of RM_MONTHLY's 50
+WH_BI at AUTO_SUSPEND 600:  24723 s billed, 6.867 credits
+WH_BI at AUTO_SUSPEND   1:   2460 s billed, 0.683 credits

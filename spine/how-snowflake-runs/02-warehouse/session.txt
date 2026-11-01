@@ -1,0 +1,2 @@
+$ snow sql -f setup/warehouses.sql
+$ snow sql -f queries/wake.sql

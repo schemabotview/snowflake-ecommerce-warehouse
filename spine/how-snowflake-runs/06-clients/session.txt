@@ -1,0 +1,3 @@
+$ snow --version
+$ snow sql -q "SELECT CURRENT_CLIENT() AS client"
+$ python client.py
