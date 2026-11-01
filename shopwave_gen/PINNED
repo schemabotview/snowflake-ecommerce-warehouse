@@ -1,0 +1,4 @@
+Imported unchanged from github.com/schemabotview/spark-ecommerce-analytics
+commit dc88dd7bbe3f08fdc48b0cf188e946ce81452e5c (2026-10-27), shopwave_gen/.
+Never edit these files here: the warehouse's additions live in shopwave_dw_gen/.
+`python -m shopwave_dw_gen verify` checks them against PINNED.sha256.

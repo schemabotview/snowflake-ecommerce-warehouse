@@ -11,32 +11,32 @@
 | teaches | data warehousing and Snowflake, by building `shopwave-dw`: Shopwave's e-commerce warehouse, from its database and files to tested dbt marts, a dashboard and a partner share |
 | cast | Ana (analytics engineer), Shopwave's data, analytics, BI and finance teams; Brightline, the marketing agency |
 | reference repos | all public under `github.com/schemabotview` — clone them beside this one, port, do not reinvent: **`spark-ecommerce-analytics`** (`shopwave_gen`, the IDE frame, `spine.py`, checks, registry, shots, film), **`aws-ecommerce`** (the map frame, the record-once spine, verification levels), **`sql-bank`** (`setup-postgres.sh`, psql consoles, result tables), **`databricks-retail-bank-lakehouse`** (normalising a real cloud account, credentials as secrets), **`python-expense-tracker`** (the original templates) |
-| engine / shell | `@graphlearning/graphl-flow` ^0.8.0, `@graphlearning/shell` ^1.1.0, from npm. graphl-flow has brand `postgresql`, `snowflakedb`, `github`, `githubactions`; dbt has no mark (lucide `workflow`) |
-| toolchain | see COURSE-PLAN, "Stack and pins": PostgreSQL 18.6, `shopwave_gen` (pinned commit), Python + dbt-core + dbt-snowflake + Snowflake CLI (pinned at the infra step) |
+| engine / shell | `@graphlearning/graphl-flow` ^0.8.0, `@graphlearning/shell` ^1.1.0, from npm (0.8.0 / 1.1.0 in the lock). graphl-flow has brand `postgresql`, `snowflakedb`, `github`, `githubactions`; dbt has no mark (lucide `workflow`) |
+| toolchain | COURSE-PLAN, "Stack and pins": Python 3.13.18, PostgreSQL 18.6, `shopwave_gen` @ `dc88dd7`, dbt-core 1.12.6 + dbt-snowflake 1.12.4, Snowflake CLI 3.31.0 (own env) |
 | frames | IDE, map, star (COURSE-PLAN, "Frames"); `--brand` Snowflake blue |
 | secrets | `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PRIVATE_KEY` (key-pair, for recording): environment secrets, never committed, never printed |
 
 ## Status
 
-Plan v1 written 2026-11-01, awaiting the owner's review. Nothing authored. Next, in order:
+Plan v1 written 2026-11-01. Infra built and Course 1 authored the same day (no Snowflake account yet).
 
-1. Owner review of `COURSE-PLAN.md`.
-2. Infra (no content, no Snowflake account yet): scaffold from `spark-ecommerce-analytics` (vite,
-   `package.json` scripts, `src/main.tsx`, `theme.css`, checks, registry, shots, film, the Colab
-   notebook with `REPO = "snowflake-ecommerce-warehouse"`); `scripts/concept.json`, `titles.json`;
-   import `shopwave_gen` at a pinned commit; `shopwave_dw_gen` (customer changes) + `verify`;
-   `spine.py` with both step kinds (local replay, Snowflake record-once with normalisation); the
-   map and star frames; pin the open versions.
-3. Author every course's scripts and dbt models BEFORE opening the trial (COURSE-PLAN, "The spine":
-   the 30 days are a recording window).
-4. Open the trial; pilot = Course 7 `transform` (dbt, a failing test) plus the ◆ grain scene from
-   Course 6 → owner review. Courses 2–6 must be recorded first, since the chain carries state.
-5. Record the rest in order, each reviewed on its rendered routes, then narrated; then audio, record,
+Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
+(aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
+`map.ts` (every part and `BUILT` per course); checks, registry, shots, film, the Colab notebook;
+`shopwave_gen` imported at spark-ecommerce-analytics `dc88dd7` (byte-checked by `PINNED.sha256`);
+`shopwave_dw_gen` + `verify`; `scripts/spine.py` (local replay; Snowflake record-once with the
+normaliser and its refusal — written, unit-tested on a fake account, NEVER yet run against Snowflake);
+`scripts/setup-postgres.sh` (PostgreSQL 18.6). Next, in order:
+
+1. Map frame (map + side pane) and star frame, with their first sections.
+2. Author every course's scripts and dbt models BEFORE opening the trial (COURSE-PLAN, "The spine").
+3. Open the trial; pilot = Course 7 `transform` plus the ◆ grain scene from Course 6 → owner review.
+4. Record the rest in order, each reviewed on its rendered routes, then narrated; then audio, record,
    film, cover.
 
 | # | course | sections | status |
 |---|---|---|---|
-| 1 | `intro` | 3 | planned |
+| 1 | `intro` | 3 | authored, rendered and looked at; not narrated (wavs) — 1.1 and 1.2 run locally, 1.3 concept |
 | 2 | `how-snowflake-runs` | 7 | planned |
 | 3 | `start` | 7 | planned |
 | 4 | `secure` | 8 | planned |
@@ -48,6 +48,17 @@ Plan v1 written 2026-11-01, awaiting the owner's review. Nothing authored. Next,
 | 10 | `perform` | 7 | planned |
 | 11 | `serve` | 8 | planned |
 | 12 | `operate` | 7 | planned |
+
+## The machine
+
+- `bash scripts/setup-postgres.sh` (root): PostgreSQL 18.6 from conda-forge, OS user and role `ana`.
+- `python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements-gen.txt`: the generator's
+  pyarrow. `python3` must be 3.13.18 (`spine.py` refuses another).
+- `python3 scripts/spine.py` (root) replays local steps as `ana` in `/home/ana/shopwave-dw` and
+  checks Snowflake records without running them; `--write` rewrites local transcripts; `--record`
+  needs the three secrets and runs Snowflake steps once, in chain order.
+- A local step's data is generated by spec (`generated`, `"dw": true` for the overlay) and cached in
+  `$SPINE_ROOT` (default `/tmp/shopwave-dw-spine`), with the shared venvs and the pinned `snow`.
 
 ## Spine
 

@@ -11,20 +11,20 @@ time travel, sharing) are taught together, each when Shopwave first needs it. Ev
 is recorded on a real account. Planned as one film (12 courses, 90 sections). Prerequisite:
 [`sql-bank`](https://github.com/schemabotview/sql-bank).
 
-**Status:** plan v1, awaiting the owner's review; nothing authored yet.
+**Status:** infra built; Course 1 authored (no Snowflake account yet). See CLAUDE.md, "Status".
 Plan: [`COURSE-PLAN.md`](COURSE-PLAN.md) · Rules and status: [`CLAUDE.md`](CLAUDE.md).
 
 ## Run
 
-Not scaffolded yet. Once it is (build order in CLAUDE.md, "Status"):
-
 ```sh
-npm install
+npm ci
 npm run dev                                # http://localhost:5173 · #/<course>-<section>
-npm run check                              # content + 4K render
+npm run build && npx tsc --noEmit && npm run check   # content + 4K render
+sudo bash scripts/setup-postgres.sh        # PostgreSQL 18.6, user ana (local steps)
+sudo python3 scripts/spine.py              # replay local steps, check Snowflake records
 ```
 
-## Layout (planned)
+## Layout
 
 ```
 src/content/<course>/    one file per section (+ narration) and the course index

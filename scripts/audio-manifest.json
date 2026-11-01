@@ -1,0 +1,23 @@
+{
+  "count": 3,
+  "entries": [
+    {
+      "course": "intro",
+      "section": "questions",
+      "file": "intro/questions.wav",
+      "narration": "Shopwave is an online store, and every order it takes lands in one place: the shop's PostgreSQL database. The explorer shows that database's schema and the script that loads Shopwave's year into it, all twenty twenty six, from a seeded generator, so every number on screen is one a real run printed. Now the finance team asks a simple question: how much revenue did each category make, month by month? The editor holds the answer, in plain S Q L. Look at the side pane to see what that one question needs. A category lives on the product, a date and a status live on the order, and the money lives on the order line, so the query joins three tables by their keys, for every line of the year, and then groups them by month. It also has to spell out every category as its own column, because the shop's schema knows orders, not categories by month. The terminal shows the result, twelve months by six categories, and the chart at the bottom of the side pane adds each month up: November towers over the rest, because Black Friday is in it. It works. But this database was built for something else: taking one order at a time, inserting it, updating it, finding it by its key, quickly, while customers wait. A question over the whole year reads every line, and when every analyst asks one every month, they ask it on the same server that takes the orders. The next section looks at why the shape of the storage itself is the problem."
+    },
+    {
+      "course": "intro",
+      "section": "row-column",
+      "file": "intro/row-column.wav",
+      "narration": "Two kinds of database answer two kinds of question. O L T P, online transaction processing, is the shop: one order at a time. O L A P, online analytical processing, is the warehouse: all the orders at once. The difference starts with how the rows are stored, so this lab stores Shopwave's order lines for the year twice and measures what each layout must read. On the left, by row, as the shop database stores them: each order line's values sit together. Fetching one order reads only its lines, a few dozen bytes, side by side. But revenue for the year needs two columns, quantity and unit price, and a row store must read every column of every row to get them. In the middle, by column, as a warehouse stores them: each column's values sit together, compressed. Revenue now reads just those two columns, a small fraction of the bytes. The price moves to the other question: one order means fetching a piece of every column and putting the row back together. Underneath, the file itself, column by column: what each one costs to read. And on the right, the lab's own output. The same split runs through how the data is modelled. The shop's schema is normalised: each fact stored once, many tables, joined for each question. A warehouse's is dimensional: facts at a declared grain, with dimensions around them, built for exactly these questions. Snowflake is a column store, and that is the warehouse we will build."
+    },
+    {
+      "course": "intro",
+      "section": "what-we-build",
+      "file": "intro/what-we-build.wav",
+      "narration": "This is the warehouse we will build, from an empty Snowflake account to the end of the course. On the left are Shopwave's sources: the shop database, a payment provider's daily Parquet files, the website's clicks as JSON, returns from the warehouse in an old encoding, and exchange rates for four currencies. In the middle is one Snowflake account, and the data flows through it left to right. Files land in a stage and load into the raw database exactly as they came, never edited. Staging models clean, rename and type them, and snapshots keep the history of customers and prices. The marts hold the dimensional model: a star with order lines at its centre, and more facts for the order lifecycle, returns, sessions and the funnel. And the B I layer holds one definition of revenue that every dashboard shares. Underneath runs everything that keeps it working: three warehouses that bill only while they run, under a monthly budget; roles that let each team in only as far as it needs, with key pairs for the services and policies that mask personal data; and d b t to build and test it all, tasks to run it every night, and a clone to change it safely. On the right are the readers: finance's dashboard, analysts with their own S Q L, and Brightline, the marketing agency, reading a secure share without a copy. Each course adds parts to this map. First, how Snowflake itself is built."
+    }
+  ]
+}

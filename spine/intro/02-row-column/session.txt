@@ -1,0 +1,16 @@
+$ python storage.py
+order_items, 2026: 35,043 rows x 5 columns
+
+revenue = sum(qty * unit_price) over every line
+  by row    : reads   627,653 bytes, every column
+  by column : reads    34,078 bytes, qty and unit_price (5%)
+  (all 5 columns, compressed: 140,387 bytes)
+    order_id       74,452 bytes
+    line            6,434 bytes
+    product_id     25,423 bytes
+    qty             6,461 bytes
+    unit_price     27,617 bytes
+
+one order (10000): 3 lines
+  by row    : reads        55 bytes, its lines side by side
+  by column : reads    16,515 bytes, 5 column chunks of row group 4

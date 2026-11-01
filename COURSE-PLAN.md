@@ -1,6 +1,6 @@
 # Learn Snowflake by building Shopwave's e-commerce warehouse: full course, beginner to professional — plan
 
-**Plan status:** v1, awaiting owner review (2026-11-01). Agreed with the owner: reuse Shopwave and
+**Plan status:** v1 (2026-11-01); infra built and Course 1 authored 2026-11-01 at the owner's go-ahead ("work on snowflake authoring"). Agreed with the owner: reuse Shopwave and
 `shopwave_gen`; dbt as the transform tool; a 30-day Snowflake trial; 12 courses. Nothing is authored
 yet. Shared rules (section shape, ◆ detours, packaging, build order) are in `CLAUDE.md`, "Shared
 rules"; this plan states only what is specific to this concept.
@@ -49,9 +49,10 @@ Friday revenue by category, from the warehouse.
 | Snowflake | a 30-day trial, **Enterprise** edition, AWS `eu-west-2` (London) | the warehouse; Enterprise is needed for masking and row access policies, multi-cluster warehouses, materialised views, search optimisation, query acceleration |
 | PostgreSQL | **18.6** (conda-forge, `sql-bank`'s `setup-postgres.sh`) | Shopwave's OLTP database, the source |
 | `shopwave_gen` | pinned to a commit of `spark-ecommerce-analytics` | the data, byte-identical to the Spark course's |
-| Python | pinned at the infra step to the newest version dbt supports | the generator, dbt, scripts |
-| dbt-core + dbt-snowflake | pinned at the infra step | the transform layer |
-| Snowflake CLI (`snow`) | pinned at the infra step | the terminal client |
+| Python | **3.13.18** (dbt-snowflake 1.12.4 and the Snowflake CLI stop at 3.13) | the generator, dbt, scripts |
+| dbt-core + dbt-snowflake | **1.12.6** + **1.12.4** | the transform layer |
+| Snowflake CLI (`snow`) | **3.31.0**, in its OWN environment (pipx-style): it cannot share one with dbt-core 1.12 (pip finds no common resolution) | the terminal client |
+| pyarrow | **26.0.0** | Parquet payments; the row/column lab (1.2) |
 
 ## The app: `shopwave-dw`
 
@@ -194,7 +195,7 @@ M model.
 | --- | --- | --- | --- | --- |
 | 1 | Questions the shop database cannot answer | psql: revenue by category by month on the OLTP schema | the join tree a single question needs | L |
 | 2 | ◆ full scene: OLTP vs OLAP | lab: the same rows stored by row and by column | row store vs column store; normalised vs dimensional | L |
-| 3 | What we'll build | concept | **the map**, every stage lit; the Black Friday answer | S |
+| 3 | What we'll build | concept | **the map**, every stage lit; under it, what each course adds. The Black Friday answer joins this frame when 11.8 is recorded | concept |
 
 **2. `how-snowflake-runs` · How Snowflake is built · 7**
 
@@ -347,9 +348,23 @@ M model.
 4. A 30-day Enterprise trial, recorded once per step; nothing replayed against Snowflake.
 5. 12 courses, 90 sections, one film. Repo `snowflake-ecommerce-warehouse`, public.
 
+6. Infra (2026-11-01): the replay runs every local step as the OS user `ana` (PostgreSQL's peer
+   login), so `/home/ana/shopwave-dw` is the real path, not a rewritten one; `setup-postgres.sh` is
+   sql-bank's, with `ana` for `dbteam`.
+7. The recorder normalises identifiers, query ids and wall-clock timestamps; DURATIONS stay as
+   Snowflake printed them (they are `volatile` facts scenes may read, never narration).
+8. `shopwave_dw_gen`: 3% of customers draw a move, kept only between EUR countries (a move never
+   changes the currency); tiers are a pure function of paid spend in 2026: silver at 1,000 EUR, gold
+   at 2,500 EUR. At SF 0.01: 48 movers, 654 silver, 134 gold, 11 customers with three versions.
+
 ## Open
 
-- Pins for Python, dbt-core, dbt-snowflake and the Snowflake CLI, set at the infra step.
+- **dbt v2.** dbt now prints "dbt v2 is available, and is the default for new installations" on
+  every 1.12 command. The plan pins dbt Core 1.12 (`dbt-core` + `dbt-snowflake`, as agreed); the owner
+  decides before Course 7 is authored whether the course teaches v2 instead. Either way the notice
+  is real output and will appear in dbt panes unless the course says how to silence it.
+- Map frame (map + side pane) and star frame: built when their first section is (3.7 and 6.4); the
+  map's parts and `BUILT` per course are fixed now in `src/scenes/map.ts`.
 - 11.7 needs a consumer account for Brightline: a second trial, or a reader account if the trial
   allows one.
 - 5.9 shows Snowpipe with `ALTER PIPE … REFRESH` on an internal stage; auto-ingest needs an external
