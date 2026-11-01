@@ -13,6 +13,7 @@ export const loadOnce: SceneModel = ideFrame({
   tree: loadTree('queries/copy_again.sql', 'queries/copy_again.sql'),
   editor: { file: 'queries/copy_again.sql', code: sql },
   session,
+  keep: ['$ bash', 'Copy executed with 0 files processed', ['| ORDERS', '| 20024']],
   side: [
     {
       type: 'group', id: 'memory', badge: 1, title: 'Load metadata', sub: 'kept with the table, for 64 days', tone: 'infra', children: [

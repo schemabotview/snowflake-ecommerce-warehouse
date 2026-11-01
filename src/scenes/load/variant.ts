@@ -13,6 +13,7 @@ export const loadVariant: SceneModel = ideFrame({
   tree: loadTree('queries/devices.sql', 'queries/devices.sql', ['load/clicks.sql', 'queries/devices.sql']),
   editor: { file: 'queries/devices.sql', code: sql },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/clicks.sql', '| 8613', '$ bash load/as-loader.sh -f queries/devices.sql', ['| EVENT_TYPE', '| page_view    | mobile']],
   side: [
     {
       type: 'group', id: 'shape', badge: 1, title: 'JSON into one column', sub: `${events} events from ${files} files`, tone: 'ingest', children: [

@@ -1,3 +1,41 @@
 $ bash load/as-loader.sh -f setup/stage.sql
+CREATE STAGE IF NOT EXISTS RAW.SHOPWAVE.LANDING
+  DIRECTORY = (ENABLE = TRUE)
+  COMMENT = 'Every Shopwave source file, as it arrived';
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Stage area LANDING successfully created. |
++------------------------------------------+
 $ bash load/upload.sh
+uploaded: 10091 of 10091 files, 158M
 $ bash load/as-loader.sh -f queries/landing.sql
+ALTER STAGE RAW.SHOPWAVE.LANDING REFRESH
+  ->> SELECT COUNT(*) AS files_registered FROM $1;
++------------------+
+| FILES_REGISTERED |
+|------------------|
+| 10091            |
++------------------+
+SELECT SPLIT_PART(relative_path, '/', 1) AS source,
+       COUNT(*) AS files,
+       ROUND(SUM(size) / 1e6, 1) AS mb
+FROM DIRECTORY(@RAW.SHOPWAVE.LANDING)
+GROUP BY 1
+ORDER BY files DESC;
++--------------------------------------+
+| SOURCE               | FILES | MB    |
+|----------------------+-------+-------|
+| clickstream          | 8613  | 136.5 |
+| orders               | 365   | 0.9   |
+| order_changes        | 365   | 3.2   |
+| payments             | 365   | 1.4   |
+| order_items          | 365   | 0.6   |
+| returns              | 12    | 0.0   |
+| customer_changes.csv | 1     | 0.0   |
+| campaigns.json       | 1     | 0.0   |
+| fx_rates.csv         | 1     | 0.0   |
+| customers.csv        | 1     | 0.1   |
+| product_prices.csv   | 1     | 0.0   |
+| products.csv         | 1     | 0.0   |
++--------------------------------------+

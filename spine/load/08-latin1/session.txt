@@ -1,2 +1,41 @@
 $ bash load/as-loader.sh -f load/returns.sql
+COPY INTO RETURNS FROM @LANDING/returns/
+  FILE_FORMAT = (FORMAT_NAME = FF_CSV_LATIN1)
+  ON_ERROR = CONTINUE
+  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS loaded,
+             SUM("errors_seen") AS rejected FROM $1;
++---------------------------+
+| FILES | LOADED | REJECTED |
+|-------+--------+----------|
+| 12    | 185    | 24       |
++---------------------------+
 $ bash load/as-loader.sh -f queries/reasons.sql
+SELECT REASON, COUNT(*) AS returns
+FROM RETURNS GROUP BY 1 ORDER BY 2 DESC;
++------------------------------+
+| REASON             | RETURNS |
+|--------------------+---------|
+| Taille trop petite | 44      |
+| Changed my mind    | 33      |
+| Größe falsch       | 32      |
+| Ne correspond pas  | 30      |
+| Arrivé abîmé       | 27      |
+| Defekt             | 19      |
++------------------------------+
+$ bash load/as-loader.sh -f queries/reconcile.sql
+CREATE FILE FORMAT IF NOT EXISTS FF_LINES
+  TYPE = CSV FIELD_DELIMITER = NONE SKIP_HEADER = 1
+  ENCODING = 'ISO-8859-1';
++--------------------------------------------+
+| status                                     |
+|--------------------------------------------|
+| File format FF_LINES successfully created. |
++--------------------------------------------+
+SELECT (SELECT COUNT(*) FROM @LANDING/returns/ (FILE_FORMAT => 'FF_LINES'))
+         AS lines_sent,
+       (SELECT COUNT(*) FROM RETURNS) AS rows_loaded;
++--------------------------+
+| LINES_SENT | ROWS_LOADED |
+|------------+-------------|
+| 767        | 185         |
++--------------------------+

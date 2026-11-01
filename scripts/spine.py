@@ -97,7 +97,9 @@ MARK = '__SPINE_MARK__'
 UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
 # A Snowflake query id: 8-4-4-4-12 hex, the third group the deployment's (0000-…).
 QUERY_ID = re.compile(r'\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
-STAMP = re.compile(r'\b(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(\.\d{1,9})?( ?[+-]\d{4}| ?Z)?')
+# A wall-clock stamp carries its time zone (TIMESTAMP_LTZ / _TZ: -0800, -08:00, Z). One without is DATA
+# (an order's time) or SQL in an echoed statement, and is never touched.
+STAMP = re.compile(r'\b(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(\.\d{1,9})?( ?[+-]\d{2}:?\d{2}\b| ?Z\b)')
 SHOWN_ACCOUNT, SHOWN_HOST, SHOWN_USER, SHOWN_LOCATOR = 'SHOPWAVE-DW', 'shopwave-dw.snowflakecomputing.com', 'ANA', 'SW12345'
 
 
@@ -447,7 +449,8 @@ def normalise(text: str, names: dict[str, str], clock: str) -> str:
     def stamp(m: re.Match) -> str:
         t = when[(m.group(1), m.group(2), m.group(3) or '')]
         frac = '.' + '0' * (len(m.group(3)) - 1) if m.group(3) else ''
-        zone = (' ' if m.group(4) and m.group(4).startswith(' ') else '') + ('Z' if m.group(4) and 'Z' in m.group(4) else '+0000') if m.group(4) else ''
+        z = m.group(4)
+        zone = (' ' if z.startswith(' ') else '') + ('Z' if 'Z' in z else '+00:00' if ':' in z else '+0000')
         return f'{t:%Y-%m-%d}{" " if " " in m.group(0)[:11] else "T"}{t:%H:%M:%S}{frac}{zone}'
     return STAMP.sub(stamp, text)
 

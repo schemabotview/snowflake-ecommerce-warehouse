@@ -1,1 +1,15 @@
 $ bash load/as-loader.sh -f queries/copy_again.sql
+COPY INTO ORDERS FROM (
+  SELECT $1, $2, $3, $4, $5, $6, METADATA$FILENAME, CURRENT_TIMESTAMP()
+  FROM @LANDING/orders/) FILE_FORMAT = (FORMAT_NAME = FF_CSV);
++---------------------------------------+
+| status                                |
+|---------------------------------------|
+| Copy executed with 0 files processed. |
++---------------------------------------+
+SELECT COUNT(*) AS orders, COUNT(DISTINCT _FILE) AS files FROM ORDERS;
++----------------+
+| ORDERS | FILES |
+|--------+-------|
+| 20024  | 365   |
++----------------+

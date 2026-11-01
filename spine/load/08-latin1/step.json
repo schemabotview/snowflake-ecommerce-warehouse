@@ -1,1 +1,1 @@
-{"from": "load/07-schema-change", "changes": ["load/returns.sql", "queries/reasons.sql"], "snowflake": true, "time": "2026-11-12 10:10:00"}
+{"from": "load/07-schema-change", "changes": ["load/returns.sql", "queries/reasons.sql", "queries/reconcile.sql"], "snowflake": true, "time": "2026-11-12 10:10:00"}

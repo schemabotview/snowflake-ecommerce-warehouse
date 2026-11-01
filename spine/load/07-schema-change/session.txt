@@ -1,2 +1,43 @@
 $ bash load/as-loader.sh -f queries/infer.sql
+SELECT 'May 31' AS day, COLUMN_NAME, TYPE
+FROM TABLE(INFER_SCHEMA(LOCATION => '@LANDING/clickstream/2026-05-31/',
+                        FILE_FORMAT => 'FF_JSON'))
+UNION ALL
+SELECT 'June 1', COLUMN_NAME, TYPE
+FROM TABLE(INFER_SCHEMA(LOCATION => '@LANDING/clickstream/2026-06-01/',
+                        FILE_FORMAT => 'FF_JSON'))
+ORDER BY 2, 1;
++--------------------------------------+
+| DAY    | COLUMN_NAME | TYPE          |
+|--------+-------------+---------------|
+| June 1 | anon_id     | TEXT          |
+| May 31 | anon_id     | TEXT          |
+| June 1 | consent     | TEXT          |
+| June 1 | context     | OBJECT        |
+| May 31 | context     | OBJECT        |
+| June 1 | event_id    | TEXT          |
+| May 31 | event_id    | TEXT          |
+| June 1 | event_ts    | TIMESTAMP_NTZ |
+| May 31 | event_ts    | TIMESTAMP_NTZ |
+| June 1 | event_type  | TEXT          |
+| May 31 | event_type  | TEXT          |
+| June 1 | items       | ARRAY         |
+| May 31 | items       | ARRAY         |
+| June 1 | user_id     | NUMBER(4, 0)  |
+| May 31 | user_id     | NUMBER(4, 0)  |
++--------------------------------------+
 $ bash load/as-loader.sh -f queries/both_shapes.sql
+SELECT DATE_TRUNC('month', V:event_ts::timestamp)::date AS month,
+       COUNT(V:context.device) AS old_device,
+       COUNT(V:context.device_type) AS new_device_type,
+       COUNT(COALESCE(V:context.device_type, V:context.device)) AS device,
+       COUNT(V:consent) AS consent
+FROM CLICKS
+WHERE V:event_ts::timestamp BETWEEN '2026-05-01' AND '2026-06-30 23:59:59'
+GROUP BY 1 ORDER BY 1;
++--------------------------------------------------------------+
+| MONTH      | OLD_DEVICE | NEW_DEVICE_TYPE | DEVICE | CONSENT |
+|------------+------------+-----------------+--------+---------|
+| 2026-05-01 | 29264      | 15              | 29279  | 15      |
+| 2026-06-01 | 0          | 27731           | 27731  | 27731   |
++--------------------------------------------------------------+

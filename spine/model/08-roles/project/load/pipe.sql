@@ -7,5 +7,4 @@ CREATE PIPE IF NOT EXISTS PIPE_PAYMENTS AS
   FILE_FORMAT = (FORMAT_NAME = FF_PARQUET)
   MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
 -- An internal stage sends no events: ask the pipe to look.
-ALTER PIPE PIPE_PAYMENTS REFRESH ->> SELECT "status", COUNT(*) AS files
-                                     FROM $1 GROUP BY 1;
+ALTER PIPE PIPE_PAYMENTS REFRESH ->> SELECT COUNT(*) AS files_queued FROM $1;

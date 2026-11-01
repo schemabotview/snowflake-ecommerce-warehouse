@@ -13,6 +13,7 @@ export const loadValidate: SceneModel = ideFrame({
   tree: loadTree('queries/validate_returns.sql', 'queries/validate_returns.sql', ['load/returns_table.sql', 'queries/validate_returns.sql']),
   editor: { file: 'queries/validate_returns.sql', code: sql },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/returns_table.sql', '$ bash load/as-loader.sh -f queries/validate_returns.sql', ['| ERROR', '| matching enclosing']],
   side: [
     {
       type: 'group', id: 'split', badge: 1, title: 'Two kinds of bad row', sub: 'the returns files, read as plain UTF-8', tone: 'consume', children: [

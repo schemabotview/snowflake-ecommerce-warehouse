@@ -1,2 +1,23 @@
 $ bash load/as-loader.sh -f load/returns_table.sql
+CREATE TABLE IF NOT EXISTS RETURNS (
+  RETURN_ID VARCHAR, ORDER_ID NUMBER, PRODUCT_ID NUMBER,
+  REASON VARCHAR, RETURNED_ON DATE);
++-------------------------------------+
+| status                              |
+|-------------------------------------|
+| Table RETURNS successfully created. |
++-------------------------------------+
 $ bash load/as-loader.sh -f queries/validate_returns.sql
+COPY INTO RETURNS FROM @LANDING/returns/
+  FILE_FORMAT = (FORMAT_NAME = FF_CSV)
+  VALIDATION_MODE = RETURN_ERRORS
+  ->> SELECT LEFT("ERROR", 52) AS error, COUNT(*) AS row_count
+      FROM $1 GROUP BY 1 ORDER BY 2 DESC;
++------------------------------------------------------------------+
+| ERROR                                                | ROW_COUNT |
+|------------------------------------------------------+-----------|
+| Invalid UTF8 detected in string 'Gr0xF60xDFe falsch' | 32        |
+| Invalid UTF8 detected in string 'Arriv0xE9 ab0xEEm0x | 27        |
+| End of record reached while expected to parse column | 12        |
+| matching enclosing character '"' not found before en | 12        |
++------------------------------------------------------------------+

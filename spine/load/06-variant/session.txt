@@ -1,2 +1,36 @@
 $ bash load/as-loader.sh -f load/clicks.sql
+CREATE TABLE IF NOT EXISTS CLICKS (
+  V VARIANT, _FILE VARCHAR, _LOADED_AT TIMESTAMP_LTZ);
++------------------------------------+
+| status                             |
+|------------------------------------|
+| Table CLICKS successfully created. |
++------------------------------------+
+COPY INTO CLICKS FROM (
+  SELECT $1, METADATA$FILENAME, CURRENT_TIMESTAMP()
+  FROM @LANDING/clickstream/) FILE_FORMAT = (FORMAT_NAME = FF_JSON)
+  ->> SELECT COUNT(*) AS files, SUM("rows_loaded") AS events FROM $1;
++----------------+
+| FILES | EVENTS |
+|-------+--------|
+| 8613  | 378175 |
++----------------+
 $ bash load/as-loader.sh -f queries/devices.sql
+SELECT V:event_type::string AS event_type,
+       V:context.device::string AS device,
+       COUNT(*) AS events
+FROM CLICKS
+WHERE V:event_ts::timestamp < '2026-02-01'
+GROUP BY 1, 2
+ORDER BY 3 DESC
+LIMIT 6;
++---------------------------------+
+| EVENT_TYPE   | DEVICE  | EVENTS |
+|--------------+---------+--------|
+| product_view | mobile  | 8256   |
+| page_view    | desktop | 4970   |
+| product_view | desktop | 4499   |
+| page_view    | mobile  | 4237   |
+| add_to_cart  | mobile  | 3770   |
+| add_to_cart  | desktop | 2052   |
++---------------------------------+

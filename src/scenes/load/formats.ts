@@ -13,6 +13,7 @@ export const loadFormats: SceneModel = ideFrame({
   tree: loadTree('queries/peek.sql', 'setup/file_formats.sql', ['setup/file_formats.sql', 'queries/peek.sql']),
   editor: { file: 'setup/file_formats.sql', code: sql },
   session,
+  keep: ['$ bash load/as-loader.sh -f setup/file_formats.sql', '$ bash load/as-loader.sh -f queries/peek.sql', ['| ORDER_ID', '| 16522']],
   side: [
     {
       type: 'group', id: 'contract', badge: 1, title: 'A format is a contract', sub: 'between a sender and the warehouse', tone: 'infra', children: [

@@ -13,6 +13,7 @@ export const loadCopy: SceneModel = ideFrame({
   tree: loadTree('load/copy.sql', 'load/copy.sql', ['load/tables.sql', 'load/copy.sql']),
   editor: { file: 'load/copy.sql', code: sql, ...view(sql, 'COPY INTO ORDERS', 'COPY INTO CUSTOMERS', 1) },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/tables.sql', '$ bash load/as-loader.sh -f load/copy.sql', '| ORDERS ', '| ORDER_ITEMS', '| CUSTOMERS', '| FX_RATES'],
   side: [
     {
       type: 'group', id: 'how', badge: 1, title: 'Stage to table, file by file', tone: 'ingest', children: [

@@ -364,6 +364,16 @@ M model.
   NONE`, then refused). Service users hold one role each, so loads and dbt are unaffected; Ana's own
   `as-transformer.sh` sessions still carry her other roles: revisit before Course 11 (masking and
   row access read the session's roles).
+- **Course 5's first recording failed** (the upload never ran: no current database), and every step
+  after it ran on an empty stage. Off the record, the empty objects it had made were dropped, and
+  before each re-record the step's starting state was restored: the stage emptied and later dropped
+  (5.1 re-recorded as a first creation; the same files re-uploaded byte for byte), RETURNS truncated
+  (which clears its load history), PIPE_PAYMENTS and PAYMENTS dropped (5.8, 5.9 re-recorded). No row a
+  transcript shows came from the failed run. The recorder's timestamp rule was narrowed the same day:
+  only zoned (wall-clock) stamps are replaced; it had rewritten a date literal inside a query.
+- **5.8 found more than planned:** 767 return lines sent, 185 loaded, 24 rejected. Each month's
+  unclosed quote turns the rest of its file into ONE rejected record; the narration teaches
+  reconciliation. The day-first dates are among the swallowed lines.
 - **One off-record repair (2026-11-01):** the first recording of 4.6, before secondary roles were
   understood, really UPDATEd product 1's price in RAW (59.99 → 59.00). It was set back to 59.99 off
   the record, and 4.6 re-recorded. No transcript shows the wrong price.

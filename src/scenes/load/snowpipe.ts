@@ -14,6 +14,7 @@ export const loadSnowpipe: SceneModel = ideFrame({
   tree: loadTree('queries/pipe_status.sql', 'load/pipe.sql', ['load/pipe.sql', 'queries/pipe_status.sql']),
   editor: { file: 'load/pipe.sql', code: sql },
   session,
+  keep: ['$ bash load/as-loader.sh -f load/pipe.sql', '| 365', '$ sleep 120', '$ bash load/as-loader.sh -f queries/pipe_status.sql', ['| PIPE', '| RUNNING']],
   side: [
     {
       type: 'group', id: 'flow', badge: 1, title: 'A file, a pipe, a table', sub: 'Snowflake’s own compute: no warehouse', tone: 'ingest', children: [

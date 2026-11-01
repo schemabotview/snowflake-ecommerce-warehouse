@@ -12,6 +12,7 @@ export const loadStage: SceneModel = ideFrame({
   tree: loadTree('queries/landing.sql', 'load/upload.sh', ['load/as-loader.sh', 'setup/stage.sql', 'load/upload.sh', 'queries/landing.sql']),
   editor: { file: 'load/upload.sh', code, lang: 'shell' },
   session,
+  keep: ['$ bash load/as-loader.sh -f setup/stage.sql', 'Stage area LANDING successfully created', '$ bash load/upload.sh', 'uploaded:', '$ bash load/as-loader.sh -f queries/landing.sql', '| 10091'],
   side: [
     {
       type: 'group', id: 'path', badge: 1, title: 'A file’s way in', tone: 'ingest', dir: 'row', children: [
