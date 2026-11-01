@@ -387,7 +387,9 @@ M model.
   ran a second time; 12.3's storage view has `TABLE_DROPPED`, not `DELETED`, and listed the failed
   attempt's clone (ANALYTICS_DEV dropped off the record). The clone's storage reading after its
   update still says 0: computed in the background, said in the frame. 12.6 was recorded once
-  ACCOUNT_USAGE showed the failed task (it runs ~45 minutes behind or more).
+  ACCOUNT_USAGE showed the failed task (about an hour behind). Its first recording was REFUSED: the
+  account's whole history held the owner's own pre-course objects and sign-ins, so the queries are
+  limited to the course's three warehouses and three users.
 - **Course 11 as recorded (2026-11-01).** Policies use `CURRENT_ROLE()`, not `IS_ROLE_IN_SESSION`:
   Ana's secondary roles always include TRANSFORMER (the secondary-roles note above, resolved). dbt
   replaces `dim_customer` every run, so its `post_hook` re-attaches both policies. 11.7 uses a reader
