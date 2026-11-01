@@ -1,1 +1,65 @@
 $ snow sql -f setup/databases.sql
+CREATE DATABASE IF NOT EXISTS RAW
+  COMMENT = 'Shopwave sources, as loaded: never edited';
++------------------------------------+
+| status                             |
+|------------------------------------|
+| Database RAW successfully created. |
++------------------------------------+
+CREATE SCHEMA IF NOT EXISTS RAW.SHOPWAVE;
++---------------------------------------+
+| status                                |
+|---------------------------------------|
+| Schema SHOPWAVE successfully created. |
++---------------------------------------+
+DROP SCHEMA IF EXISTS RAW.PUBLIC;
++------------------------------+
+| status                       |
+|------------------------------|
+| PUBLIC successfully dropped. |
++------------------------------+
+CREATE DATABASE IF NOT EXISTS ANALYTICS
+  COMMENT = 'Shopwave modelled: staging, marts, BI';
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Database ANALYTICS successfully created. |
++------------------------------------------+
+CREATE SCHEMA IF NOT EXISTS ANALYTICS.STAGING;
++--------------------------------------+
+| status                               |
+|--------------------------------------|
+| Schema STAGING successfully created. |
++--------------------------------------+
+CREATE SCHEMA IF NOT EXISTS ANALYTICS.MARTS;
++------------------------------------+
+| status                             |
+|------------------------------------|
+| Schema MARTS successfully created. |
++------------------------------------+
+CREATE SCHEMA IF NOT EXISTS ANALYTICS.BI;
++---------------------------------+
+| status                          |
+|---------------------------------|
+| Schema BI successfully created. |
++---------------------------------+
+DROP SCHEMA IF EXISTS ANALYTICS.PUBLIC;
++------------------------------+
+| status                       |
+|------------------------------|
+| PUBLIC successfully dropped. |
++------------------------------+
+SHOW SCHEMAS IN ACCOUNT
+  ->> SELECT "database_name", "name" FROM $1
+      WHERE "database_name" IN ('RAW', 'ANALYTICS')
+      ORDER BY 1, 2;
++------------------------------------+
+| database_name | name               |
+|---------------+--------------------|
+| ANALYTICS     | BI                 |
+| ANALYTICS     | INFORMATION_SCHEMA |
+| ANALYTICS     | MARTS              |
+| ANALYTICS     | STAGING            |
+| RAW           | INFORMATION_SCHEMA |
+| RAW           | SHOPWAVE           |
++------------------------------------+

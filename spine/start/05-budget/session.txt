@@ -1,1 +1,39 @@
 $ snow sql -f setup/monitors.sql
+USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE RESOURCE MONITOR IF NOT EXISTS RM_MONTHLY
+  WITH CREDIT_QUOTA = 50
+  FREQUENCY = MONTHLY
+  START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS ON 80 PERCENT DO NOTIFY
+           ON 100 PERCENT DO SUSPEND;
++-------------------------------------------------+
+| status                                          |
+|-------------------------------------------------|
+| RM_MONTHLY already exists, statement succeeded. |
++-------------------------------------------------+
+ALTER WAREHOUSE WH_LOAD SET RESOURCE_MONITOR = RM_MONTHLY;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SHOW RESOURCE MONITORS LIKE 'RM_MONTHLY'
+  ->> SELECT "name", "credit_quota", "used_credits", "frequency"
+      FROM $1;
++------------------------------------------------------+
+| name       | credit_quota | used_credits | frequency |
+|------------+--------------+--------------+-----------|
+| RM_MONTHLY | 50.00        | 0.10         | MONTHLY   |
++------------------------------------------------------+
+SHOW WAREHOUSES LIKE 'WH_LOAD'
+  ->> SELECT "name", "resource_monitor" FROM $1;
++----------------------------+
+| name    | resource_monitor |
+|---------+------------------|
+| WH_LOAD | RM_MONTHLY       |
++----------------------------+

@@ -15,9 +15,10 @@ export const startSizing: SceneModel = ideFrame({
   tree: startTree('queries/state.sql', 'queries/sizing.sql', ['queries/sizing.sql', 'queries/state.sql']),
   editor: { file: 'queries/sizing.sql', code: sql },
   session,
+  keep: ['$ snow sql -f queries/sizing.sql', ['| SIZE', '| S    | Small'], '$ sleep 90', ['| name', '| WH_LOAD | X-Small | SUSPENDED']],
   side: [
     {
-      type: 'group', id: 'measured', badge: 1, title: 'One query, two sizes', sub: 'TPC-H SF10 LINEITEM, no result cache', tone: 'infra', children: [
+      type: 'group', id: 'measured', badge: 1, title: 'One query, two sizes', sub: 'TPC-H SF100 LINEITEM, no result cache', tone: 'infra', children: [
         { type: 'table', id: 'times', columns: ['size', 'credits / hour', 'elapsed ms'], rows: [
           ['XS', '1', ms(0)], ['S', '2', ms(1)],
         ] },

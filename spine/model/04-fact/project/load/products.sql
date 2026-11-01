@@ -12,4 +12,5 @@ CREATE OR REPLACE TABLE PRODUCTS (
 -- Every table has its own stage, @%PRODUCTS (Course 5 builds a real one).
 PUT file://exports/products.csv @%PRODUCTS OVERWRITE = TRUE;
 COPY INTO PRODUCTS FROM @%PRODUCTS
-  FILE_FORMAT = (TYPE = CSV SKIP_HEADER = 1);
+  FILE_FORMAT = (TYPE = CSV SKIP_HEADER = 1)
+  ->> SELECT "file", "status", "rows_loaded" FROM $1;

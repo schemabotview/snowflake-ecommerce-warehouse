@@ -13,6 +13,7 @@ export const startFirstTable: SceneModel = ideFrame({
   tree: startTree('queries/categories.sql', 'load/products.sql', ['load/products.sql', 'queries/categories.sql'], { 'exports/': 'products.csv' }),
   editor: { file: 'load/products.sql', code: sql },
   session,
+  keep: ['$ mkdir', '$ psql', 'COPY 50', '$ snow sql -f load/products.sql', '| products.csv.gz | LOADED', '$ snow sql -f queries/categories.sql', ['| CATEGORY', '| beauty']],
   side: [
     {
       type: 'group', id: 'trip', badge: 1, title: 'The round trip', sub: 'every query takes it', tone: 'infra', children: [

@@ -13,6 +13,7 @@ export const startBudget: SceneModel = ideFrame({
   tree: startTree('setup/monitors.sql', 'setup/monitors.sql'),
   editor: { file: 'setup/monitors.sql', code: sql },
   session,
+  keep: ['$ snow sql', ['| name       | credit_quota', '| RM_MONTHLY'], ['| name    | resource_monitor', '| WH_LOAD']],
   side: [
     { type: 'item', id: 'rm', icon: 'gauge', title: 'RM_MONTHLY', sub: '50 credits a month, from today' },
     {

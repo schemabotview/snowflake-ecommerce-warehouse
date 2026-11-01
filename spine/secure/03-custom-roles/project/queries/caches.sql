@@ -1,6 +1,7 @@
 -- One query, three times: cold, warm, and remembered.
+-- WH_LOAD has been idle since the last step: suspended, its cache empty.
+SHOW WAREHOUSES LIKE 'WH_LOAD' ->> SELECT "name", "state" FROM $1;
 USE WAREHOUSE WH_LOAD;
-ALTER WAREHOUSE WH_LOAD SUSPEND;
 ALTER SESSION SET USE_CACHED_RESULT = FALSE;
 ALTER SESSION SET QUERY_TAG = '1 cold';
 SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
@@ -15,8 +16,8 @@ FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
 SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
 FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
 SELECT query_tag AS run, total_elapsed_time AS elapsed_ms,
-       bytes_scanned, percentage_scanned_from_cache AS from_cache
-FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
+       bytes_scanned, execution_time AS execution_ms
+FROM TABLE(RAW.INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
 WHERE query_tag <> '' AND query_type = 'SELECT'
   AND query_text ILIKE 'SELECT l_returnflag%'
 ORDER BY start_time;

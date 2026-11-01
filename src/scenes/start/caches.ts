@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { terminal } from '../ide'
+import { keepLines, terminal } from '../ide'
 import { rowsOf } from '../recorded'
 import session from '../../../spine/start/06-caches/session.txt?raw'
 
@@ -7,6 +7,9 @@ import session from '../../../spine/start/06-caches/session.txt?raw'
 // says what each cost (recorded on Snowflake; times volatile). How each cache works is doc-cited:
 // docs.snowflake.com/en/user-guide/querying-persisted-results, …/performance-query-warehouse-cache.
 const runs = rowsOf(session, 'RUN', 4)
+const term = terminal(session)
+// The run is long (four result tables): keep each query's tag and the history at the end.
+const keep = keepLines(term, ['$ snow sql', '| WH_LOAD', "QUERY_TAG = '1 cold'", "QUERY_TAG = '2 warm'", 'USE_CACHED_RESULT = TRUE', "QUERY_TAG = '3 result'", ['SELECT query_tag', '| 3 result | 90']])
 
 export const startCaches: SceneModel = {
   title: 'Three caches: why the same query costs less the second time',
@@ -39,14 +42,14 @@ export const startCaches: SceneModel = {
         },
         {
           type: 'group', id: 'history', badge: 4, title: 'What each run cost', sub: 'QUERY_HISTORY_BY_SESSION, from the run', icon: 'chart', tone: 'neutral', children: [
-            { type: 'table', id: 'runs', columns: ['run', 'elapsed ms', 'bytes scanned', 'from cache'], rows: runs },
+            { type: 'table', id: 'runs', columns: ['run', 'elapsed ms', 'bytes scanned', 'execution ms'], rows: runs },
           ],
         },
       ],
     },
     {
       type: 'group', id: 'proof', title: 'The runs', icon: 'terminal', tone: 'neutral', children: [
-        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: terminal(session) },
+        { type: 'code', id: 'out', terminal: true, filename: 'terminal — shopwave-dw', code: term, show: keep },
       ],
     },
   ],

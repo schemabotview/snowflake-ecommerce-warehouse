@@ -1,4 +1,69 @@
 $ mkdir -p exports
 $ psql -d shopwave -c "\copy products TO 'exports/products.csv' CSV HEADER"
+COPY 50
 $ snow sql -f load/products.sql
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SCHEMA RAW.SHOPWAVE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE OR REPLACE TABLE PRODUCTS (
+    PRODUCT_ID  NUMBER(38, 0) NOT NULL,
+    SKU         VARCHAR NOT NULL,
+    NAME        VARCHAR NOT NULL,
+    BRAND       VARCHAR NOT NULL,
+    CATEGORY    VARCHAR NOT NULL,
+    PRICE       NUMBER(10, 2) NOT NULL
+);
++--------------------------------------+
+| status                               |
+|--------------------------------------|
+| Table PRODUCTS successfully created. |
++--------------------------------------+
+PUT file://exports/products.csv @%PRODUCTS OVERWRITE = TRUE;
++-------------------------------------------------------------------------------
+--------------------------------------------+
+| source       | target          | source_size | target_size | source_compressio
+n | target_compression | status   | message |
+|--------------+-----------------+-------------+-------------+------------------
+--+--------------------+----------+---------|
+| products.csv | products.csv.gz | 2533        | 976         | NONE             
+  | GZIP               | UPLOADED |         |
++-------------------------------------------------------------------------------
+--------------------------------------------+
+COPY INTO PRODUCTS FROM @%PRODUCTS
+  FILE_FORMAT = (TYPE = CSV SKIP_HEADER = 1)
+  ->> SELECT "file", "status", "rows_loaded" FROM $1;
++----------------------------------------+
+| file            | status | rows_loaded |
+|-----------------+--------+-------------|
+| products.csv.gz | LOADED | 50          |
++----------------------------------------+
 $ snow sql -f queries/categories.sql
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT category, COUNT(*) AS products, ROUND(AVG(price), 2) AS avg_price
+FROM RAW.SHOPWAVE.PRODUCTS
+GROUP BY category
+ORDER BY products DESC;
++------------------------------------+
+| CATEGORY    | PRODUCTS | AVG_PRICE |
+|-------------+----------+-----------|
+| beauty      | 13       | 42.44     |
+| sports      | 9        | 69.51     |
+| electronics | 8        | 97.41     |
+| books       | 8        | 23.05     |
+| home        | 6        | 84.40     |
+| fashion     | 6        | 115.79    |
++------------------------------------+

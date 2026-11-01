@@ -1,4 +1,84 @@
 $ snow sql -f queries/sizing.sql
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER SESSION SET QUERY_TAG = 'XS';
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT l_returnflag, COUNT(*), SUM(l_extendedprice)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.LINEITEM GROUP BY 1;
++-------------------------------------------------+
+| L_RETURNFLAG | COUNT(*)  | SUM(L_EXTENDEDPRICE) |
+|--------------+-----------+----------------------|
+| N            | 303922760 | 11621092789469.25    |
+| R            | 148067261 | 5661603032745.34     |
+| A            | 148047881 | 5660776097194.45     |
++-------------------------------------------------+
+ALTER WAREHOUSE WH_LOAD SET WAREHOUSE_SIZE = SMALL
+  WAIT_FOR_COMPLETION = TRUE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER SESSION SET QUERY_TAG = 'S';
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT l_returnflag, COUNT(*), SUM(l_extendedprice)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.LINEITEM GROUP BY 1;
++-------------------------------------------------+
+| L_RETURNFLAG | COUNT(*)  | SUM(L_EXTENDEDPRICE) |
+|--------------+-----------+----------------------|
+| N            | 303922760 | 11621092789469.25    |
+| R            | 148067261 | 5661603032745.34     |
+| A            | 148047881 | 5660776097194.45     |
++-------------------------------------------------+
+ALTER WAREHOUSE WH_LOAD SET WAREHOUSE_SIZE = XSMALL;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT query_tag AS size, warehouse_size,
+       total_elapsed_time AS elapsed_ms
+FROM TABLE(RAW.INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
+WHERE query_tag IN ('XS', 'S') AND query_text ILIKE 'SELECT l_returnflag%'
+ORDER BY start_time;
++------------------------------------+
+| SIZE | WAREHOUSE_SIZE | ELAPSED_MS |
+|------+----------------+------------|
+| XS   | X-Small        | 3252       |
+| S    | Small          | 2082       |
++------------------------------------+
 $ snow sql -f queries/state.sql
+SHOW WAREHOUSES LIKE 'WH_LOAD'
+  ->> SELECT "name", "size", "state", "auto_suspend" FROM $1;
++--------------------------------------------+
+| name    | size    | state   | auto_suspend |
+|---------+---------+---------+--------------|
+| WH_LOAD | X-Small | STARTED | 60           |
++--------------------------------------------+
 $ sleep 90
 $ snow sql -f queries/state.sql
+SHOW WAREHOUSES LIKE 'WH_LOAD'
+  ->> SELECT "name", "size", "state", "auto_suspend" FROM $1;
++----------------------------------------------+
+| name    | size    | state     | auto_suspend |
+|---------+---------+-----------+--------------|
+| WH_LOAD | X-Small | SUSPENDED | 60           |
++----------------------------------------------+

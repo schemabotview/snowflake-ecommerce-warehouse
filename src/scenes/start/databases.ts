@@ -11,6 +11,7 @@ export const startDatabases: SceneModel = ideFrame({
   tree: startTree('setup/databases.sql', 'setup/databases.sql'),
   editor: { file: 'setup/databases.sql', code: sql },
   session,
+  keep: ['$ snow sql', ['| database_name', '| RAW           | SHOPWAVE']],
   side: [
     { type: 'item', id: 'acct', icon: 'snowflakedb', title: 'Account shopwave-dw', sub: 'holds databases' },
     {

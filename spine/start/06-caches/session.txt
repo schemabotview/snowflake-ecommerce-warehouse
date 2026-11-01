@@ -1,1 +1,97 @@
 $ snow sql -f queries/caches.sql
+SHOW WAREHOUSES LIKE 'WH_LOAD' ->> SELECT "name", "state" FROM $1;
++---------------------+
+| name    | state     |
+|---------+-----------|
+| WH_LOAD | SUSPENDED |
++---------------------+
+USE WAREHOUSE WH_LOAD;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER SESSION SET QUERY_TAG = '1 cold';
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
++-----------------------------------------------------------------+
+| L_RETURNFLAG | L_LINESTATUS | SUM(L_QUANTITY) | AVG(L_DISCOUNT) |
+|--------------+--------------+-----------------+-----------------|
+| A            | F            | 37734107.00     | 0.04998530      |
+| R            | F            | 37719753.00     | 0.05000941      |
+| N            | O            | 76633518.00     | 0.05000026      |
+| N            | F            | 991417.00       | 0.05009343      |
++-----------------------------------------------------------------+
+ALTER SESSION SET QUERY_TAG = '2 warm';
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
++-----------------------------------------------------------------+
+| L_RETURNFLAG | L_LINESTATUS | SUM(L_QUANTITY) | AVG(L_DISCOUNT) |
+|--------------+--------------+-----------------+-----------------|
+| A            | F            | 37734107.00     | 0.04998530      |
+| R            | F            | 37719753.00     | 0.05000941      |
+| N            | O            | 76633518.00     | 0.05000026      |
+| N            | F            | 991417.00       | 0.05009343      |
++-----------------------------------------------------------------+
+ALTER SESSION SET USE_CACHED_RESULT = TRUE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+ALTER SESSION SET QUERY_TAG = '3 result';
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
++-----------------------------------------------------------------+
+| L_RETURNFLAG | L_LINESTATUS | SUM(L_QUANTITY) | AVG(L_DISCOUNT) |
+|--------------+--------------+-----------------+-----------------|
+| A            | F            | 37734107.00     | 0.04998530      |
+| N            | O            | 76633518.00     | 0.05000026      |
+| N            | F            | 991417.00       | 0.05009343      |
+| R            | F            | 37719753.00     | 0.05000941      |
++-----------------------------------------------------------------+
+SELECT l_returnflag, l_linestatus, SUM(l_quantity), AVG(l_discount)
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.LINEITEM GROUP BY 1, 2;
++-----------------------------------------------------------------+
+| L_RETURNFLAG | L_LINESTATUS | SUM(L_QUANTITY) | AVG(L_DISCOUNT) |
+|--------------+--------------+-----------------+-----------------|
+| A            | F            | 37734107.00     | 0.04998530      |
+| N            | O            | 76633518.00     | 0.05000026      |
+| N            | F            | 991417.00       | 0.05009343      |
+| R            | F            | 37719753.00     | 0.05000941      |
++-----------------------------------------------------------------+
+SELECT query_tag AS run, total_elapsed_time AS elapsed_ms,
+       bytes_scanned, execution_time AS execution_ms
+FROM TABLE(RAW.INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
+WHERE query_tag <> '' AND query_type = 'SELECT'
+  AND query_text ILIKE 'SELECT l_returnflag%'
+ORDER BY start_time;
++------------------------------------------------------+
+| RUN      | ELAPSED_MS | BYTES_SCANNED | EXECUTION_MS |
+|----------+------------+---------------+--------------|
+| 1 cold   | 1127       | 165208128     | 522          |
+| 2 warm   | 263        | 165208128     | 79           |
+| 3 result | 115        | 0             | 11           |
+| 3 result | 90         | 0             | 14           |
++------------------------------------------------------+
