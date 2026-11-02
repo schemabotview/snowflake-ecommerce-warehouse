@@ -18,7 +18,7 @@
 
 ## Status
 
-Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Next: the owner's review of Courses 8–12, then narration audio (Colab), record:all, film.
+Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Narrated (all 90 wavs), 4K-recorded (`record:all`, 2026-11-02) and filmed: `film.mp4` 2:10:10, 90 chapters; cover `output/thumbnails/film.png` (`thumb:film`, star source), `output/film-description.txt`. Next: watch the film through, then publish.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,

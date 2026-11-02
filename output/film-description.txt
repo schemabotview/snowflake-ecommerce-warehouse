@@ -1,0 +1,96 @@
+Learn Snowflake by building an e-commerce data warehouse: full course, beginner to professional
+
+90 sections, 12 courses, 2:10:10.
+Every Snowflake output is recorded once on a real Snowflake account; every local step (PostgreSQL 18.6, the data generator, dbt parse) is really run.
+
+⏱ CHAPTERS
+0:00:00 ▸ Why a warehouse — Questions the shop database cannot answer
+0:01:23 OLTP vs OLAP
+0:02:54 What we will build
+0:04:16 ▸ How Snowflake is built — Three layers
+0:05:48 Virtual warehouses and credits
+0:07:14 Micro-partitions
+0:08:55 Organisations, accounts, clouds, regions
+0:10:29 Editions
+0:12:00 Three clients
+0:13:23 What a query costs
+0:14:50 ▸ The source, and a first warehouse — Shopwave's database
+0:16:17 Databases and schemas
+0:17:43 A first table and query
+0:19:06 Sizing and auto-suspend
+0:20:30 A budget that stops spend
+0:21:58 Three caches
+0:23:37 The project map
+0:24:54 ▸ Roles before data — Users and roles
+0:26:17 The system roles
+0:27:37 Custom roles
+0:28:50 Grants and future grants
+0:30:11 Least privilege
+0:31:31 A refused query
+0:33:09 Service users and key pairs
+0:34:29 Network policies
+0:35:49 ▸ Getting data in — Stages
+0:37:16 File formats
+0:38:36 COPY INTO
+0:39:59 A file loads once
+0:41:18 VALIDATION_MODE and ON_ERROR
+0:42:41 Semi-structured data
+0:44:02 The June 1 schema change
+0:45:36 Latin-1 returns
+0:47:35 Snowpipe
+0:48:58 ▸ Dimensional modelling — Kimball's four steps
+0:50:22 The grain
+0:51:46 The bus matrix
+0:53:11 The fact table
+0:54:36 Dimensions
+0:56:01 Surrogate keys
+0:57:23 Star vs snowflake schema
+0:58:48 Degenerate and role-playing dimensions
+1:00:20 The first answer
+1:01:46 ▸ dbt on Snowflake — ELT layers
+1:03:17 A dbt project
+1:04:44 Staging models
+1:06:13 ref() and the DAG
+1:07:41 Materialisations
+1:09:03 An incremental fact
+1:10:30 Generic tests
+1:11:53 Custom tests
+1:13:17 Docs and lineage
+1:14:46 ▸ Time in the warehouse — SCD types
+1:16:13 dbt snapshots
+1:17:38 Price history
+1:18:58 The price at the time of order
+1:20:19 Late-arriving facts
+1:21:40 Currency
+1:23:02 Streams
+1:24:25 Dynamic tables vs dbt incremental
+1:26:11 ▸ Every kind of fact — Three kinds of fact table
+1:27:40 The order lifecycle
+1:29:01 Returns
+1:30:16 Sessions
+1:31:44 The funnel
+1:33:15 A periodic snapshot
+1:34:42 Measures
+1:36:13 A factless fact
+1:37:40 ▸ Fast and cheap — The query profile
+1:39:10 Pruning
+1:40:40 Clustering keys
+1:42:11 Scale up vs scale out
+1:43:36 Materialised views and search optimisation
+1:45:07 Query acceleration
+1:46:39 Credits per model
+1:48:10 ▸ Serving BI and a partner — The revenue mart
+1:49:37 Cohort retention
+1:51:06 One definition of revenue
+1:52:35 Masking policies
+1:54:08 Row access policies
+1:55:37 Secure views
+1:57:04 Sharing with Brightline
+1:58:31 The dashboard
+1:59:59 ▸ Every night, and safe change — Tasks
+2:01:32 Scheduling dbt
+2:02:58 Zero-copy clone
+2:04:26 Time travel and UNDROP
+2:05:47 CI on a clone
+2:07:11 Usage views
+2:08:44 Where next
