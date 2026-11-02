@@ -1,25 +1,30 @@
 # Thumbnails
 
-`film.png` — the thumbnail for the single full-course video (`scripts/out/film.mp4`).
-A copy of `film-dark.png`. Rebuild any variant with:
+`film.png` — the thumbnail for the single full-course video (`scripts/out/film.mp4`): the dark
+star card with the **Snowflake logo** (since 2026-11-02). Rebuild it, or any variant, with:
 
 ```sh
-npm run thumb:film -- --theme dark --source star --out output/thumbnails/film-dark.png
+npm run thumb:film                                                   # film.png
+npm run thumb:film -- --mark star --out output/thumbnails/film-starmark.png
 ```
 
-Variants: `film-dark.png` (shipped), `film-ice.png` (paler blue), `film-light.png` (stands out in a
-dark feed), `film-revenue.png` (the other source, below).
+`--mark` is `snowflake` (default) | `star`. Variants, all with the star mark: `film-starmark.png`
+and `film-dark.png` (film.png before the logo), `film-ice.png` (paler blue), `film-light.png`
+(stands out in a dark feed), `film-revenue.png` (the other source, below).
 
-## The mark is ours, on purpose
+## The mark: Snowflake's logo, or ours
 
-The mark is **not** the Snowflake logo, and not a snowflake either. The logo is a Snowflake Inc.
-trademark, and a six-armed crystal of our own drawing would be the "confusingly similar"
-derivative that trademark policies forbid. The *name* "Snowflake" is fine nominatively, in the
-title and the narration; the mark is not.
+`film.png` carries the **Snowflake logo** (`--mark snowflake`), the owner's choice on 2026-11-02.
+It is simple-icons' copy, vendored at `public/vendor/snowflake-logo.svg` in Snowflake's own
+`#29B5E8`, and placed as supplied: the script never draws or alters it, and fails if the file is
+missing. The logo is a Snowflake Inc. trademark. `public/vendor/NOTICE-snowflake-logo.txt` records
+where the file came from, and has blanks to fill in before publishing: read Snowflake's brand
+guidelines and get permission where they ask for it. This is a design note, not legal advice.
 
-So the mark is what the course builds: a star schema, one fact square and three dimension
-circles, outlined, standing straight on the background with no tile behind it. White on the dark
-themes, the accent on the light one. It resembles nobody's mark and claims no endorsement.
+`--mark star` is the repo's own mark and needs no one's permission: a star schema, one fact square
+and three dimension circles, outlined, white on the dark themes and the accent on the light one.
+It is deliberately not a snowflake: a six-armed crystal of our own drawing would be the
+"confusingly similar" derivative that trademark policies forbid.
 
 ## The two sources, both real
 

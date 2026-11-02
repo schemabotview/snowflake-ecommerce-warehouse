@@ -1,0 +1,29 @@
+public/vendor/snowflake-logo.svg — the Snowflake logo on the film thumbnail (`--mark snowflake`)
+==============================================================================================
+
+WHAT IT IS
+  The Snowflake mark (the crystal, with its ®) as published by simple-icons 16.36.0 (`siSnowflake`),
+  in Snowflake's brand colour #29B5E8, which simple-icons records for it. Used by
+  scripts/thumb-film.mjs, embedded AS SUPPLIED: never recoloured, re-traced or re-proportioned.
+
+WHERE IT CAME FROM
+  Extracted on 2026-11-02 from graphl-flow's simple-icons dependency (CC0-1.0). The only change is
+  `fill="#29B5E8"` on the <svg> element: simple-icons ships its paths without a colour, and gives
+  that hex as the brand's own. simple-icons records Snowflake's brand guidelines as
+  https://www.snowflake.com/brand-guidelines/ .
+
+  CC0 covers simple-icons' copy of the drawing. It does not cover the trademark: the logo is
+  Snowflake Inc.'s.
+
+WHY THIS FILE EXISTS
+  Naming Snowflake in the title and narration is nominative use. Putting the LOGO on a video's
+  cover can suggest Snowflake produced or endorsed the course, which is the use trademark owners
+  reserve. Read Snowflake's current brand guidelines, and get permission where they require it,
+  before publishing under it.
+
+  TO BE COMPLETED BY THE OWNER before this is published:
+    guidelines read on (date) : ...........................................................
+    permission (if any)       : ...........................................................
+
+  `--mark star` (the repo's own star-schema mark, film-starmark.png) needs none of this.
+  This file is a design note, not legal advice.

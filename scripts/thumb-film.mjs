@@ -149,7 +149,30 @@ const THEMES = {
 }
 
 /**
- * The repo's own mark — NOT the Snowflake logo, and not a snowflake either. The logo is a
+ * The Snowflake logo, `--mark snowflake` (the default, the owner's choice on 2026-11-02): the
+ * simple-icons path, vendored at public/vendor/snowflake-logo.svg in Snowflake's own #29B5E8.
+ * Placed AS SUPPLIED — never recoloured, re-traced or re-proportioned; the script fails rather
+ * than draw one. See public/vendor/NOTICE-snowflake-logo.txt.
+ */
+const SNOWFLAKE_LOGO = join(process.cwd(), 'public', 'vendor', 'snowflake-logo.svg')
+
+function snowflakeSvg() {
+  if (!existsSync(SNOWFLAKE_LOGO)) {
+    throw new Error(`--mark snowflake needs ${SNOWFLAKE_LOGO}, which is not there. This script will\n`
+      + `  not draw the logo itself — vendor the real file, unaltered, with its NOTICE.`)
+  }
+  const raw = readFileSync(SNOWFLAKE_LOGO, 'utf8')
+  const vb = raw.match(/viewBox="([^"]+)"/)?.[1]
+  if (!vb) throw new Error(`${SNOWFLAKE_LOGO} has no viewBox — cannot place it without distorting it`)
+  const fill = raw.match(/<svg[^>]*\sfill="([^"]+)"/)?.[1] ?? '#29B5E8'
+  const body = raw.slice(raw.indexOf('>', raw.indexOf('<svg')) + 1, raw.lastIndexOf('</svg>'))
+    .replace(/<title>[^<]*<\/title>/, '')
+  return `<svg class="logo" viewBox="${vb}" fill="${fill}" role="img" aria-label="Snowflake"
+    xmlns="http://www.w3.org/2000/svg">${body}</svg>`
+}
+
+/**
+ * `--mark star`: the repo's own mark — NOT the Snowflake logo, and not a snowflake either. The logo is a
  * Snowflake Inc. trademark, and a six-armed crystal of our own would be the "confusingly similar"
  * derivative trademark policies forbid. The name is fine nominatively, in the title and narration.
  *
@@ -234,7 +257,7 @@ function starSvg(s) {
     xmlns="http://www.w3.org/2000/svg">${links}${fact}${dims}</svg>`
 }
 
-function pageHtml({ star, revenue, theme, head1, head2, badge }) {
+function pageHtml({ star, revenue, theme, head1, head2, badge, mark }) {
   const t = THEMES[theme]
   const fonts = [
     fontFace('ibm-plex-sans', 700, 'ibm-plex-sans-latin-700-normal.woff2'),
@@ -297,7 +320,7 @@ function pageHtml({ star, revenue, theme, head1, head2, badge }) {
   .plot{width:100%;height:100%;display:block;overflow:visible}
 </style>
 <div class="left">
-  ${markSvg(t, theme)}
+  ${mark === 'snowflake' ? snowflakeSvg() : markSvg(t, theme)}
   <div class="h">${esc(head1)}</div>
   ${head2.split(/\s+/).map((w) => `<div class="h h2">${esc(w)}</div>`).join('')}
   <div class="badge">${esc(badge)}</div>
@@ -320,7 +343,7 @@ function pageHtml({ star, revenue, theme, head1, head2, badge }) {
 // ── render ──────────────────────────────────────────────────────────────────────────────────────
 async function main() {
   const argv = process.argv.slice(2)
-  const opt = { theme: 'dark', out: 'output/thumbnails/film.png', source: 'star',
+  const opt = { theme: 'dark', out: 'output/thumbnails/film.png', source: 'star', mark: 'snowflake',
                 head1: 'LEARN', head2: 'SNOWFLAKE', badge: 'FULL COURSE' }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -330,9 +353,11 @@ async function main() {
     else if (a === '--head2') opt.head2 = argv[++i]
     else if (a === '--badge') opt.badge = argv[++i]
     else if (a === '--source') opt.source = argv[++i]
+    else if (a === '--mark') opt.mark = argv[++i]
     else { console.error(`unknown argument: ${a}`); process.exit(2) }
   }
   if (!THEMES[opt.theme]) { console.error(`unknown theme: ${opt.theme} (have: ${Object.keys(THEMES).join(', ')})`); process.exit(2) }
+  if (!['star', 'snowflake'].includes(opt.mark)) { console.error(`unknown mark: ${opt.mark} (have: star, snowflake)`); process.exit(2) }
   if (!SESSIONS[opt.source]) { console.error(`unknown source: ${opt.source} (have: ${Object.keys(SESSIONS).join(', ')})`); process.exit(2) }
 
   const star = opt.source === 'star' ? realStar() : null
@@ -394,7 +419,7 @@ async function main() {
     await page.screenshot({ path: big })
     await run(FFMPEG, ['-y', '-loglevel', 'error', '-i', big, '-vf', 'scale=1280:720:flags=lanczos', out])
     rmSync(big, { force: true })
-    console.log(`\n✅ ${out}  (${opt.theme})`)
+    console.log(`\n✅ ${out}  (${opt.theme}, mark ${opt.mark})`)
   } finally {
     await browser.close()
   }
