@@ -16,7 +16,7 @@ const both = [...may].filter((f) => june.has(f)).sort(), onlyJune = [...june].fi
 const pending = inferred[0][0] === '…'
 
 export const loadSchemaChange: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'The tracker changed shape; raw kept both',
   tree: loadTree('queries/both_shapes.sql', 'queries/both_shapes.sql', ['queries/infer.sql', 'queries/both_shapes.sql']),
   editor: { file: 'queries/both_shapes.sql', code: sql },
   session,

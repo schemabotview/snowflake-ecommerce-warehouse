@@ -10,7 +10,7 @@ import sql from '../../../spine/load/03-copy/project/load/copy.sql?raw'
 const loaded = [0, 1, 2, 3].map((n) => rowsOf(session, 'TBL', 3, n)[0])
 
 export const loadCopy: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'COPY INTO: stage to table, file by file',
   tree: loadTree('load/copy.sql', 'load/copy.sql', ['load/tables.sql', 'load/copy.sql']),
   editor: { file: 'load/copy.sql', code: sql, ...view(sql, 'COPY INTO ORDERS', 'COPY INTO CUSTOMERS', 1) },
   session,
@@ -19,19 +19,15 @@ export const loadCopy: SceneModel = ideFrame2({
     {
       type: 'group', id: 'how', badge: 1, title: 'Stage to table, file by file', tone: 'ingest', children: [
         { type: 'item', id: 'c-files', icon: 'folder', title: '@LANDING/orders/', sub: '365 daily files' },
-        { type: 'item', id: 'c-copy', icon: 'cpu', title: 'COPY INTO, on WH_LOAD', sub: 'files read in parallel, by the warehouse' },
-        { type: 'item', id: 'c-table', icon: 'table', title: 'RAW.SHOPWAVE.ORDERS', sub: 'plus _FILE and _LOADED_AT on every row' },
+        { type: 'item', id: 'c-copy', icon: 'cpu', title: 'COPY INTO, on WH_LOAD', sub: 'many files at once' },
+        { type: 'item', id: 'c-table', icon: 'table', title: 'RAW.SHOPWAVE.ORDERS', sub: 'each row keeps its file' },
       ],
     },
+    { type: 'table', title: 'What was loaded (from the run)', id: 'loaded', columns: ['table', 'files', 'rows'], rows: loaded },
     {
-      type: 'group', id: 'result', badge: 2, title: 'What was loaded', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'loaded', columns: ['table', 'files', 'rows'], rows: loaded },
-      ],
-    },
-    {
-      type: 'group', id: 'extra', badge: 3, title: 'Two columns on every row', tone: 'infra', children: [
+      type: 'group', id: 'extra', badge: 2, title: 'Two columns on every row', tone: 'infra', children: [
         { type: 'table', id: 'cols', columns: ['column', 'holds'], rows: [
-          ['_FILE', 'orders/orders-2026-01-01.csv: its source file'],
+          ['_FILE', 'the file it came from'],
           ['_LOADED_AT', 'when the COPY ran'],
         ] },
       ],
@@ -40,5 +36,6 @@ export const loadCopy: SceneModel = ideFrame2({
   edges: [
     { from: 'c-files', to: 'c-copy' },
     { from: 'c-copy', to: 'c-table' },
+    { from: 'c-table', to: 'loaded' },
   ],
 })

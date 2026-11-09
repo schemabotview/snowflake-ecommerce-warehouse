@@ -10,7 +10,7 @@ const events = cell(session, 'EVENTS'), files = cell(session, 'FILES')
 const byDevice = rowsOf(session, 'EVENT_TYPE', 3, 0, 6)
 
 export const loadVariant: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'VARIANT: a JSON document in one column',
   tree: loadTree('queries/devices.sql', 'queries/devices.sql', ['load/clicks.sql', 'queries/devices.sql']),
   editor: { file: 'queries/devices.sql', code: sql },
   session,

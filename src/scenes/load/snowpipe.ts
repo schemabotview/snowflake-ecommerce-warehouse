@@ -11,7 +11,7 @@ import sql from '../../../spine/load/09-snowpipe/project/load/pipe.sql?raw'
 const state = cell(session, 'PIPE'), payments = cell(session, 'PAYMENTS')
 
 export const loadSnowpipe: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A pipe: COPY, run for each new file',
   tree: loadTree('queries/pipe_status.sql', 'load/pipe.sql', ['load/pipe.sql', 'queries/pipe_status.sql']),
   editor: { file: 'load/pipe.sql', code: sql },
   session,
@@ -31,15 +31,6 @@ export const loadSnowpipe: SceneModel = ideFrame2({
           ['internal', 'the Snowpipe REST API', 'doc-cited'],
           ['external (S3)', 'cloud event: auto-ingest', 'doc-cited'],
         ] },
-      ],
-    },
-    {
-      type: 'group', id: 'cost', badge: 3, title: 'Who pays for the compute', tone: 'infra', children: [
-        { type: 'table', id: 'compute', columns: ['', 'runs on', 'billed'], rows: [
-          ['COPY INTO', 'WH_LOAD', 'per second, ≥ 60 s'],
-          { cells: ['a pipe', 'serverless compute', 'per file loaded'], tone: 'serve' },
-        ] },
-        { type: 'item', id: 'why', icon: 'timer', title: 'A file every day', sub: 'no warehouse waits awake for it' },
       ],
     },
   ],

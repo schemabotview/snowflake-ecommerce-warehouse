@@ -12,7 +12,7 @@ const sent = cell(session, 'LINES_SENT')
 const reasons = rowsOf(session, 'REASON', 2, 0, 6)
 
 export const loadLatin1: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'The right encoding, then reconcile what loaded',
   tree: loadTree('queries/reasons.sql', 'load/returns.sql', ['load/returns.sql', 'queries/reasons.sql']),
   editor: { file: 'load/returns.sql', code: sql },
   session,
@@ -20,7 +20,7 @@ export const loadLatin1: SceneModel = ideFrame2({
   side: [
     {
       type: 'group', id: 'bytes', badge: 1, title: 'One byte, two readings', sub: 'the ö in “Größe”', tone: 'consume', children: [
-        { type: 'item', id: 'b-byte', icon: 'file', title: 'byte F6', sub: 'what the warehouse’s system wrote' },
+        { type: 'item', id: 'b-byte', icon: 'file', title: 'byte F6', sub: 'as the old system wrote it' },
         {
           type: 'group', id: 'readings', bare: true, dir: 'row', children: [
             { type: 'item', id: 'b-latin', icon: 'check', title: 'Latin-1: ö', sub: 'one byte, one letter', stack: true, tone: 'serve' },
@@ -29,9 +29,9 @@ export const loadLatin1: SceneModel = ideFrame2({
         },
       ],
     },
+    { type: 'table', id: 'counts', title: 'The load, reconciled (from the run)', columns: ['lines sent', 'loaded', 'rejected'], rows: [{ cells: [sent, loaded, rejected], tone: 'consume' }] },
     {
-      type: 'group', id: 'split', badge: 2, title: 'The load', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'counts', columns: ['lines sent', 'loaded', 'rejected'], rows: [{ cells: [sent, loaded, rejected], tone: 'consume' }] },
+      type: 'group', id: 'split', badge: 2, title: 'The reasons, accents intact (from the run)', tone: 'neutral', children: [
         { type: 'table', id: 'reasons', columns: ['reason', 'returns'], rows: reasons },
       ],
     },
@@ -39,5 +39,6 @@ export const loadLatin1: SceneModel = ideFrame2({
   edges: [
     { from: 'b-byte', to: 'b-latin' },
     { from: 'b-byte', to: 'b-utf' },
+    { from: 'b-latin', to: 'counts' },
   ],
 })

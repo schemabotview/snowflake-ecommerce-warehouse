@@ -25,8 +25,7 @@ export const secureUsers: SceneModel = ideFrame2({
         { type: 'item', id: 'u-priv', icon: 'key', title: 'Privileges', sub: 'USAGE, SELECT … on objects' },
       ],
     },
-    { type: 'table', id: 'ana', title: 'ANA may use (from the run)', rows: mine.map((r) => ({ cells: [r] })) },
-    { type: 'table', id: 'ravi', title: 'RAVI may use', rows: ravi.map((r) => ({ cells: [r] })) },
+    { type: 'table', id: 'ana', title: 'Roles each may use (from the run)', columns: ['ANA', 'RAVI'], rows: mine.map((r, i) => [r, ravi[i] ?? '']) },
   ],
   edges: [
     { from: 'u-user', to: 'u-role', label: 'is granted' },

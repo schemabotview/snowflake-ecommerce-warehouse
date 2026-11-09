@@ -1,19 +1,20 @@
 // IDE frame v2 — graphl-flow 0.11's shared grid (python-expense-tracker's frame v2), ported via
 // java-bank (2026-11-09):
 //
-//   explorer (compact) | editor (the rows the terminal leaves)   | side pane, TITLED with the
-//                      | terminal docked under it (its transcript) | section's mental model
+//   editor (the rows the terminal leaves)     | side pane, TITLED with the section's mental model
+//   terminal docked under it (its transcript) |
 //
 // One 1344 × 756 grid at a 1% margin: every v2 frame lands on ONE fit (check-render asserts it).
 // This repo's one difference: its transcripts are already wrapped at 80 columns by scripts/spine.py
 // (COLUMNS), so the work column is the 80-column console's 760 (graphl-flow's console frame) rather
-// than the expense tracker's 72-column 715 — a transcript is never re-wrapped. The explorer stays
-// (the narration walks it), so the side pane takes what is left: 389. The editor soft-wraps past 76.
+// than the expense tracker's 72-column 715 — a transcript is never re-wrapped. There is no explorer
+// (sql-bank's choice too): the side pane takes its column, 574, room for the star (three tables
+// side by side, Courses 6–12). The editor's tab names the file. The editor soft-wraps past 76.
 // Editor and terminal share ROWS rows: the terminal takes its transcript's rows (after `keep`'s
 // folds, at least MIN_TERMINAL), the editor the rest, windowed around its highlighted lines.
 //
 // The workbench's id is `ide-bench` (v1's is `workbench`): that is how the checks tell the two apart.
-import type { Code, Edge, Group, SceneModel, SceneNode, Tree, TreeEntry } from '@graphlearning/graphl-flow'
+import type { Code, Edge, Group, SceneModel, SceneNode, TreeEntry } from '@graphlearning/graphl-flow'
 import { keepLines, langOf, terminal, trim, type Keep } from './ide'
 
 const ROW = 24
@@ -21,9 +22,8 @@ const CHROME = 51
 export const GAP = 10
 export const FULL_W = 1344
 export const FRAME_H = Math.round(FULL_W / (16 / 9))
-export const EXPLORER_W = 175
 export const WORK_W = 760
-export const SIDE_W = FULL_W - EXPLORER_W - WORK_W - 2 * GAP
+export const SIDE_W = FULL_W - WORK_W - GAP
 /** The terminal's width in columns, and the editor's soft-wrap point (it wraps a 72-column line). */
 export const COLS = 80
 const EDITOR_WRAP = 76
@@ -115,7 +115,8 @@ export function grow(code: string, ranges: [number, number][], room: number): [n
 export interface Frame {
   /** The side pane's title: the section's mental model, in a few words. */
   model: string
-  tree: TreeEntry[]
+  /** The step's files: kept for the scenes' sake, not drawn (frame v2 has no explorer). */
+  tree?: TreeEntry[]
   /** The file in the editor; `highlight` lines are found by text by the caller (lineOf). `show` is
    *  used only when the highlighted span does not fit the editor. */
   editor: { file: string; code: string; highlight?: number[]; show?: [number, number][]; lang?: Code['lang'] }
@@ -132,23 +133,8 @@ export interface Frame {
   cwd?: string
 }
 
-/** The compact explorer (175px) has no room for v1's asides: a note is dropped, the state kept. A
- *  name too long for its level is cut in the middle, its extension kept (the editor's tab has the
- *  whole path): ~19 characters fit at the top level, about one and a half fewer a level down. */
-const fit = (name: string, depth: number) => {
-  const room = 19 - Math.ceil(depth * 1.5)
-  if (name.length <= room) return name
-  const dot = name.lastIndexOf('.'), ext = dot > 0 ? name.slice(dot) : ''
-  return name.slice(0, room - ext.length - 1) + '…' + ext
-}
-const bare = (entries: TreeEntry[], depth = 0): TreeEntry[] =>
-  entries.map(({ note: _note, children, ...e }) => {
-    const named = { ...e, name: fit(e.name, depth) }
-    return children ? { ...named, children: bare(children, depth + 1) } : named
-  })
-
-/* PORTING */ export function ideFrame2(f: Frame): SceneModel { try { return build(f) } catch (e) { ((globalThis as Record<string, unknown>).__frameErrors ??= [] as string[]) as string[]; ((globalThis as Record<string, unknown>).__frameErrors as string[]).push((e as Error).message); return { nodes: [] } } }
-function build({ model, tree, editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep }: Frame): SceneModel {
+/* PORTING */ export function ideFrame2(f: Frame): SceneModel { try { return build(f) } catch (e) { console.error("FRAME " + (e as Error).message); ((globalThis as Record<string, unknown>).__frameErrors ??= [] as string[]) as string[]; ((globalThis as Record<string, unknown>).__frameErrors as string[]).push((e as Error).message); return { nodes: [] } } }
+function build({ model, editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep }: Frame): SceneModel {
   const term = terminal(session)
   const termShow = keep && keepLines(term, keep)
   const rows = termRows(term, termShow)
@@ -173,7 +159,6 @@ function build({ model, tree, editor, session, side, edges = [], project = 'shop
     tone: 'ingest', fill: true, w: WORK_W, minH: editorH(editorRows), ...(show && { show }),
   }
   const tm: Code = { type: 'code', id: 'terminal', terminal: true, filename: `terminal — ${cwd}`, code: term, ...(termShow && { show: termShow }), fill: true, w: WORK_W, minH: FRAME_H - GAP - editorH(editorRows) }
-  const explorer: Tree = { type: 'tree', id: 'explorer', title: project, entries: bare(tree), compact: true, fill: true, w: EXPLORER_W, minH: FRAME_H }
   const pane: Group = { type: 'group', id: 'side', title: model, tone: 'ingest', spread: true, w: SIDE_W, minH: FRAME_H, children: side }
-  return { dir: 'row', padding: 0.01, nodes: [explorer, { type: 'group', id: 'ide-bench', bare: true, children: [ed, tm] }, pane], edges }
+  return { dir: 'row', padding: 0.01, nodes: [{ type: 'group', id: 'ide-bench', bare: true, children: [ed, tm] }, pane], edges }
 }

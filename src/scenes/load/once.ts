@@ -10,26 +10,22 @@ import sql from '../../../spine/load/04-once/project/queries/copy_again.sql?raw'
 const orders = cell(session, 'ORDERS'), files = cell(session, 'FILES')
 
 export const loadOnce: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Load metadata: each file loads once',
   tree: loadTree('queries/copy_again.sql', 'queries/copy_again.sql'),
   editor: { file: 'queries/copy_again.sql', code: sql },
   session,
   keep: ['$ bash', 'Copy executed with 0 files processed', ['| ORDERS', '| 20024']],
   side: [
     {
-      type: 'group', id: 'memory', badge: 1, title: 'Load metadata', sub: 'kept with the table, for 64 days', tone: 'infra', children: [
-        { type: 'item', id: 'm-file', icon: 'file', title: 'orders-2026-01-01.csv', sub: 'name, size and checksum' },
-        { type: 'item', id: 'm-check', icon: 'search', title: 'Loaded before?', sub: 'checked for every file, every COPY' },
-        { type: 'item', id: 'm-skip', icon: 'check', title: 'Skipped', sub: 'a re-run never duplicates rows' },
+      type: 'group', id: 'memory', badge: 1, title: 'Load metadata', sub: 'kept with the table, for 64 days', tone: 'infra', dir: 'row', children: [
+        { type: 'item', id: 'm-file', icon: 'file', title: 'A loaded file', sub: 'its name, size, checksum', stack: true },
+        { type: 'item', id: 'm-check', icon: 'search', title: 'Loaded before?', sub: 'every file, every COPY', stack: true },
+        { type: 'item', id: 'm-skip', icon: 'check', title: 'Skipped', sub: 'never duplicated', stack: true },
       ],
     },
+    { type: 'table', title: 'ORDERS after the second COPY (from the run)', id: 'count', columns: ['orders', 'from files'], rows: [[orders, files]] },
     {
-      type: 'group', id: 'after', badge: 2, title: 'ORDERS after the second COPY', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'count', columns: ['orders', 'from files'], rows: [[orders, files]] },
-      ],
-    },
-    {
-      type: 'group', id: 'exceptions', badge: 3, title: 'When a file does load again', tone: 'consume', children: [
+      type: 'group', id: 'exceptions', badge: 2, title: 'When a file does load again', tone: 'consume', children: [
         { type: 'table', id: 'cases', columns: ['', 'loads?'], rows: [
           ['the same file, again', 'no'], ['the same name, new contents', 'yes'],
           ['FORCE = TRUE', 'yes: duplicates'], ['older than 64 days', 'unknown: skipped by default'],
@@ -40,5 +36,6 @@ export const loadOnce: SceneModel = ideFrame2({
   edges: [
     { from: 'm-file', to: 'm-check' },
     { from: 'm-check', to: 'm-skip', label: 'yes' },
+    { from: 'm-skip', to: 'count' },
   ],
 })

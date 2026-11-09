@@ -20,7 +20,7 @@ const table = (id: string, title: string, rows: [string, string?][]): Table => (
 })
 
 export const introQuestions: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A whole-year question on a one-order database',
   tree: projectTree(['shop/schema.sql', 'shop/load.sql', 'queries/revenue_by_month.sql'], {
     active: 'queries/revenue_by_month.sql', made: { 'data/': 'shopwave_gen' },
   }),
@@ -40,14 +40,7 @@ export const introQuestions: SceneModel = ideFrame2({
       ],
     },
     {
-      type: 'group', id: 'built-for', badge: 2, title: 'What the shop database is built for', tone: 'neutral', children: [
-        { type: 'item', id: 'oltp-one', icon: 'card', title: 'One order at a time', sub: 'insert it, update it, find it by its key' },
-        { type: 'item', id: 'oltp-all', icon: 'search', title: 'This question: the whole year', sub: 'every order line read, joined twice, grouped by month' },
-        { type: 'item', id: 'oltp-next', icon: 'zap', title: 'Every analyst, every month', sub: 'on the same server that takes the orders' },
-      ],
-    },
-    {
-      type: 'group', id: 'answer', badge: 3, title: 'The answer: revenue by month', sub: 'the six columns added up, EUR thousands', tone: 'serve', children: [
+      type: 'group', id: 'answer', badge: 2, title: 'The answer: revenue by month', sub: 'the six columns added up, EUR thousands', tone: 'serve', children: [
         {
           type: 'plot', id: 'by-month', compact: true, x: { labels: LETTERS }, y: { min: 0, max: 300, step: 50 },
           series: [{ kind: 'bar', points: months.map(({ month, total }) => [month - 1, Math.round(total / 1000)]) }],
