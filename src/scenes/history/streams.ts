@@ -11,7 +11,7 @@ const changes = rowsOf(session, 'ACTION', 3, 0, 2)
 const left = cell(session, 'LEFT_IN_STREAM')
 
 export const historyStreams: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A stream: what changed since you last read',
   tree: historyTree('load/order_changes.sql', 'load/order_changes.sql', ['setup/stream_grants.sql', 'load/order_changes.sql']),
   editor: { file: 'load/order_changes.sql', code: sql, ...view(sql, 'CREATE TABLE IF NOT EXISTS ORDER_CHANGES', undefined, 0) },
   session,
@@ -21,20 +21,12 @@ export const historyStreams: SceneModel = ideFrame2({
       type: 'group', id: 'how', badge: 1, title: 'A stream: an offset on a table', tone: 'infra', children: [
         { type: 'item', id: 'st-table', icon: 'table', title: 'ORDER_CHANGES', sub: 'rows inserted by COPY' },
         { type: 'item', id: 'st-stream', icon: 'stream', title: 'ORDER_CHANGES_STREAM', sub: 'what changed since the offset' },
-        { type: 'item', id: 'st-consume', icon: 'check', title: 'INSERT … SELECT FROM the stream', sub: 'consumes it: the offset moves on' },
+        { type: 'item', id: 'st-consume', icon: 'check', title: 'INSERT … SELECT FROM the stream', sub: `consumed: ${left} rows left (from the run)` },
       ],
     },
     {
       type: 'group', id: 'seen', badge: 2, title: 'What the stream held', sub: 'from the run', tone: 'neutral', children: [
         { type: 'table', id: 'c', columns: ['action', 'status', 'changes'], rows: changes },
-        { type: 'table', id: 'after', columns: ['left in the stream after the INSERT'], rows: [[left]] },
-      ],
-    },
-    {
-      type: 'group', id: 'meta', badge: 3, title: 'What a stream adds to each row', tone: 'infra', children: [
-        { type: 'table', id: 'm', columns: ['column', 'says'], rows: [
-          ['METADATA$ACTION', 'INSERT or DELETE'], ['METADATA$ISUPDATE', 'part of an UPDATE?'], ['METADATA$ROW_ID', 'which row, for good'],
-        ] },
       ],
     },
   ],

@@ -9,7 +9,7 @@ import sql from '../../../spine/history/03-prices/project/dbt/models/marts/core/
 const versions = rowsOf(session, 'PRODUCT_ID', 5, 0, 6)
 
 export const historyPrices: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A price log: history the source already keeps',
   tree: historyTree('queries/price_history.sql', 'dbt/models/marts/core/dim_product.sql', ['load/product_prices.sql', 'dbt/models/staging/stg_product_prices.sql', 'dbt/models/marts/core/dim_product.sql', 'queries/price_history.sql']),
   editor: { file: 'dbt/models/marts/core/dim_product.sql', code: sql },
   session,
@@ -21,20 +21,7 @@ export const historyPrices: SceneModel = ideFrame2({
         { type: 'item', id: 'h-log', icon: 'file', title: 'Prices', sub: 'the source keeps a log: model it', stack: true, tone: 'serve' },
       ],
     },
-    {
-      type: 'group', id: 'rows', badge: 2, title: 'Products priced three ways in 2026', sub: 'from the run', tone: 'serve', children: [
-        { type: 'table', id: 'v', columns: ['id', 'product', 'EUR', 'from', 'to'], rows: versions },
-      ],
-    },
-    {
-      type: 'group', id: 'rule', badge: 3, title: 'The rule every version keeps', tone: 'infra', children: [
-        { type: 'table', id: 'r', columns: ['', 'meaning'], rows: [
-          ['valid_from ≤ day < valid_to', 'the version in force that day'],
-          ['valid_to = next valid_from', 'no gaps, no overlaps'],
-          { cells: ['valid_to = 9999-12-31', 'the current price'], tone: 'serve' },
-        ] },
-      ],
-    },
+    { type: 'table', title: 'Products priced three ways in 2026 (from the run)', id: 'v', columns: ['id', 'product', 'EUR', 'from', 'to'], rows: versions },
   ],
-  edges: [],
+  edges: [{ from: 'h-log', to: 'v' }],
 })

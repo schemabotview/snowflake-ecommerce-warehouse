@@ -11,7 +11,7 @@ const orders = rowsOf(session, 'ORDER_ID', 5, 0, 5)
 const lines = cell(session, 'LINES'), listed = cell(session, 'PRICED_AS_LISTED')
 
 export const historyPointInTime: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Point in time: the version valid when it happened',
   tree: historyTree('queries/point_in_time.sql', 'dbt/models/marts/core/fct_order_lines.sql', ['dbt/models/marts/core/dim_customer.sql', 'dbt/models/marts/core/fct_order_lines.sql', 'queries/point_in_time.sql']),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, 'from {{ ref', '{% endif %}', 0) },
   session,
@@ -29,6 +29,7 @@ export const historyPointInTime: SceneModel = ideFrame2({
         { type: 'table', id: 'o', columns: ['order', 'ordered', 'country then', 'tier then', 'country now'], rows: orders },
       ],
     },
+    { type: 'item', id: 'priced', icon: 'check', tone: 'serve', title: `Priced as listed that day: ${listed} of ${lines} lines`, sub: 'every order line against its product version, from the run' },
   ],
   edges: [
     { from: 'p-order', to: 'p-ver' },

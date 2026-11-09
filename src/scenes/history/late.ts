@@ -10,17 +10,17 @@ import sql from '../../../spine/history/05-late/project/queries/late.sql?raw'
 const late = rowsOf(session, 'DAYS_LATE', 2, 0, 4)
 
 export const historyLate: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Late data: counted on the day it happened',
   tree: historyTree('queries/late.sql', 'queries/late.sql'),
   editor: { file: 'queries/late.sql', code: sql },
   session,
   keep: ['$ bash model/as-transformer.sh', ['| DAYS_LATE', '| 3 ']],
   side: [
     {
-      type: 'group', id: 'when', badge: 1, title: 'Two dates on every event', tone: 'infra', children: [
-        { type: 'item', id: 'w-happen', icon: 'clock', title: 'When it happened', sub: 'event_ts: decides the day it counts for' },
-        { type: 'item', id: 'w-arrive', icon: 'file', title: 'When it arrived', sub: 'the file’s day: decides when we learn of it' },
-        { type: 'item', id: 'w-right', icon: 'check', title: 'It lands in its own day', sub: 'and that day’s numbers change, after the fact' },
+      type: 'group', id: 'when', badge: 1, title: 'Two dates on every event', tone: 'infra', dir: 'row', children: [
+        { type: 'item', id: 'w-happen', icon: 'clock', title: 'When it happened', sub: 'event_ts: its day', stack: true },
+        { type: 'item', id: 'w-arrive', icon: 'file', title: 'When it arrived', sub: 'the file’s day', stack: true },
+        { type: 'item', id: 'w-right', icon: 'check', title: 'Its own day', sub: 'whose numbers change', stack: true },
       ],
     },
     {
@@ -28,6 +28,7 @@ export const historyLate: SceneModel = ideFrame2({
         { type: 'table', id: 'l', columns: ['days late', 'events'], rows: late },
       ],
     },
+    { type: 'item', id: 'inferred', icon: 'users', tone: 'consume', title: 'An unseen customer: inferred member', sub: 'a placeholder row, filled in when they arrive' },
   ],
   edges: [
     { from: 'w-happen', to: 'w-arrive', label: 'up to 3 days' },

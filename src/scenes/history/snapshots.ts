@@ -10,7 +10,7 @@ import code from '../../../spine/history/02-snapshots/project/load/month_ends.sh
 const versions = rowsOf(session, 'CUSTOMER_ID', 5, 0, 4)
 
 export const historySnapshots: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A snapshot: every version the source forgets',
   tree: historyTree('queries/customer_81.sql', 'load/month_ends.sh', ['load/customer_changes.sql', 'load/customers_as_of.sql', 'load/month_ends.sh', 'dbt/snapshots/snap_customers.yml', 'queries/customer_81.sql']),
   editor: { file: 'load/month_ends.sh', code, lang: 'shell' },
   session,
@@ -23,22 +23,12 @@ export const historySnapshots: SceneModel = ideFrame2({
         { type: 'item', id: 's-table', icon: 'layers', title: 'SNAP_CUSTOMERS', sub: 'every version, dbt_valid_from / dbt_valid_to' },
       ],
     },
-    {
-      type: 'group', id: 'rows', badge: 2, title: 'Customer 81’s versions', sub: 'from the run', tone: 'serve', children: [
-        { type: 'table', id: 'v', columns: ['id', 'country', 'tier', 'valid from', 'valid to'], rows: versions },
-      ],
-    },
-    {
-      type: 'group', id: 'cols', badge: 3, title: 'Columns dbt adds', tone: 'neutral', children: [
-        { type: 'table', id: 'c', columns: ['column', 'holds'], rows: [
-          ['dbt_valid_from', 'when this version began'], ['dbt_valid_to', 'when it ended; NULL: current'],
-          ['dbt_scd_id', 'a key for the version'],
-        ] },
-      ],
-    },
+    { type: 'table', title: 'Customer 81’s versions (from the run)', id: 'v', columns: ['id', 'country', 'tier', 'valid from', 'valid to'], rows: versions },
+    { type: 'item', id: 'catch', icon: 'zap', tone: 'consume', title: 'Two changes between runs: one version', sub: 'a snapshot keeps only what it sees' },
   ],
   edges: [
     { from: 's-state', to: 's-snap' },
     { from: 's-snap', to: 's-table' },
+    { from: 's-table', to: 'v' },
   ],
 })

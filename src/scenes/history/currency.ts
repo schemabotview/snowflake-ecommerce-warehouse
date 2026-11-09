@@ -11,18 +11,15 @@ const s = star({ stage: 'roles', dims: ['date', 'customer', 'product', 'currency
 const sums = rowsOf(session, 'CODE', 4, 0, 5)
 
 export const historyCurrency: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Every currency, reported in euros',
   tree: historyTree('queries/currency.sql', 'dbt/models/marts/core/fct_payments.sql', ['dbt/models/marts/core/dim_currency.sql', 'dbt/models/marts/core/fct_payments.sql', 'queries/currency.sql']),
   editor: { file: 'dbt/models/marts/core/fct_payments.sql', code: sql },
   session,
   keep: ['$ dbt run --select dim_currency fct_payments', 'Done. PASS=2', ['| CODE', '| None']],
   side: [
     s.node,
-    {
-      type: 'group', id: 'sums', badge: 1, title: 'Payments by currency', sub: 'from the run: the last row is the total', tone: 'serve', children: [
-        { type: 'table', id: 'cur', columns: ['currency', 'payments', 'amount', 'in EUR'], rows: sums },
-      ],
-    },
+    { type: 'table', title: 'Payments by currency (from the run)', id: 'cur', columns: ['currency', 'payments', 'amount', 'in EUR'], rows: sums },
+    { type: 'item', id: 'never', icon: 'zap', tone: 'consume', title: 'Only amount_eur adds up' },
   ],
   edges: s.edges,
 })
