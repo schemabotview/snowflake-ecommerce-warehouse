@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { transformTree } from './tree'
 import { node } from './dag'
 import session from '../../../spine/transform/09-docs/session.txt?raw'
@@ -17,7 +17,8 @@ const core = [...up].filter((n) => isModel(n) && !n.startsWith('stg_')).sort()
 const raw = [...up].filter((n) => !isModel(n)).sort()
 const chip = (prefix: string) => (n: string) => ({ type: 'item' as const, id: `${prefix}-${n}`, title: n, chip: true })
 
-export const transformDocs: SceneModel = ideFrame({
+export const transformDocs: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/lineage.py', 'dbt/lineage.py', ['dbt/lineage.py'], { 'dbt/target/': 'manifest, catalog' }),
   editor: { file: 'dbt/lineage.py', code },
   session,

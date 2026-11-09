@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/07-measures/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/facts/07-measures/project/queries/measures.sql?r
 // count's two answers are the run's.
 const n = (column: string) => cell(session, column)
 
-export const factsMeasures: SceneModel = ideFrame({
+export const factsMeasures: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/measures.sql', 'queries/measures.sql'),
   editor: { file: 'queries/measures.sql', code: sql },
   session,
@@ -40,8 +41,6 @@ export const factsMeasures: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'ratio', tone: 'serve', text: 'A ratio is rebuilt from its sums at every level it is shown: SUM(revenue) ÷ SUM(orders), never AVG of an average.' },
-    { type: 'note', id: 'time', tone: 'consume', text: `Across time a semi-additive measure takes the last value, or the average, never the sum: ${n('GOLD_SUMMED_WRONG')} counts the same customers month after month.` },
   ],
   edges: [],
 })

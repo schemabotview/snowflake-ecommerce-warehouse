@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { cell, rowsOf } from '../recorded'
 import { historyTree } from './tree'
@@ -10,7 +10,8 @@ import sql from '../../../spine/history/04-point-in-time/project/dbt/models/mart
 const orders = rowsOf(session, 'ORDER_ID', 5, 0, 5)
 const lines = cell(session, 'LINES'), listed = cell(session, 'PRICED_AS_LISTED')
 
-export const historyPointInTime: SceneModel = ideFrame({
+export const historyPointInTime: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/point_in_time.sql', 'dbt/models/marts/core/fct_order_lines.sql', ['dbt/models/marts/core/dim_customer.sql', 'dbt/models/marts/core/fct_order_lines.sql', 'queries/point_in_time.sql']),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, 'from {{ ref', '{% endif %}', 0) },
   session,
@@ -28,8 +29,6 @@ export const historyPointInTime: SceneModel = ideFrame({
         { type: 'table', id: 'o', columns: ['order', 'ordered', 'country then', 'tier then', 'country now'], rows: orders },
       ],
     },
-    { type: 'note', id: 'prices', tone: 'neutral', text: `Every line priced as its product version listed it that day: ${listed} of ${lines}.` },
-    { type: 'note', id: 'two', tone: 'neutral', text: 'Two conditions in each join: the natural key, and the moment. Drop the second and every version matches: the grain trap again.' },
   ],
   edges: [
     { from: 'p-order', to: 'p-ver' },

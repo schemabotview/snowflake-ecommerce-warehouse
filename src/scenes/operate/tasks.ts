@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { operateTree } from './tree'
 import session from '../../../spine/operate/01-tasks/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/operate/01-tasks/project/ops/tasks.sql?raw'
 // a two-task graph that runs it. The root's schedule is left suspended (a trial must not spend).
 const tasks = rowsOf(session, 'name', 3, 0, 2)
 
-export const operateTasks: SceneModel = ideFrame({
+export const operateTasks: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: operateTree('ops/tasks.sql', 'ops/tasks.sql', ['setup/ops_grants.sql', 'ops/snowflake/profiles.yml', 'ops/deploy.sh', 'ops/tasks.sql']),
   editor: { file: 'ops/tasks.sql', code: sql },
   session,
@@ -27,9 +28,6 @@ export const operateTasks: SceneModel = ideFrame({
         { type: 'table', id: 's', columns: ['task', 'schedule', 'state'], rows: tasks.map(([n, s, st]) => [n, s === 'None' ? '—' : s.replace('USING CRON ', ''), st]) },
       ],
     },
-    { type: 'note', id: 'child', tone: 'neutral', text: 'A child task has no schedule of its own: it runs when the task before it finishes, so one schedule drives the whole graph.' },
-    { type: 'note', id: 'where', tone: 'serve', text: 'dbt runs INSIDE Snowflake: snow dbt deploy copied the project in as SHOPWAVE_DBT, so no server has to stay awake for the night.' },
-    { type: 'note', id: 'role', tone: 'neutral', text: 'A task runs as the role that owns it, TRANSFORMER: the one role the row access policy lets read every customer.' },
   ],
   edges: [
     { from: 't-cron', to: 't-snap' },

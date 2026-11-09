@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { fromRun, isRecorded } from '../recorded'
 import { transformTree } from './tree'
@@ -12,7 +12,8 @@ const flat = session.replace(/^(.{80})\n/gm, '$1')
 const runs = isRecorded(session) ? [...flat.matchAll(/incremental model \S+\s+\[SUCCESS (\d+) in/g)].map((m) => `${m[1]} rows merged`) : ['…', '…']
 const done = fromRun(session, /(Done\..*)$/m)
 
-export const transformIncremental: SceneModel = ideFrame({
+export const transformIncremental: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/models/marts/core/fct_order_lines.sql', 'dbt/models/marts/core/fct_order_lines.sql'),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, '{{ config', '{% endif %}', 0) },
   session,
@@ -44,9 +45,6 @@ export const transformIncremental: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'done', tone: 'neutral', text: `dbt’s summary: ${done}` },
-    { type: 'note', id: 'why', tone: 'serve', text: 'A year of order lines is small; ten years are not. Incremental rebuilds only what changed, every night, and the cost of a night stays flat as history grows.' },
-    { type: 'note', id: 'late', tone: 'consume', text: 'The filter sees only NEW orders. An order whose status changes after it was loaded is missed: Course 8 handles change.' },
   ],
   edges: [
     { from: 'f-all', to: 'f-res' },

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { rowsOf } from '../recorded'
 import { loadTree } from './tree'
@@ -9,7 +9,8 @@ import sql from '../../../spine/load/03-copy/project/load/copy.sql?raw'
 // §5.3 — COPY INTO: four tables loaded file by file, each row stamped with its file (recorded on Snowflake).
 const loaded = [0, 1, 2, 3].map((n) => rowsOf(session, 'TBL', 3, n)[0])
 
-export const loadCopy: SceneModel = ideFrame({
+export const loadCopy: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('load/copy.sql', 'load/copy.sql', ['load/tables.sql', 'load/copy.sql']),
   editor: { file: 'load/copy.sql', code: sql, ...view(sql, 'COPY INTO ORDERS', 'COPY INTO CUSTOMERS', 1) },
   session,
@@ -35,7 +36,6 @@ export const loadCopy: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'lineage', tone: 'neutral', text: 'METADATA$FILENAME keeps each row’s source file: a wrong number can always be traced to the file it came from.' },
   ],
   edges: [
     { from: 'c-files', to: 'c-copy' },

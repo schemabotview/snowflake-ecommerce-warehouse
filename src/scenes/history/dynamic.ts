@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { historyTree } from './tree'
 import session from '../../../spine/history/08-dynamic-tables/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/history/08-dynamic-tables/project/queries/dynami
 // demonstration must not keep spending trial credits.
 const shown = rowsOf(session, 'name', 4, 0, 1)
 
-export const historyDynamic: SceneModel = ideFrame({
+export const historyDynamic: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/dynamic.sql', 'queries/dynamic.sql', ['setup/dynamic_grants.sql', 'queries/dynamic.sql']),
   editor: { file: 'queries/dynamic.sql', code: sql },
   session,
@@ -37,7 +38,6 @@ export const historyDynamic: SceneModel = ideFrame({
         { type: 'item', id: 'c-stream', icon: 'stream', title: 'Change feeds: a stream', sub: 'consumed by whatever runs next (8.7)' },
       ],
     },
-    { type: 'note', id: 'cost', tone: 'consume', text: 'A dynamic table refreshes on its warehouse whenever its lag requires: freshness is paid for in credits. This one is suspended.' },
   ],
   edges: [],
 })

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { serveTree } from './tree'
 import session from '../../../spine/serve/01-revenue/session.txt?raw'
@@ -8,7 +8,8 @@ import sql from '../../../spine/serve/01-revenue/project/dbt/models/marts/bi/mar
 // §11.1 — The revenue mart (recorded on Snowflake): the star, collapsed to what the dashboard reads.
 const week = rowsOf(session, 'DATE', 2, 0, 7).map(([d, r]) => (d === '2026-11-27' ? { cells: [`${d} (Black Friday)`, r], tone: 'serve' as const } : [d, r]))
 
-export const serveRevenue: SceneModel = ideFrame({
+export const serveRevenue: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: serveTree('queries/revenue.sql', 'dbt/models/marts/bi/mart_revenue.sql', ['dbt/models/marts/bi/mart_revenue.sql', 'queries/revenue.sql']),
   editor: { file: 'dbt/models/marts/bi/mart_revenue.sql', code: sql },
   session,
@@ -26,7 +27,6 @@ export const serveRevenue: SceneModel = ideFrame({
         { type: 'table', id: 'w', columns: ['day', 'revenue €'], rows: week },
       ],
     },
-    { type: 'note', id: 'aov', tone: 'consume', text: 'Orders and AOV are per category: an order with two categories counts in both, so a day’s orders are not the sum of its rows.' },
   ],
   edges: [
     { from: 'r-star', to: 'r-mart' },

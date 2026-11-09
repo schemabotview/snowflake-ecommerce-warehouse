@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/03-returns/session.txt?raw'
@@ -10,7 +10,8 @@ const reasons = rowsOf(session, 'REASON', 4, 0, 6)
 const returned = reasons.reduce((a, r) => a + Number(r[1]), 0)
 const matched = reasons.reduce((a, r) => a + Number(r[2]), 0)
 
-export const factsReturns: SceneModel = ideFrame({
+export const factsReturns: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/returns.sql', 'dbt/models/marts/fct_returns.sql', ['dbt/models/marts/fct_returns.sql', 'queries/returns.sql']),
   editor: { file: 'dbt/models/marts/fct_returns.sql', code: sql },
   session,
@@ -28,8 +29,6 @@ export const factsReturns: SceneModel = ideFrame({
         { type: 'table', id: 'rs', columns: ['reason', 'returns', 'matched', 'refund €'], rows: reasons },
       ],
     },
-    { type: 'note', id: 'keys', tone: 'infra', text: 'A return carries the sale’s own keys (customer, product), so refunds slice by every dimension sales do, and the two facts line up.' },
-    { type: 'note', id: 'all', tone: 'serve', text: `${matched} of ${returned} returns found their order line. The reasons are as each warehouse team typed them, in their own language.` },
   ],
   edges: [
     { from: 'r-ret', to: 'r-line' },

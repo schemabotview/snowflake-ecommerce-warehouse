@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/07-schema-change/session.txt?raw'
@@ -15,7 +15,8 @@ const may = fields('May 31'), june = fields('June 1')
 const both = [...may].filter((f) => june.has(f)).sort(), onlyJune = [...june].filter((f) => !may.has(f)), onlyMay = [...may].filter((f) => !june.has(f))
 const pending = inferred[0][0] === '…'
 
-export const loadSchemaChange: SceneModel = ideFrame({
+export const loadSchemaChange: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/both_shapes.sql', 'queries/both_shapes.sql', ['queries/infer.sql', 'queries/both_shapes.sql']),
   editor: { file: 'queries/both_shapes.sql', code: sql },
   session,
@@ -38,7 +39,6 @@ export const loadSchemaChange: SceneModel = ideFrame({
         { type: 'item', id: 'f-june', icon: 'zap', title: pending ? '…' : `June 1 only: ${onlyJune.join(', ') || 'none'}`, sub: pending ? '…' : `May 31 only: ${onlyMay.join(', ') || 'none'}`, tone: 'consume' },
       ],
     },
-    { type: 'note', id: 'raw-keeps', tone: 'neutral', text: 'RAW keeps both shapes exactly as sent. One name for the device is staging’s job (Course 7), not the loader’s.' },
   ],
   edges: [{ from: 'before.device', to: 'after.device_type', label: 'renamed' }],
 })

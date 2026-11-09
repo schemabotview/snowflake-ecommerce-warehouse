@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { serveTree } from './tree'
 import session from '../../../spine/serve/07-share/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/serve/07-share/project/govern/brightline.sql?raw
 const seen = rowsOf(session, 'CAMPAIGN_ID', 3, 0, 4)
 const share = rowsOf(session, 'kind', 3, 0, 1)
 
-export const serveShare: SceneModel = ideFrame({
+export const serveShare: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: serveTree('govern/brightline.sql', 'govern/brightline.sql', ['govern/share.sql', 'govern/reader.sh', 'govern/reader_locator.sh', 'govern/as-brightline.sh', 'govern/brightline.sql']),
   editor: { file: 'govern/brightline.sql', code: sql },
   session,
@@ -33,7 +34,6 @@ export const serveShare: SceneModel = ideFrame({
         { type: 'table', id: 'c', columns: ['campaign', 'visits', 'buying'], rows: seen },
       ],
     },
-    { type: 'note', id: 'no', tone: 'consume', text: 'Anything else in the shared database, such as MARTS.FCT_SESSIONS, does not exist for Brightline: the last query is refused.' },
   ],
   edges: [
     { from: 'p-view', to: 'p-share' },

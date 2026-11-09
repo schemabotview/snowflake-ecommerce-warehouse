@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { performTree } from './tree'
 import session from '../../../spine/perform/07-credits/session.txt?raw'
@@ -9,7 +9,8 @@ import macro from '../../../spine/perform/07-credits/project/dbt/macros/set_quer
 // then the warehouse's history grouped by tag. Seconds are volatile: read, never narrated.
 const models = rowsOf(session, 'MODEL', 4, 0, 6)
 
-export const performCredits: SceneModel = ideFrame({
+export const performCredits: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: performTree('queries/credits.sql', 'dbt/macros/set_query_tag.sql', ['dbt/macros/set_query_tag.sql', 'queries/credits.sql']),
   editor: { file: 'dbt/macros/set_query_tag.sql', code: macro },
   session,
@@ -27,7 +28,6 @@ export const performCredits: SceneModel = ideFrame({
         { type: 'table', id: 't', columns: ['model', 'queries', 'seconds', '%'], rows: models },
       ],
     },
-    { type: 'note', id: 'bill', tone: 'consume', text: 'A warehouse is billed for every second it runs (at least a minute each time it resumes), not per query. Time share is how a run’s bill splits across models.' },
   ],
   edges: [
     { from: 'k-tag', to: 'k-hist' },

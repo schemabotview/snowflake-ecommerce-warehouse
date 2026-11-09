@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame, lineOf } from '../ide'
+import { lineOf } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/02-lifecycle/session.txt?raw'
@@ -10,7 +11,8 @@ const n = (column: string) => cell(session, column)
 const orders = rowsOf(session, 'ORDER_ID', 5, 0, 2).map((r) => r.map((c) => (c === 'None' ? '—' : c)))
 const milestone = (id: string, title: string, column: string) => ({ type: 'item' as const, id, icon: 'check', title, sub: `${n(column)} orders` })
 
-export const factsLifecycle: SceneModel = ideFrame({
+export const factsLifecycle: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/lifecycle.sql', 'dbt/models/marts/fct_order_lifecycle.sql', ['load/order_changes_all.sql', 'dbt/models/staging/stg_order_changes.sql', 'dbt/models/marts/fct_order_lifecycle.sql', 'queries/lifecycle.sql']),
   editor: { file: 'dbt/models/marts/fct_order_lifecycle.sql', code: sql, show: [[lineOf(sql, 'with changes'), lineOf(sql, 'group by order_id')], [lineOf(sql, '    o.order_id,') - 1, lineOf(sql, 'left join returned')]] },
   session,
@@ -30,8 +32,6 @@ export const factsLifecycle: SceneModel = ideFrame({
         { type: 'table', id: 'o', columns: ['order', 'placed', 'paid', 'shipped', 'delivered'], rows: orders },
       ],
     },
-    { type: 'note', id: 'upd', tone: 'consume', text: 'The one fact table whose rows CHANGE: an order’s row is rewritten as each milestone arrives. This one is rebuilt every run.' },
-    { type: 'note', id: 'avg', tone: 'infra', text: `Placed to delivered: ${n('AVG_DAYS_TO_DELIVER')} days on average. The span between milestones is the measure this table exists for.` },
   ],
   edges: [
     { from: 'm-placed', to: 'm-paid' },

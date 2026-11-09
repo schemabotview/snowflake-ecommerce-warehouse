@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/02-formats/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/load/02-formats/project/setup/file_formats.sql?r
 // (recorded on Snowflake).
 const peek = rowsOf(session, 'ORDER_ID', 4, 0, 3)
 
-export const loadFormats: SceneModel = ideFrame({
+export const loadFormats: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/peek.sql', 'setup/file_formats.sql', ['setup/file_formats.sql', 'queries/peek.sql']),
   editor: { file: 'setup/file_formats.sql', code: sql },
   session,

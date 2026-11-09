@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { transformTree } from './tree'
 import session from '../../../spine/transform/05-materialisations/session.txt?raw'
@@ -8,7 +8,8 @@ import sql from '../../../spine/transform/05-materialisations/project/dbt/models
 // §7.5 — Materialisations: dbt run --select marts, then what Snowflake holds (recorded on Snowflake).
 const built = rowsOf(session, 'TABLE_SCHEMA', 3, 0, 12)
 
-export const transformMaterialisations: SceneModel = ideFrame({
+export const transformMaterialisations: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('queries/materialised.sql', 'dbt/models/marts/core/int_first_payment.sql', ['dbt/models/marts/core/int_first_payment.sql', 'queries/materialised.sql']),
   editor: { file: 'dbt/models/marts/core/int_first_payment.sql', code: sql },
   session,
@@ -29,7 +30,6 @@ export const transformMaterialisations: SceneModel = ideFrame({
         { type: 'table', id: 'objects', columns: ['schema', 'name', 'type'], rows: built },
       ],
     },
-    { type: 'note', id: 'check', tone: 'neutral', text: 'int_first_payment is in the project and nowhere in Snowflake: ephemeral, as configured.' },
   ],
   edges: [],
 })

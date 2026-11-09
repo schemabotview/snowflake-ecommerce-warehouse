@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/05-validate/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/load/05-validate/project/queries/validate_return
 // Snowflake). The generator plants Latin-1 text and 3 malformed rows a month.
 const errors = rowsOf(session, 'ERROR', 2, 0, 3)
 
-export const loadValidate: SceneModel = ideFrame({
+export const loadValidate: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/validate_returns.sql', 'queries/validate_returns.sql', ['load/returns_table.sql', 'queries/validate_returns.sql']),
   editor: { file: 'queries/validate_returns.sql', code: sql },
   session,
@@ -39,7 +40,6 @@ export const loadValidate: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'free', tone: 'neutral', text: 'VALIDATION_MODE reads every file and writes nothing: a dry run that costs only the warehouse time.' },
   ],
   edges: [
     { from: 'v-files', to: 'v-enc' },

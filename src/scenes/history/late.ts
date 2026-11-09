@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { historyTree } from './tree'
 import session from '../../../spine/history/05-late/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/history/05-late/project/queries/late.sql?raw'
 // recorded on Snowflake). The inferred member is doc-cited (Kimball & Ross, ch. 19).
 const late = rowsOf(session, 'DAYS_LATE', 2, 0, 4)
 
-export const historyLate: SceneModel = ideFrame({
+export const historyLate: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/late.sql', 'queries/late.sql'),
   editor: { file: 'queries/late.sql', code: sql },
   session,
@@ -27,7 +28,6 @@ export const historyLate: SceneModel = ideFrame({
         { type: 'table', id: 'l', columns: ['days late', 'events'], rows: late },
       ],
     },
-    { type: 'note', id: 'inferred', tone: 'consume', text: 'A late fact can name a customer the dimension has not seen yet. Kimball’s answer: an inferred member, a placeholder row filled in when the customer arrives.' },
   ],
   edges: [
     { from: 'w-happen', to: 'w-arrive', label: 'up to 3 days' },

@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame, lineOf } from '../ide'
+import { lineOf } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/04-sessions/session.txt?raw'
@@ -10,7 +11,8 @@ import sql from '../../../spine/facts/04-sessions/project/dbt/models/marts/fct_s
 const n = (column: string) => cell(session, column)
 const share = Number.isNaN(Number(n('CLICKS'))) ? '…' : `${Math.round((100 * Number(n('BOT_CLICKS'))) / Number(n('CLICKS')))}%`
 
-export const factsSessions: SceneModel = ideFrame({
+export const factsSessions: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/sessions.sql', 'dbt/models/marts/fct_sessions.sql', ['dbt/models/marts/fct_sessions.sql', 'queries/sessions.sql']),
   editor: { file: 'dbt/models/marts/fct_sessions.sql', code: sql, show: [[lineOf(sql, 'with clicks as'), lineOf(sql, 'from clicks') + 1], [lineOf(sql, "'product_view'"), lineOf(sql, "'purchase'")]] },
   session,
@@ -29,8 +31,6 @@ export const factsSessions: SceneModel = ideFrame({
         { type: 'table', id: 'c', columns: ['clicks', 'the bot’s', 'sessions', 'clicks each'], rows: [[n('CLICKS'), n('BOT_CLICKS'), n('SESSIONS'), n('EVENTS_PER_SESSION')]] },
       ],
     },
-    { type: 'note', id: 'gap', tone: 'neutral', text: 'Thirty minutes is a convention, not a law: change the gap, and the number of visits changes with it.' },
-    { type: 'note', id: 'bot', tone: 'consume', text: `One anonymous id made ${share} of all clicks, every one a page view: a scraper, not a shopper. It is left out before any visit is counted.` },
   ],
   edges: [
     { from: 's-sort', to: 's-cut' },

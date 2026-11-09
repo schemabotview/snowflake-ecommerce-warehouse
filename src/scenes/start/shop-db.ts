@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { startTree } from './tree'
 import session from '../../../spine/start/01-shop-db/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/start/01-shop-db/project/queries/shop_tables.sql
 const table = rowsOf(session, 'table_name', 3)
 const rows = Object.fromEntries(table.map(([t, n, size]) => [t, `${n} rows · ${size}`]))
 
-export const startShopDb: SceneModel = ideFrame({
+export const startShopDb: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: startTree('queries/shop_tables.sql', 'queries/shop_tables.sql', ['shop', 'queries/shop_tables.sql']),
   editor: { file: 'queries/shop_tables.sql', code: sql },
   session,
@@ -38,7 +39,6 @@ export const startShopDb: SceneModel = ideFrame({
           series: [{ kind: 'bar', points: table.map(([, n], i) => [i, Number(n) / 1000]) }] },
       ],
     },
-    { type: 'note', id: 'stays', tone: 'neutral', text: 'The shop keeps running on PostgreSQL: the warehouse copies its data, it never replaces it.' },
   ],
   edges: [
     { from: 'e-orders', to: 'e-customers', label: 'customer_id' },

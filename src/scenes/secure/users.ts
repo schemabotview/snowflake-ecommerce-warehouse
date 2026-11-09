@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { secureTree } from './tree'
 import session from '../../../spine/secure/01-users/session.txt?raw'
@@ -11,7 +11,8 @@ const mine = rowsOf(session, 'MY_ROLES', 1, 0, 6).map(([r]) => r)
 // A new user's only role, PUBLIC, is implicit: SHOW GRANTS TO USER lists nothing (the run says "No data").
 const ravi = /RAVIS_ROLES/.test(session) ? rowsOf(session, 'RAVIS_ROLES', 1).map(([r]) => r) : /No data/.test(session) ? ['none: PUBLIC only, implicit'] : ['…']
 
-export const secureUsers: SceneModel = ideFrame({
+export const secureUsers: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('queries/who.sql', 'setup/users.sql', ['setup/users.sql', 'queries/who.sql']),
   editor: { file: 'setup/users.sql', code: sql },
   session,
@@ -30,7 +31,6 @@ export const secureUsers: SceneModel = ideFrame({
         { type: 'table', id: 'ravi', title: 'RAVI may use', rows: ravi.map((r) => ({ cells: [r] })) },
       ],
     },
-    { type: 'note', id: 'never', tone: 'neutral', text: 'Never grant a privilege to a user directly: grant it to a role, and the role to the user. Change the team, not every person.' },
   ],
   edges: [
     { from: 'u-user', to: 'u-role', label: 'is granted' },

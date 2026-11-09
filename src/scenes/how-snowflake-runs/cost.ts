@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { projectTree } from '../tree'
 import session from '../../../spine/how-snowflake-runs/07-cost/session.txt?raw'
@@ -13,10 +13,10 @@ const row = (name: string) => {
   return m.slice(1)
 }
 const bi = row('WH_BI')
-const share = (name: string) => { const [work, billed] = row(name); return Math.round((100 * Number(work)) / Number(billed)) }
 const lazy = session.match(/AUTO_SUSPEND 600: +(\d+) s billed, ([\d.]+) credits/)!
 
-export const howCost: SceneModel = ideFrame({
+export const howCost: SceneModel = ideFrame2({
+  model: 'Billed by the second, at least 60',
   tree: projectTree(['cost.py'], { active: 'cost.py' }),
   editor: { file: 'cost.py', code, ...view(code, 'DAY = [', 'return total', 0) },
   session,
@@ -32,15 +32,9 @@ export const howCost: SceneModel = ideFrame({
       type: 'group', id: 'bi', badge: 2, title: 'WH_BI over the modelled day', sub: 'a model: published rules, an assumed day', tone: 'neutral', children: [
         { type: 'table', id: 'bi-day', columns: ['', 'seconds', 'credits'], rows: [
           { cells: ['working', bi[0], '—'] },
-          { cells: ['billed, suspend 60 s', bi[1], bi[2]], tone: 'serve' },
-          { cells: ['billed, suspend 600 s', lazy[1], lazy[2]], tone: 'consume' },
+          { cells: ['billed, 60 s', bi[1], bi[2]], tone: 'serve' },
+          { cells: ['billed, 600 s', lazy[1], lazy[2]], tone: 'consume' },
         ] },
-      ],
-    },
-    {
-      type: 'group', id: 'busy', badge: 3, title: 'Billed time spent working', sub: 'percent, AUTO_SUSPEND 60: the rest is minimums and idling', tone: 'infra', children: [
-        { type: 'plot', id: 'busy-plot', compact: true, x: { labels: ['WH_LOAD', 'WH_TRANSFORM', 'WH_BI'] }, y: { min: 0, max: 100, step: 25 },
-          series: [{ kind: 'bar', points: ['WH_LOAD', 'WH_TRANSFORM', 'WH_BI'].map((n, i) => [i, share(n)]) }] },
       ],
     },
   ],

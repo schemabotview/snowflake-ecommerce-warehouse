@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame, lineOf } from '../ide'
+import { lineOf } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/06-monthly/session.txt?raw'
@@ -10,7 +11,8 @@ import sql from '../../../spine/facts/06-monthly/project/dbt/models/marts/fct_cu
 const total = cell(session, 'ROWS_IN_TABLE')
 const months = rowsOf(session, 'MONTH', 3, 0, 6)
 
-export const factsMonthly: SceneModel = ideFrame({
+export const factsMonthly: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/monthly.sql', 'dbt/models/marts/fct_customer_monthly.sql', ['dbt/models/marts/fct_customer_monthly.sql', 'queries/monthly.sql']),
   editor: { file: 'dbt/models/marts/fct_customer_monthly.sql', code: sql, show: [[1, 2], [lineOf(sql, 'orders as ('), lineOf(sql, 'dbt_valid_to')]] },
   session,
@@ -29,7 +31,6 @@ export const factsMonthly: SceneModel = ideFrame({
         { type: 'table', id: 'm', columns: ['month', 'orders', 'tier'], rows: months },
       ],
     },
-    { type: 'note', id: 'zero', tone: 'neutral', text: 'A missing row and a zero mean different things: a periodic snapshot writes a row for every customer, every month, ordered or not.' },
   ],
   edges: [
     { from: 'g-m', to: 'g-c' },

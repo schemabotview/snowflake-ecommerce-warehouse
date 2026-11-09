@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { operateTree } from './tree'
 import session from '../../../spine/operate/06-usage/session.txt?raw'
@@ -11,7 +11,8 @@ const credits = rowsOf(session, 'WAREHOUSE', 2, 0, 3)
 const failed = rowsOf(session, 'NAME', 2, 0, 1)
 const logins = rowsOf(session, 'WHO', 4, 0, 5)
 
-export const operateUsage: SceneModel = ideFrame({
+export const operateUsage: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: operateTree('ops/usage.sql', 'ops/usage.sql'),
   editor: { file: 'ops/usage.sql', code: sql },
   session,
@@ -32,7 +33,6 @@ export const operateUsage: SceneModel = ideFrame({
         { type: 'table', id: 'l', columns: ['who', 'how', 'ok', 'failed'], rows: logins },
       ],
     },
-    { type: 'note', id: 'is', tone: 'neutral', text: 'INFORMATION_SCHEMA answers now, for one database, for days. ACCOUNT_USAGE answers for the whole account, for a year, hours later: the place for a morning check.' },
   ],
   edges: [],
 })

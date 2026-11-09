@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { transformTree } from './tree'
 import { DAG } from './dag'
 import session from '../../../spine/transform/03-staging/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/transform/03-staging/project/dbt/models/staging/
 // Snowflake). The source → model pairs are read from the parsed DAG (7.4, runs locally).
 const pairs = DAG.filter((n) => n.name.startsWith('stg_')).map((n) => [n.parents[0], n.name])
 
-export const transformStaging: SceneModel = ideFrame({
+export const transformStaging: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/models/staging/stg_products.sql', 'dbt/models/staging/stg_clicks.sql', ['dbt/models/staging/stg_clicks.sql', 'dbt/models/staging/stg_orders.sql', 'dbt/models/staging/stg_order_items.sql']),
   editor: { file: 'dbt/models/staging/stg_clicks.sql', code: sql },
   session,
@@ -27,7 +28,6 @@ export const transformStaging: SceneModel = ideFrame({
         { type: 'item', id: 'k-dup', icon: 'check', title: 'One row per event_id', sub: 'QUALIFY drops the tracker’s duplicates' },
       ],
     },
-    { type: 'note', id: 'views', tone: 'neutral', text: 'Eight views: each stores only its query. Nothing is copied until a mart reads it.' },
   ],
   edges: [
     { from: 'k-var', to: 'k-dev' },

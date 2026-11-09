@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { performTree } from './tree'
 import session from '../../../spine/perform/02-pruning/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/perform/02-pruning/project/queries/pruning.sql?r
 // Snowflake). A table written by an XS warehouse is 8 partitions, each spanning the whole year.
 const n = (column: string) => cell(session, column)
 
-export const performPruning: SceneModel = ideFrame({
+export const performPruning: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: performTree('queries/pruning.sql', 'queries/pruning.sql'),
   editor: { file: 'queries/pruning.sql', code: sql },
   session,
@@ -28,8 +29,6 @@ export const performPruning: SceneModel = ideFrame({
         { type: 'table', id: 's', columns: ['November: partitions read', 'of'], rows: [{ cells: [n('SCANNED'), n('TOTAL')], tone: 'consume' }] },
       ],
     },
-    { type: 'note', id: 'why', tone: 'consume', text: 'Every partition holds orders from the whole year, so every range includes November and nothing is skipped. The table was written in no particular order.' },
-    { type: 'note', id: 'same', tone: 'neutral', text: 'Pruning never changes an answer. It only decides how much has to be read to get it.' },
   ],
   edges: [
     { from: 'p-meta', to: 'p-ask' },

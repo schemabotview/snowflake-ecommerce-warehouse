@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { star } from '../star'
 import { historyTree } from './tree'
@@ -10,7 +10,8 @@ import sql from '../../../spine/history/06-currency/project/dbt/models/marts/cor
 const s = star({ stage: 'roles', dims: ['date', 'customer', 'product', 'currency'] })
 const sums = rowsOf(session, 'CODE', 4, 0, 5)
 
-export const historyCurrency: SceneModel = ideFrame({
+export const historyCurrency: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/currency.sql', 'dbt/models/marts/core/fct_payments.sql', ['dbt/models/marts/core/dim_currency.sql', 'dbt/models/marts/core/fct_payments.sql', 'queries/currency.sql']),
   editor: { file: 'dbt/models/marts/core/fct_payments.sql', code: sql },
   session,
@@ -22,7 +23,6 @@ export const historyCurrency: SceneModel = ideFrame({
         { type: 'table', id: 'cur', columns: ['currency', 'payments', 'amount', 'in EUR'], rows: sums },
       ],
     },
-    { type: 'note', id: 'never', tone: 'consume', text: 'The total of “amount” adds pounds to rupees: meaningless. Only amount_eur may be summed across currencies.' },
   ],
   edges: s.edges,
 })

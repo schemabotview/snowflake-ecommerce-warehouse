@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { isRecorded } from '../recorded'
 import { transformTree } from './tree'
 import session from '../../../spine/transform/08-custom-tests/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/transform/08-custom-tests/project/dbt/tests/asse
 // dbt 1.12 reports `FAIL 191 assert_has_payment`; a test that passed would say PASS.
 const got = (test: string) => isRecorded(session) ? (session.match(new RegExp(`(?:FAIL|PASS) (\\d+)? ?${test}`))?.[1] ?? '0') : '…'
 
-export const transformCustomTests: SceneModel = ideFrame({
+export const transformCustomTests: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_has_payment.sql', ['dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_paid_once.sql']),
   editor: { file: 'dbt/tests/assert_has_payment.sql', code: sql },
   session,
@@ -40,7 +41,6 @@ export const transformCustomTests: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'names', tone: 'neutral', text: 'A singular test’s file name is its name in dbt’s output: assert_has_payment, assert_paid_once.' },
   ],
   edges: [
     { from: 'w-fail', to: 'w-who' },

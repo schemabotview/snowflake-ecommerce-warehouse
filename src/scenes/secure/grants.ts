@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { rowsOf } from '../recorded'
 import { secureTree } from './tree'
@@ -10,7 +10,8 @@ import sql from '../../../spine/secure/04-grants/project/setup/grants.sql?raw'
 // After recording: the three commands' output will exceed the terminal's 13 rows — fold with `keep`.
 const future = rowsOf(session, 'privilege', 3, 0, 4)
 
-export const secureGrants: SceneModel = ideFrame({
+export const secureGrants: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('queries/future.sql', 'setup/grants.sql', ['setup/grants.sql', 'queries/future.sql', 'setup/warehouses.sql']),
   editor: { file: 'setup/grants.sql', code: sql, ...view(sql, '-- LOADER', '-- ANALYST', 0) },
   session,
@@ -37,7 +38,6 @@ export const secureGrants: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'why', tone: 'serve', text: 'ON ALL covers what exists today; ON FUTURE covers what Course 5 will load. Both, or tomorrow’s table is invisible.' },
   ],
   edges: [
     { from: 'g-priv', to: 'g-obj', label: 'on' },

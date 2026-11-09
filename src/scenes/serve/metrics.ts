@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame, lineOf } from '../ide'
+import { lineOf } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { serveTree } from './tree'
 import session from '../../../spine/serve/03-metrics/session.txt?raw'
@@ -10,7 +11,8 @@ import sql from '../../../spine/serve/03-metrics/project/dbt/models/marts/bi/met
 const answers = rowsOf(session, 'ANSWER', 2, 0, 3).map(([a, v]) => (a.startsWith('paid, net') ? { cells: [a, v], tone: 'serve' as const } : [a, v]))
 const months = rowsOf(session, 'MONTH', 6, 0, 4).map(([m, , g, r, n]) => [m, g, r, n])
 
-export const serveMetrics: SceneModel = ideFrame({
+export const serveMetrics: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: serveTree('queries/one_revenue.sql', 'dbt/models/marts/bi/metrics_monthly.sql', ['dbt/models/marts/bi/metrics_monthly.sql', 'queries/one_revenue.sql']),
   editor: { file: 'dbt/models/marts/bi/metrics_monthly.sql', code: sql, show: [[1, 2], [lineOf(sql, 'refunds as ('), lineOf(sql, 'left join refunds')]] },
   session,

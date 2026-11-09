@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame, lineOf } from '../ide'
+import { lineOf } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { performTree } from './tree'
 import session from '../../../spine/perform/05-mv/session.txt?raw'
@@ -15,7 +16,8 @@ const [baseOp, baseRows] = scan(0)
 const [mvOp, mvRows] = scan(1)
 const costs = rowsOf(session, 'COST', 3, 0, 3).map(([c, v, u]) => [c.replace('Costs', ''), v === 'None' ? '—' : v, u === 'None' ? '' : u])
 
-export const performMv: SceneModel = ideFrame({
+export const performMv: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: performTree('queries/mv.sql', 'queries/mv.sql'),
   editor: { file: 'queries/mv.sql', code: sql, show: [[1, lineOf(sql, 'WHERE order_date_key BETWEEN 20261101') ], [lineOf(sql, 'SELECT f.value'), lineOf(sql, 'DROP MATERIALIZED VIEW')]] },
   session,
@@ -40,7 +42,6 @@ export const performMv: SceneModel = ideFrame({
         { type: 'table', id: 's', columns: ['cost', 'value', 'unit'], rows: costs },
       ],
     },
-    { type: 'note', id: 'pay', tone: 'consume', text: `Both are paid for in background credits as the table changes. The view was a measurement, so the file drops it. ${cell(session, 'NOVEMBER_EUR')} EUR either way.` },
   ],
   edges: [
     { from: 'm-base', to: 'm-view', label: 'maintained' },

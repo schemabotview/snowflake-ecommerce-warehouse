@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/09-snowpipe/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/load/09-snowpipe/project/load/pipe.sql?raw'
 // (docs.snowflake.com/en/user-guide/data-load-snowpipe-auto).
 const state = cell(session, 'PIPE'), payments = cell(session, 'PAYMENTS')
 
-export const loadSnowpipe: SceneModel = ideFrame({
+export const loadSnowpipe: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/pipe_status.sql', 'load/pipe.sql', ['load/pipe.sql', 'queries/pipe_status.sql']),
   editor: { file: 'load/pipe.sql', code: sql },
   session,

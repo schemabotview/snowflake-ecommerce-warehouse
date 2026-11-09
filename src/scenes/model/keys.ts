@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { rowsOf } from '../recorded'
 import { star } from '../star'
@@ -12,7 +12,8 @@ import sql from '../../../spine/model/06-keys/project/model/fct_order_lines.sql?
 const s = star({ stage: 'keys', dims: ['date', 'customer', 'product'], lit: ['customer_key', 'product_key', 'order_date_key'] })
 const check = rowsOf(session, 'FACT_ROWS', 4)
 
-export const modelKeys: SceneModel = ideFrame({
+export const modelKeys: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: modelTree('queries/keys.sql', 'model/fct_order_lines.sql', ['model/dim_customer.sql', 'model/dim_product.sql', 'model/fct_order_lines.sql', 'queries/keys.sql']),
   editor: { file: 'model/fct_order_lines.sql', code: sql, ...view(sql, 'CREATE OR REPLACE', undefined, 1) },
   session,
@@ -33,7 +34,6 @@ export const modelKeys: SceneModel = ideFrame({
         { type: 'table', id: 'found', columns: ['rows', 'date', 'customer', 'product'], rows: check },
       ],
     },
-    { type: 'note', id: 'legend', tone: 'neutral', text: 'In the star: PK a dimension’s key, FK a pointer to one, DD a degenerate dimension, + an additive measure.' },
   ],
   edges: s.edges,
 })

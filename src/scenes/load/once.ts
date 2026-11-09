@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/04-once/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/load/04-once/project/queries/copy_again.sql?raw'
 // doc-cited: docs.snowflake.com/en/user-guide/data-load-considerations-load.
 const orders = cell(session, 'ORDERS'), files = cell(session, 'FILES')
 
-export const loadOnce: SceneModel = ideFrame({
+export const loadOnce: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/copy_again.sql', 'queries/copy_again.sql'),
   editor: { file: 'queries/copy_again.sql', code: sql },
   session,

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { historyTree } from './tree'
 import session from '../../../spine/history/02-snapshots/session.txt?raw'
@@ -9,7 +9,8 @@ import code from '../../../spine/history/02-snapshots/project/load/month_ends.sh
 // each (recorded on Snowflake). Customer 81's versions are the snapshot's own rows.
 const versions = rowsOf(session, 'CUSTOMER_ID', 5, 0, 4)
 
-export const historySnapshots: SceneModel = ideFrame({
+export const historySnapshots: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/customer_81.sql', 'load/month_ends.sh', ['load/customer_changes.sql', 'load/customers_as_of.sql', 'load/month_ends.sh', 'dbt/snapshots/snap_customers.yml', 'queries/customer_81.sql']),
   editor: { file: 'load/month_ends.sh', code, lang: 'shell' },
   session,
@@ -35,7 +36,6 @@ export const historySnapshots: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'freq', tone: 'consume', text: 'A snapshot keeps what it SEES. Two changes between runs become one version: run it as often as the history you need.' },
   ],
   edges: [
     { from: 's-state', to: 's-snap' },

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { howTree } from './tree'
 import session from '../../../spine/how-snowflake-runs/04-where/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/how-snowflake-runs/04-where/project/queries/wher
 // COURSE-PLAN.md, "Facts"); the hierarchy is doc-cited (docs.snowflake.com/en/user-guide/organizations).
 const org = cell(session, 'ORG'), account = cell(session, 'ACCOUNT'), locator = cell(session, 'LOCATOR'), region = cell(session, 'REGION')
 
-export const howWhere: SceneModel = ideFrame({
+export const howWhere: SceneModel = ideFrame2({
+  model: 'Organisation, account, cloud, region',
   tree: howTree('queries/where.sql', 'queries/where.sql'),
   editor: { file: 'queries/where.sql', code: sql },
   session,
@@ -30,7 +31,6 @@ export const howWhere: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'why', tone: 'neutral', text: 'The organisation–account name is the one to use; the locator is the older, region-bound name.' },
   ],
   edges: [
     { from: 'h-org', to: 'h-account' },

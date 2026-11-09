@@ -1,12 +1,13 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { transformTree } from './tree'
 import session from '../../../spine/transform/02-project/session.txt?raw'
 import profiles from '../../../spine/transform/02-project/project/dbt/profiles.yml?raw'
 
 // §7.2 — A dbt project: dbt_project.yml, profiles.yml as SVC_DBT by key pair, the sources (recorded
 // on Snowflake: dbt debug connects).
-export const transformProject: SceneModel = ideFrame({
+export const transformProject: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/models/staging/_sources.yml', 'dbt/profiles.yml', ['requirements.txt', 'dbt/dbt_project.yml', 'dbt/profiles.yml', 'dbt/macros/generate_schema_name.sql', 'dbt/models/staging/_sources.yml']),
   editor: { file: 'dbt/profiles.yml', code: profiles },
   session,

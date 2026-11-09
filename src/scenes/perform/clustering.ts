@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { performTree } from './tree'
 import before from '../../../spine/perform/02-pruning/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/perform/03-clustering/project/dbt/models/marts/c
 // is 10.2's run, after is this one's.
 const row = (label: string, column: string) => [label, cell(before, column), cell(session, column)]
 
-export const performClustering: SceneModel = ideFrame({
+export const performClustering: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: performTree('queries/clustering.sql', 'dbt/models/marts/core/fct_order_lines.sql', ['dbt/models/marts/core/fct_order_lines.sql', 'queries/clustering.sql']),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, show: [[1, 22]] },
   session,
@@ -31,8 +32,6 @@ export const performClustering: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'cost', tone: 'consume', text: 'A clustering key also turns on Automatic Clustering: Snowflake re-sorts the table in the background as merges disorder it, and bills those credits separately.' },
-    { type: 'note', id: 'pick', tone: 'neutral', text: 'Cluster by the column most queries filter on: here, the date. A key on a column nobody filters by costs credits and saves nothing.' },
   ],
   edges: [
     { from: 'c-key', to: 'c-sort' },

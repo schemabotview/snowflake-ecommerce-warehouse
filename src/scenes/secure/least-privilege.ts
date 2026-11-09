@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { secureTree } from './tree'
 import session from '../../../spine/secure/05-least-privilege/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/secure/05-least-privilege/project/queries/matrix
 const N = '·'
 const loader = rowsOf(session, 'privilege', 3, 0, 6)
 
-export const secureLeastPrivilege: SceneModel = ideFrame({
+export const secureLeastPrivilege: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('queries/matrix.sql', 'queries/matrix.sql'),
   editor: { file: 'queries/matrix.sql', code: sql },
   session,
@@ -40,7 +41,6 @@ export const secureLeastPrivilege: SceneModel = ideFrame({
         { type: 'table', id: 'loader-grants', columns: ['privilege', 'on', 'name'], rows: loader },
       ],
     },
-    { type: 'note', id: 'least', tone: 'neutral', text: 'Each role holds what its team needs and nothing else: a leaked loader key can write RAW, never read a mart.' },
   ],
   edges: [
     { from: 'f-raw', to: 'f-an' },

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { startTree } from './tree'
 import session from '../../../spine/start/02-databases/session.txt?raw'
 import sql from '../../../spine/start/02-databases/project/setup/databases.sql?raw'
@@ -7,7 +7,8 @@ import sql from '../../../spine/start/02-databases/project/setup/databases.sql?r
 // §3.2 — Databases and schemas: RAW and ANALYTICS (recorded on Snowflake).
 const schema = (id: string, title: string, sub: string) => ({ type: 'item' as const, id, icon: 'folder', title, sub })
 
-export const startDatabases: SceneModel = ideFrame({
+export const startDatabases: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: startTree('setup/databases.sql', 'setup/databases.sql'),
   editor: { file: 'setup/databases.sql', code: sql },
   session,
@@ -38,7 +39,6 @@ export const startDatabases: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'free', tone: 'serve', text: 'No warehouse ran: a database or a schema is metadata, kept by cloud services, and costs nothing until data arrives.' },
   ],
   edges: [
     { from: 'acct', to: 'db-raw' },

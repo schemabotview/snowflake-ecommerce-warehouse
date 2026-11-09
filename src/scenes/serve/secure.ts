@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { serveTree } from './tree'
 import session from '../../../spine/serve/06-secure-view/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/serve/06-secure-view/project/dbt/models/marts/bi
 const rows = rowsOf(session, 'CAMPAIGN_ID', 3, 0, 4)
 const text = (after: number) => cell(session, 'TEXT', 0, after) || '(empty)'
 
-export const serveSecure: SceneModel = ideFrame({
+export const serveSecure: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: serveTree('queries/secure.sql', 'dbt/models/marts/bi/campaign_stats.sql', ['dbt/models/marts/bi/campaign_stats.sql', 'queries/secure.sql']),
   editor: { file: 'dbt/models/marts/bi/campaign_stats.sql', code: sql },
   session,
@@ -33,7 +34,6 @@ export const serveSecure: SceneModel = ideFrame({
         { type: 'table', id: 'd', columns: ['role', 'text'], rows: [{ cells: ['ANALYST', text(0)], tone: 'serve' }, ['TRANSFORMER (owner)', text(1)]] },
       ],
     },
-    { type: 'note', id: 'share', tone: 'consume', text: 'Only a secure view can be shared with another account: the next section shares this one.' },
   ],
   edges: [],
 })

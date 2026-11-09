@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { factsTree } from './tree'
 import session from '../../../spine/facts/08-factless/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/facts/08-factless/project/dbt/models/marts/fct_e
 // did NOT lead to a purchase are what the table is for.
 const campaigns = rowsOf(session, 'CAMPAIGN_ID', 3, 0, 4).map(([c, e, b]) => [c, e, b, String(Number(e) - Number(b))])
 
-export const factsFactless: SceneModel = ideFrame({
+export const factsFactless: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: factsTree('queries/eligibility.sql', 'dbt/models/marts/fct_eligibility.sql', ['load/campaigns.sql', 'dbt/models/marts/fct_eligibility.sql', 'queries/eligibility.sql']),
   editor: { file: 'dbt/models/marts/fct_eligibility.sql', code: sql },
   session,
@@ -27,8 +28,6 @@ export const factsFactless: SceneModel = ideFrame({
         { type: 'table', id: 'c', columns: ['campaign', 'eligible', 'bought', 'did not'], rows: campaigns },
       ],
     },
-    { type: 'note', id: 'kimball', tone: 'neutral', text: 'Kimball’s example is promotion coverage: which products were on promotion, sold or not (The Data Warehouse Toolkit, ch. 3).' },
-    { type: 'note', id: 'why', tone: 'serve', text: 'A sales fact holds only what happened. Who was reached and did NOT buy needs a table of what could have happened.' },
   ],
   edges: [
     { from: 'e-camp', to: 'e-visit' },

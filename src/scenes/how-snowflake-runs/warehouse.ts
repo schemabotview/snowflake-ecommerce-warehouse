@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { howTree } from './tree'
 import session from '../../../spine/how-snowflake-runs/02-warehouse/session.txt?raw'
 import sql from '../../../spine/how-snowflake-runs/02-warehouse/project/setup/warehouses.sql?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/how-snowflake-runs/02-warehouse/project/setup/wa
 // (docs.snowflake.com/en/user-guide/warehouses-overview, standard warehouses).
 const SIZES: [string, number][] = [['X-Small', 1], ['Small', 2], ['Medium', 4], ['Large', 8], ['X-Large', 16], ['2X-Large', 32]]
 
-export const howWarehouse: SceneModel = ideFrame({
+export const howWarehouse: SceneModel = ideFrame2({
+  model: 'A warehouse bills only while it runs',
   tree: howTree('queries/wake.sql', 'setup/warehouses.sql', ['setup/warehouses.sql', 'queries/wake.sql']),
   editor: { file: 'setup/warehouses.sql', code: sql },
   session,
@@ -28,7 +29,6 @@ export const howWarehouse: SceneModel = ideFrame({
         { type: 'table', id: 'sizes', columns: ['size', 'credits / hour'], rows: SIZES.map(([s, c]) => ({ cells: [s, c], tone: s === 'X-Small' ? 'serve' as const : undefined })) },
       ],
     },
-    { type: 'note', id: 'double', tone: 'neutral', text: 'Each size up doubles the servers and the rate: twice the credits per hour, often for half the time.' },
   ],
   edges: [
     { from: 'w-suspended', to: 'w-started', label: 'a query' },

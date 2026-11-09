@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { cell, rowsOf } from '../recorded'
 import { historyTree } from './tree'
@@ -10,7 +10,8 @@ import sql from '../../../spine/history/07-streams/project/load/order_changes.sq
 const changes = rowsOf(session, 'ACTION', 3, 0, 2)
 const left = cell(session, 'LEFT_IN_STREAM')
 
-export const historyStreams: SceneModel = ideFrame({
+export const historyStreams: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('load/order_changes.sql', 'load/order_changes.sql', ['setup/stream_grants.sql', 'load/order_changes.sql']),
   editor: { file: 'load/order_changes.sql', code: sql, ...view(sql, 'CREATE TABLE IF NOT EXISTS ORDER_CHANGES', undefined, 0) },
   session,

@@ -1,5 +1,5 @@
 import type { SceneModel, Table } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { projectTree } from '../tree'
 import session from '../../../spine/intro/01-questions/session.txt?raw'
 import query from '../../../spine/intro/01-questions/project/queries/revenue_by_month.sql?raw'
@@ -19,7 +19,8 @@ const table = (id: string, title: string, rows: [string, string?][]): Table => (
   type: 'table', id, title, rows: rows.map(([col, tag]) => ({ cells: [col], tag })),
 })
 
-export const introQuestions: SceneModel = ideFrame({
+export const introQuestions: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: projectTree(['shop/schema.sql', 'shop/load.sql', 'queries/revenue_by_month.sql'], {
     active: 'queries/revenue_by_month.sql', made: { 'data/': 'shopwave_gen' },
   }),

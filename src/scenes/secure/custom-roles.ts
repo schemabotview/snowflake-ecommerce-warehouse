@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { secureTree } from './tree'
 import session from '../../../spine/secure/03-custom-roles/session.txt?raw'
@@ -8,7 +8,8 @@ import sql from '../../../spine/secure/03-custom-roles/project/setup/roles.sql?r
 // §4.3 — Custom roles under SYSADMIN (recorded on Snowflake).
 const analyst = rowsOf(session, 'granted_to', 2, 0, 3)
 
-export const secureCustomRoles: SceneModel = ideFrame({
+export const secureCustomRoles: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('setup/roles.sql', 'setup/roles.sql'),
   editor: { file: 'setup/roles.sql', code: sql },
   session,
@@ -36,7 +37,6 @@ export const secureCustomRoles: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'why-sys', tone: 'neutral', text: 'A custom role not granted to SYSADMIN is an orphan: what it creates, no administrator can see.' },
   ],
   edges: [
     { from: 'c-sys', to: 'c-loader' },

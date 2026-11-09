@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { historyTree } from './tree'
 import session from '../../../spine/history/03-prices/session.txt?raw'
@@ -8,7 +8,8 @@ import sql from '../../../spine/history/03-prices/project/dbt/models/marts/core/
 // §8.3 — Price history: dim_product versioned straight from the shop's price log (recorded on Snowflake).
 const versions = rowsOf(session, 'PRODUCT_ID', 5, 0, 6)
 
-export const historyPrices: SceneModel = ideFrame({
+export const historyPrices: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: historyTree('queries/price_history.sql', 'dbt/models/marts/core/dim_product.sql', ['load/product_prices.sql', 'dbt/models/staging/stg_product_prices.sql', 'dbt/models/marts/core/dim_product.sql', 'queries/price_history.sql']),
   editor: { file: 'dbt/models/marts/core/dim_product.sql', code: sql },
   session,
@@ -25,7 +26,6 @@ export const historyPrices: SceneModel = ideFrame({
         { type: 'table', id: 'v', columns: ['id', 'product', 'EUR', 'from', 'to'], rows: versions },
       ],
     },
-    { type: 'note', id: 'lead', tone: 'neutral', text: 'LEAD() turns a list of start dates into ranges: each version ends where the next one begins; the current one in 9999.' },
     {
       type: 'group', id: 'rule', badge: 3, title: 'The rule every version keeps', tone: 'infra', children: [
         { type: 'table', id: 'r', columns: ['', 'meaning'], rows: [

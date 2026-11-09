@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/08-latin1/session.txt?raw'
@@ -11,7 +11,8 @@ const loaded = cell(session, 'LOADED'), rejected = cell(session, 'REJECTED')
 const sent = cell(session, 'LINES_SENT')
 const reasons = rowsOf(session, 'REASON', 2, 0, 6)
 
-export const loadLatin1: SceneModel = ideFrame({
+export const loadLatin1: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/reasons.sql', 'load/returns.sql', ['load/returns.sql', 'queries/reasons.sql']),
   editor: { file: 'load/returns.sql', code: sql },
   session,
@@ -34,7 +35,6 @@ export const loadLatin1: SceneModel = ideFrame({
         { type: 'table', id: 'reasons', columns: ['reason', 'returns'], rows: reasons },
       ],
     },
-    { type: 'note', id: 'kept', tone: 'neutral', text: 'Rejected counts RECORDS. An unclosed quote turns the rest of its file into one bad record: lines vanish without a count. Reconcile what was sent with what loaded.' },
   ],
   edges: [
     { from: 'b-byte', to: 'b-latin' },

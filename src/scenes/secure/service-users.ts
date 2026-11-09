@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { secureTree } from './tree'
 import session from '../../../spine/secure/07-service-users/session.txt?raw'
@@ -9,7 +9,8 @@ import code from '../../../spine/secure/07-service-users/project/setup/keys.sh?r
 // in ~/.keys, and never leave it: only the public halves go to Snowflake. Nothing secret is on screen.
 const loader = rowsOf(session, 'WHO', 2, 0)[0], dbt = rowsOf(session, 'WHO', 2, 1)[0]
 
-export const secureServiceUsers: SceneModel = ideFrame({
+export const secureServiceUsers: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('queries/whoami.sh', 'setup/keys.sh', ['setup/keys.sh', 'setup/service_users.sql', 'queries/whoami.sh']),
   editor: { file: 'setup/keys.sh', code, lang: 'shell' },
   session,
@@ -35,7 +36,6 @@ export const secureServiceUsers: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'service', tone: 'neutral', text: 'TYPE = SERVICE: a program’s user. It may never have a password, and no human signs in with it.' },
   ],
   edges: [
     { from: 'k-private', to: 'k-public', label: 'signed token' },

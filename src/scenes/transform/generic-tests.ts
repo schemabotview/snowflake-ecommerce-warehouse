@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { view } from '../fold'
 import { fromRun } from '../recorded'
 import { transformTree } from './tree'
@@ -20,7 +20,8 @@ for (const line of yml.split('\n')) {
 }
 const pass = fromRun(session, /PASS=(\d+)/), fail = fromRun(session, /ERROR=(\d+)/)
 
-export const transformGenericTests: SceneModel = ideFrame({
+export const transformGenericTests: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: transformTree('dbt/models/marts/core/_core.yml', 'dbt/models/marts/core/_core.yml'),
   editor: { file: 'dbt/models/marts/core/_core.yml', code: yml, ...view(yml, 'models:', '- name: dim_customer', 1) },
   session,
@@ -50,7 +51,6 @@ export const transformGenericTests: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'result', tone: 'serve', text: `From the run: ${pass} passed, ${fail} errors.` },
   ],
   edges: [
     { from: 't-fact', to: 't-cust', label: 'relationships' },

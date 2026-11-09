@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { serveTree } from './tree'
 import session from '../../../spine/serve/04-masking/session.txt?raw'
@@ -8,7 +8,8 @@ import sql from '../../../spine/serve/04-masking/project/govern/masking.sql?raw'
 // §11.4 — A masking policy on the customer's email (recorded on Snowflake): one column, two readers.
 const email = (after: number) => cell(session, 'EMAIL', 0, after)
 
-export const serveMasking: SceneModel = ideFrame({
+export const serveMasking: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: serveTree('queries/masked.sql', 'govern/masking.sql', ['setup/masking_grants.sql', 'govern/masking.sql', 'dbt/models/marts/core/dim_customer.sql', 'queries/masked.sql']),
   editor: { file: 'govern/masking.sql', code: sql },
   session,
@@ -26,9 +27,6 @@ export const serveMasking: SceneModel = ideFrame({
         { type: 'table', id: 'r', columns: ['role', 'email'], rows: [['TRANSFORMER', email(0)], { cells: ['ANALYST', email(1)], tone: 'serve' }] },
       ],
     },
-    { type: 'note', id: 'dom', tone: 'serve', text: 'The domain survives the mask: an analyst can still count customers by email provider, never reach one.' },
-    { type: 'note', id: 'hook', tone: 'consume', text: 'dbt replaces the table on every run, and a replaced table loses its policies: the model re-attaches them in a post_hook.' },
-    { type: 'note', id: 'role', tone: 'neutral', text: 'CURRENT_ROLE(), not the secondary roles: Ana holds every role, so the policy answers to the one she is working as.' },
   ],
   edges: [
     { from: 'm-pol', to: 'm-col' },

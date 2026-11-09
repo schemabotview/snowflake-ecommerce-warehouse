@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { startTree } from './tree'
 import session from '../../../spine/start/03-first-table/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/start/03-first-table/project/load/products.sql?r
 // COPY'd in, asked (recorded on Snowflake).
 const categories = rowsOf(session, 'CATEGORY', 3, 0, 6) // six categories (shopwave_gen)
 
-export const startFirstTable: SceneModel = ideFrame({
+export const startFirstTable: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: startTree('queries/categories.sql', 'load/products.sql', ['load/products.sql', 'queries/categories.sql'], { 'exports/': 'products.csv' }),
   editor: { file: 'load/products.sql', code: sql },
   session,
@@ -28,7 +29,6 @@ export const startFirstTable: SceneModel = ideFrame({
         { type: 'table', id: 'cats', columns: ['category', 'products', 'avg price'], rows: categories },
       ],
     },
-    { type: 'note', id: 'stage', tone: 'neutral', text: '@%PRODUCTS is the table’s own stage: enough for one file. Course 5 builds RAW.SHOPWAVE.LANDING, one stage for every source.' },
   ],
   edges: [
     { from: 'r-client', to: 'r-services' },

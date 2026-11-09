@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { operateTree } from './tree'
 import session from '../../../spine/operate/02-nightly/session.txt?raw'
@@ -11,7 +11,8 @@ const runs = rowsOf(session, 'NAME', 3, 0, 2)
 const said = rowsOf(session, 'DBT_SAID', 1, 0, 3)
 const state = (name: string) => runs.find((r) => r[0] === name)?.[1] ?? '…'
 
-export const operateNightly: SceneModel = ideFrame({
+export const operateNightly: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: operateTree('ops/history.sql', 'ops/nightly.sh', ['ops/nightly.sh', 'ops/history.sql']),
   editor: { file: 'ops/nightly.sh', code, lang: 'shell' },
   session,
@@ -29,9 +30,6 @@ export const operateNightly: SceneModel = ideFrame({
         { type: 'table', id: 'd', columns: ['dbt'], rows: said },
       ],
     },
-    { type: 'note', id: 'skip', tone: 'consume', text: 'A failed test stops what is built on its data. Better yesterday’s right rows on the dashboard than today’s wrong ones.' },
-    { type: 'note', id: 'log', tone: 'neutral', text: 'dbt’s own log stays with the task’s query: SYSTEM$GET_DBT_LOG reads it back, line by line.' },
-    { type: 'note', id: 'known', tone: 'neutral', text: 'These are Course 7’s planted faults: orders with no payment, and orders paid twice. The task failing is the alarm working.' },
   ],
   edges: [
     { from: 'r-snap', to: 'r-build' },

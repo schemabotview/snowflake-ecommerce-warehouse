@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { startTree } from './tree'
 import session from '../../../spine/start/05-budget/session.txt?raw'
@@ -9,7 +9,8 @@ import sql from '../../../spine/start/05-budget/project/setup/monitors.sql?raw'
 // not exist yet: drawn muted where they will attach.
 const quota = cell(session, 'credit_quota'), used = cell(session, 'used_credits')
 
-export const startBudget: SceneModel = ideFrame({
+export const startBudget: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: startTree('setup/monitors.sql', 'setup/monitors.sql'),
   editor: { file: 'setup/monitors.sql', code: sql },
   session,
@@ -36,7 +37,6 @@ export const startBudget: SceneModel = ideFrame({
         { type: 'table', id: 'quota', columns: ['quota', 'used so far'], rows: [[quota, used]] },
       ],
     },
-    { type: 'note', id: 'who', tone: 'neutral', text: 'Only ACCOUNTADMIN may create a monitor: the file switches role for it. Course 4 is about roles.' },
   ],
   edges: [
     { from: 'rm', to: 'm-load' },

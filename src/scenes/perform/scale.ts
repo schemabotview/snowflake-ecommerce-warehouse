@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { isRecorded, rowsOf, PENDING } from '../recorded'
 import { performTree } from './tree'
 import session from '../../../spine/perform/04-scale/session.txt?raw'
@@ -13,7 +13,8 @@ const clusters = isRecorded(session)
   : [[PENDING, PENDING, PENDING]]
 if (isRecorded(session) && !clusters.length) throw new Error('scale.ts: no cluster rows in the recorded session')
 
-export const performScale: SceneModel = ideFrame({
+export const performScale: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: performTree('perform/black_friday.py', 'perform/black_friday.py', ['setup/perform_grants.sql', 'setup/scale.sql', 'perform/black_friday.py']),
   editor: { file: 'perform/black_friday.py', code, show: [[1, 5], [9, 9], [25, 38]] },
   session,
@@ -45,7 +46,6 @@ export const performScale: SceneModel = ideFrame({
         { type: 'table', id: 'c', columns: ['cluster', 'queries', 'longest wait'], rows: clusters },
       ],
     },
-    { type: 'note', id: 'policy', tone: 'neutral', text: 'STANDARD starts a cluster as soon as queries queue; ECONOMY waits until it would stay busy for six minutes. Either way, a cluster with nothing to run shuts down again.' },
   ],
   edges: [
     { from: 'u-what', to: 'u-for' },

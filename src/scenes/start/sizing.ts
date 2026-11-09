@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { startTree } from './tree'
 import session from '../../../spine/start/04-sizing/session.txt?raw'
@@ -11,7 +11,8 @@ const ms = (row: number) => cell(session, 'ELAPSED_MS', row)
 // state.sql runs twice: before and after `sleep 90`
 const state = (n: number) => cell(session, 'state', 0, n)
 
-export const startSizing: SceneModel = ideFrame({
+export const startSizing: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: startTree('queries/state.sql', 'queries/sizing.sql', ['queries/sizing.sql', 'queries/state.sql']),
   editor: { file: 'queries/sizing.sql', code: sql },
   session,

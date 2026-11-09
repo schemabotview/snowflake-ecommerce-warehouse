@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { rowsOf } from '../recorded'
 import { loadTree } from './tree'
 import session from '../../../spine/load/01-stage/session.txt?raw'
@@ -8,7 +8,8 @@ import code from '../../../spine/load/01-stage/project/load/upload.sh?raw'
 // §5.1 — Stages: every source file PUT to RAW.SHOPWAVE.LANDING by the loader (recorded on Snowflake).
 const landed = rowsOf(session, 'SOURCE', 3, 0, 11)
 
-export const loadStage: SceneModel = ideFrame({
+export const loadStage: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: loadTree('queries/landing.sql', 'load/upload.sh', ['load/as-loader.sh', 'setup/stage.sql', 'load/upload.sh', 'queries/landing.sql']),
   editor: { file: 'load/upload.sh', code, lang: 'shell' },
   session,

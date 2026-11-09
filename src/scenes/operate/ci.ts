@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { isRecorded, PENDING } from '../recorded'
 import { operateTree } from './tree'
 import session from '../../../spine/operate/05-ci/session.txt?raw'
@@ -12,7 +12,8 @@ const results = isRecorded(session)
   ? [...flat.matchAll(/\d+ of \d+ (PASS|FAIL|OK created sql table model) (\S+)/g)].map(([, s, what]) => [what.replace(/__.*/, ''), s.startsWith('OK') ? 'built' : s])
   : [[PENDING, PENDING]]
 
-export const operateCi: SceneModel = ideFrame({
+export const operateCi: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: operateTree('ops/ci.yml', 'ops/ci.yml', ['dbt/models/marts/bi/_bi.yml', 'ops/ci.sh', 'ops/ci.yml']),
   editor: { file: 'ops/ci.yml', code: yml },
   session,
@@ -31,8 +32,6 @@ export const operateCi: SceneModel = ideFrame({
         { type: 'table', id: 't', columns: ['node', 'result'], rows: results },
       ],
     },
-    { type: 'note', id: 'prod', tone: 'serve', text: 'Production was never touched: the PR built on a copy of today’s real data, and a red test would have blocked the merge.' },
-    { type: 'note', id: 'here', tone: 'neutral', text: 'Run here step by step (ops/ci.sh). On GitHub the same steps would run as SVC_DBT, its key a repository secret.' },
   ],
   edges: [
     { from: 'c-pr', to: 'c-clone' },

@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { isRecorded, rowsOf } from '../recorded'
 import { star } from '../star'
 import { modelTree } from './tree'
@@ -15,7 +15,8 @@ const nov1 = course1.split('\n').find((l) => l.startsWith(' 2026-11'))!.split('|
 const nov6 = isRecorded(session) ? months.find(([m]) => m === '2026-11')! : months[0]
 const round = (v: string) => (v === '…' ? v : String(Math.round(Number(v))))
 
-export const modelAnswer: SceneModel = ideFrame({
+export const modelAnswer: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: modelTree('queries/revenue_by_month.sql', 'queries/revenue_by_month.sql'),
   editor: { file: 'queries/revenue_by_month.sql', code: sql },
   session,
@@ -30,8 +31,6 @@ export const modelAnswer: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'why', tone: 'neutral', text: 'The same numbers, from a model built for the question: three short joins on keys, in a column store, on a warehouse of its own.' },
-    { type: 'note', id: 'pivot', tone: 'neutral', text: 'PIVOT turns the six categories into six columns: the ones Course 1 wrote by hand.' },
   ],
   edges: s.edges,
 })

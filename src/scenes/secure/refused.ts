@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell, rowsOf } from '../recorded'
 import { secureTree } from './tree'
 import session from '../../../spine/secure/06-refused/session.txt?raw'
@@ -10,7 +10,8 @@ import sql from '../../../spine/secure/06-refused/project/queries/refused.sql?ra
 const onRaw = rowsOf(session, 'privilege', 2, 0, 3)
 const products = cell(session, 'PRODUCTS')
 
-export const secureRefused: SceneModel = ideFrame({
+export const secureRefused: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: secureTree('queries/raw_grants.sql', 'queries/refused.sql', ['queries/refused.sql', 'queries/raw_grants.sql']),
   editor: { file: 'queries/refused.sql', code: sql },
   session,
@@ -34,7 +35,6 @@ export const secureRefused: SceneModel = ideFrame({
         { type: 'table', id: 'raw-grants', columns: ['privilege', 'to role'], rows: onRaw },
       ],
     },
-    { type: 'note', id: 'right', tone: 'serve', text: 'The refusal is correct: a wrong price is fixed in the shop’s database and reloaded, never edited in RAW.' },
   ],
   edges: [
     { from: 'p-all', to: 'p-none' },

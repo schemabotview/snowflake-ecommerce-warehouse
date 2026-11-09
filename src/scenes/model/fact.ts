@@ -1,5 +1,5 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { ideFrame } from '../ide'
+import { ideFrame2 } from '../frame'
 import { cell } from '../recorded'
 import { star } from '../star'
 import { modelTree } from './tree'
@@ -10,7 +10,8 @@ import sql from '../../../spine/model/04-fact/project/model/fct_order_lines.sql?
 const s = star({ stage: 'natural', dims: [], lit: ['qty', 'unit_price', 'amount_eur'] })
 const rows = cell(session, 'FACT_ROWS'), lines = cell(session, 'ORDER_LINES'), raw = cell(session, 'RAW_LINES')
 
-export const modelFact: SceneModel = ideFrame({
+export const modelFact: SceneModel = ideFrame2({
+  model: 'TODO',
   tree: modelTree('queries/fact_check.sql', 'model/fct_order_lines.sql', ['model/fct_order_lines.sql', 'queries/fact_check.sql']),
   editor: { file: 'model/fct_order_lines.sql', code: sql },
   session,
@@ -30,7 +31,6 @@ export const modelFact: SceneModel = ideFrame({
         ] },
       ],
     },
-    { type: 'note', id: 'legend', tone: 'neutral', text: 'In the star: PK a dimension’s key, FK a pointer to one, DD a degenerate dimension, + an additive measure.' },
   ],
   edges: s.edges,
 })
