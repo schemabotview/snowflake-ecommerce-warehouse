@@ -139,9 +139,11 @@ Numbers (revenues, counts) are frozen when the pilot is recorded and added here 
 
 ## Frames
 
-- **IDE frame** (from `spark-ecommerce-analytics`' `ide.ts`): explorer | editor over terminal (the
-  `snow` CLI, dbt, psql) | fixed side pane. A query's result is a `table` in the side pane, read from
-  the transcript.
+- **IDE frame v2** (`src/scenes/frame.ts` `ideFrame2`, Decision 9): editor over terminal (the `snow`
+  CLI, dbt, psql; 80 columns, never re-wrapped) | side pane 574, titled with the section's mental
+  model. No explorer. The side pane holds ONE diagram (edges or a plot) and at most one table outside
+  it; a query's result is a `table` read from the transcript, joined to the diagram by an edge when a
+  second table needs a place.
 - **Map frame** (from `aws-ecommerce`'s `map.ts`): the warehouse's whole final shape — sources →
   `RAW` → `STAGING` → the star → marts → BI and the share, with the warehouses and roles beside it.
   A part not built yet is `muted`; a section's addition is ringed by `focus`. One fit for every map frame.
@@ -359,6 +361,17 @@ M model.
 8. `shopwave_dw_gen`: 3% of customers draw a move, kept only between EUR countries (a move never
    changes the currency); tiers are a pure function of paid spend in 2026: silver at 1,000 EUR, gold
    at 2,500 EUR. At SF 0.01: 48 movers, 654 silver, 134 gold, 11 customers with three versions.
+9. **IDE frame v2** (2026-11-09): graphl-flow 0.11.0 and shell 1.1.0, pinned exactly; every IDE
+   section on the shared 1344 × 756 grid (one fit), as python-expense-tracker, sql-bank and the
+   others. Editor over an 80-column terminal sharing 26 rows (the terminal takes its transcript's
+   rows after `keep`'s folds) | side pane 574. No explorer: the star (three tables side by side)
+   needs the column, as sql-bank's console does; the editor's tab names the file. The star drops its
+   dimensions' PK tag column to fit (the key is the row an edge lands on) and points at a dimension
+   not built yet with a dashed edge (`amount_eur` → `dim_currency` until Course 8). A side pane holds
+   one diagram and at most one loose table; a narrated note became a card in the pane. 26 narrations
+   changed (an "explorer" or a "note" they named): their wavs are removed for Colab, and every course
+   is re-recorded, because the frame changed. The map, star-only and concept frames are unchanged.
+   Nothing was re-recorded on Snowflake: the spine is untouched.
 
 ## Open
 

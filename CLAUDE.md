@@ -11,16 +11,24 @@
 | teaches | data warehousing and Snowflake, by building `shopwave-dw`: Shopwave's e-commerce warehouse, from its database and files to tested dbt marts, a dashboard and a partner share |
 | cast | Ana (analytics engineer), Shopwave's data, analytics, BI and finance teams; Brightline, the marketing agency |
 | reference repos | all public under `github.com/schemabotview` — clone them beside this one, port, do not reinvent: **`spark-ecommerce-analytics`** (`shopwave_gen`, the IDE frame, `spine.py`, checks, registry, shots, film), **`aws-ecommerce`** (the map frame, the record-once spine, verification levels), **`sql-bank`** (`setup-postgres.sh`, psql consoles, result tables), **`databricks-retail-bank-lakehouse`** (normalising a real cloud account, credentials as secrets), **`python-expense-tracker`** (the original templates) |
-| engine / shell | `@graphlearning/graphl-flow` ^0.8.0, `@graphlearning/shell` ^1.1.0, from npm (0.8.0 / 1.1.0 in the lock). graphl-flow has brand `postgresql`, `snowflakedb`, `github`, `githubactions`; dbt has no mark (lucide `workflow`) |
+| engine / shell | `@graphlearning/graphl-flow` 0.11.0, `@graphlearning/shell` 1.1.0, from npm, pinned exactly (IDE frame v2, COURSE-PLAN Decision 9). graphl-flow has brand `postgresql`, `snowflakedb`, `github`, `githubactions`; dbt has no mark (lucide `workflow`) |
 | toolchain | COURSE-PLAN, "Stack and pins": Python 3.13.18, PostgreSQL 18.6, `shopwave_gen` @ `dc88dd7`, dbt-core 1.12.6 + dbt-snowflake 1.12.4, Snowflake CLI 3.31.0 (own env) |
 | frames | IDE, map, star (COURSE-PLAN, "Frames"); `--brand` Snowflake blue |
 | secrets | `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PRIVATE_KEY` (key-pair, for recording): environment secrets, never committed, never printed |
 
 ## Status
 
-Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Narrated (all 90 wavs), 4K-recorded (`record:all`, 2026-11-02) and filmed: `film.mp4` 2:10:10, 90 chapters; cover `output/thumbnails/film.png` (`thumb:film`, star source), `output/film-description.txt`. Next: watch the film through, then publish.
+Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Narrated (all 90 wavs), 4K-recorded (`record:all`, 2026-11-02) and filmed: `film.mp4` 2:10:10, 90 chapters; cover `output/thumbnails/film.png` (`thumb:film`, star source), `output/film-description.txt`.
 
-Built: the app (vite, shell 1.1.0, graphl-flow 0.8.0, `--brand` #29b5e8), `src/scenes/ide.ts`
+**2026-11-09: ported to IDE frame v2** (COURSE-PLAN Decision 9). All 69 IDE sections are on graphl-flow
+0.11's shared grid (`src/scenes/frame.ts` `ideFrame2`, workbench id `ide-bench`): editor over the
+80-column terminal | side pane 574, titled with the section's mental model; no explorer. The map,
+star-only and concept frames are unchanged. 26 narrations changed (each named the explorer or a
+note): their wavs are removed and the manifest regenerated, so check-content fails on those 26 until
+Colab regenerates them. Then every course is re-recorded and the film re-cut: the recordings, film
+and cover above are v1. Nothing was re-recorded on Snowflake.
+
+Built: the app (vite, shell 1.1.0, graphl-flow 0.11.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
 `map.ts` (every part and `BUILT` per course); checks, registry, shots, film, the Colab notebook;
 `shopwave_gen` imported at spark-ecommerce-analytics `dc88dd7` (byte-checked by `PINNED.sha256`);
@@ -82,6 +90,17 @@ See COURSE-PLAN, "The spine". The rules an author applies every step:
 
 The map's and the star's parts are fixed from the course they appear in; never rename a part. Every
 map frame shares one fit; every IDE frame shares one fit. Snowsight is never screenshotted.
+
+**IDE frame v2** (`frame.ts` `ideFrame2`): one 1344 × 756 grid. Editor over an 80-column terminal
+sharing 26 rows: the terminal takes its transcript's rows after `keep`'s folds, the editor the rest,
+windowed around its highlighted lines (a hand-picked `show` only when they do not fit; it THROWS,
+naming the scene, when that does not either); the editor soft-wraps past 76. Side pane 574, TITLED
+(`model`), ONE diagram (edges or a plot) and at most one table outside it, no bullets, no notes
+(check-content), filled ≥ 1/2 (check-render). A second table joins the diagram by an edge to the
+TABLE itself, hoisted out of its titled group (an edge into a group's heading fails check-render);
+a narrated aside is an `item` card. Three items in a row (`dir: 'row'`, `stack: true`) fit 574 with
+short subs. The star fits 574 only without a PK tag column on the dimensions. A table fits ~50
+monospace characters a row. `tree` is still passed (the scenes' helpers build it) but not drawn.
 
 ## Narration
 
