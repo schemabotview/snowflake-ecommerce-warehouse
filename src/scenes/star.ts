@@ -22,11 +22,13 @@ function factRows(stage: StarStage): TableRow[] {
   return [row('order_id', 'DD'), row('line'), ...keys, row('order_status'), row('qty', '+'), row('unit_price'), row('amount_eur', '+')]
 }
 
+// A dimension's key is its first row, where the fact's edge lands; at frame v2's 574px pane the star
+// has no room for a PK tag column on either side of the fact (the fact keeps its FK/DD/+ tags).
 const DIMS: Record<Dim, (stage: StarStage) => TableRow[]> = {
-  date: (s) => [row(s === 'natural' ? 'date' : 'date_key', 'PK'), row(s === 'natural' ? 'date_key' : 'date'), row('month'), row('is_weekend')],
-  customer: (s) => s === 'natural' ? [row('customer_id', 'PK'), row('country'), row('signup_date')] : [row('customer_key', 'PK'), row('customer_id'), row('country')],
-  product: (s) => s === 'natural' ? [row('product_id', 'PK'), row('category'), row('brand')] : [row('product_key', 'PK'), row('product_id'), row('category')],
-  currency: () => [row('currency_key', 'PK'), row('code'), row('per_eur')],
+  date: (s) => [row(s === 'natural' ? 'date' : 'date_key'), row(s === 'natural' ? 'date_key' : 'date'), row('month'), row('is_weekend')],
+  customer: (s) => s === 'natural' ? [row('customer_id'), row('country'), row('signup_date')] : [row('customer_key'), row('customer_id'), row('country')],
+  product: (s) => s === 'natural' ? [row('product_id'), row('category'), row('brand')] : [row('product_key'), row('product_id'), row('category')],
+  currency: () => [row('currency_key'), row('code'), row('per_eur')],
 }
 const LATER: Partial<Record<Dim, string>> = { currency: 'Course 8' }
 
@@ -42,7 +44,7 @@ export interface StarOptions {
 export function star({ stage, dims, lit = [] }: StarOptions): { node: Group; edges: Edge[] } {
   const table = (d: Dim): Table => {
     const built = dims.includes(d)
-    return { type: 'table', id: `dim-${d}`, title: built ? `dim_${d}` : `dim_${d} · ${LATER[d] ?? 'next'}`, tone: built ? 'store' : 'neutral', rows: DIMS[d](stage) }
+    return { type: 'table', id: `dim-${d}`, title: built ? `dim_${d}` : `dim_${d} (${LATER[d] ?? 'next'})`, tone: built ? 'store' : 'neutral', rows: DIMS[d](stage) }
   }
   const fact: Table = {
     type: 'table', id: 'fact', title: 'fct_order_lines', tone: 'serve',
@@ -58,7 +60,10 @@ export function star({ stage, dims, lit = [] }: StarOptions): { node: Group; edg
   const pairs: [string, string, Dim][] = stage === 'natural'
     ? [['order_date', 'date', 'date'], ['customer_id', 'customer_id', 'customer'], ['product_id', 'product_id', 'product']]
     : [['order_date_key', 'date_key', 'date'], ['customer_key', 'customer_key', 'customer'], ['product_key', 'product_key', 'product']]
-  const edges: Edge[] = pairs.filter(([, , d]) => dims.includes(d)).map(([f, k, d]) => ({ from: `fact.${f}`, to: `dim-${d}.${k}` }))
+  // A dimension not built yet is still pointed at, dashed: the fact's column is there before its table.
+  const edges: Edge[] = pairs.map(([f, k, d]) => ({ from: `fact.${f}`, to: `dim-${d}.${k}`, ...(!dims.includes(d) && { dashed: true }) }))
+  // amount_eur is in euros through the day's rate: dim_currency (Course 8) is where that rate lives.
+  edges.push({ from: 'fact.amount_eur', to: 'dim-currency', ...(!dims.includes('currency') && { dashed: true }) })
   if (stage === 'roles' && dims.includes('date')) edges.push({ from: 'fact.paid_date_key', to: 'dim-date', dashed: true })
   return { node, edges }
 }

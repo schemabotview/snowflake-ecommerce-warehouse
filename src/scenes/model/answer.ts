@@ -16,7 +16,7 @@ const nov6 = isRecorded(session) ? months.find(([m]) => m === '2026-11')! : mont
 const round = (v: string) => (v === '…' ? v : String(Math.round(Number(v))))
 
 export const modelAnswer: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Course 1’s question, asked of the star',
   tree: modelTree('queries/revenue_by_month.sql', 'queries/revenue_by_month.sql'),
   editor: { file: 'queries/revenue_by_month.sql', code: sql },
   session,

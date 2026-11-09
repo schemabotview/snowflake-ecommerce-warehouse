@@ -11,7 +11,7 @@ const s = star({ stage: 'natural', dims: [], lit: ['qty', 'unit_price', 'amount_
 const rows = cell(session, 'FACT_ROWS'), lines = cell(session, 'ORDER_LINES'), raw = cell(session, 'RAW_LINES')
 
 export const modelFact: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'The fact: one row per order line, pointers and measures',
   tree: modelTree('queries/fact_check.sql', 'model/fct_order_lines.sql', ['model/fct_order_lines.sql', 'queries/fact_check.sql']),
   editor: { file: 'model/fct_order_lines.sql', code: sql },
   session,
@@ -21,14 +21,6 @@ export const modelFact: SceneModel = ideFrame2({
     {
       type: 'group', id: 'check', badge: 1, title: 'Does the grain hold?', sub: 'from the run', tone: 'neutral', children: [
         { type: 'table', id: 'counts', columns: ['fact rows', 'distinct order lines', 'lines in RAW'], rows: [[rows, lines, raw]] },
-      ],
-    },
-    {
-      type: 'group', id: 'measures', badge: 2, title: 'Three kinds of column', tone: 'infra', children: [
-        { type: 'table', id: 'kinds', columns: ['column', 'is'], rows: [
-          ['order_id, line', 'the line’s identity'], ['order_date, customer_id, product_id', 'pointers to dimensions'],
-          { cells: ['qty, amount_eur', 'measures: they add up'], tone: 'serve' },
-        ] },
       ],
     },
   ],

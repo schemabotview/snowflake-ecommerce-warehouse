@@ -10,10 +10,9 @@ import sql from '../../../spine/model/08-roles/project/queries/two_dates.sql?raw
 // dim_date plays "ordered" and "paid" (recorded on Snowflake). paid_date_key is the FIRST payment's.
 const s = star({ stage: 'roles', dims: ['date', 'customer', 'product'], lit: ['order_id', 'order_date_key', 'paid_date_key'] })
 const crossed = rowsOf(session, 'ORDERED', 3, 0, 5)
-const unpaid = rowsOf(session, 'UNPAID', 1)[0]
 
 export const modelRoles: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'One date table, two roles; an id with no table',
   tree: modelTree('queries/two_dates.sql', 'queries/two_dates.sql', ['model/fct_order_lines.sql', 'queries/two_dates.sql']),
   editor: { file: 'queries/two_dates.sql', code: sql },
   session,

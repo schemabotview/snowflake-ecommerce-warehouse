@@ -11,7 +11,7 @@ const s = star({ stage: 'natural', dims: ['date', 'customer', 'product'] })
 const dims = rowsOf(session, 'DIM', 3, 0, 3)
 
 export const modelDims: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Dimensions: the who, what and when around the fact',
   tree: modelTree('queries/dims.sql', 'model/dim_date.sql', ['model/dim_date.sql', 'model/dim_customer.sql', 'model/dim_product.sql', 'queries/dims.sql']),
   editor: { file: 'model/dim_date.sql', code: sql },
   session,
