@@ -12,7 +12,7 @@ const said = rowsOf(session, 'DBT_SAID', 1, 0, 3)
 const state = (name: string) => runs.find((r) => r[0] === name)?.[1] ?? '…'
 
 export const operateNightly: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A failed nightly run: the alarm working',
   tree: operateTree('ops/history.sql', 'ops/nightly.sh', ['ops/nightly.sh', 'ops/history.sql']),
   editor: { file: 'ops/nightly.sh', code, lang: 'shell' },
   session,
@@ -30,6 +30,10 @@ export const operateNightly: SceneModel = ideFrame2({
         { type: 'table', id: 'd', columns: ['dbt'], rows: said },
       ],
     },
+    { type: 'group', id: 'cards', bare: true, dir: 'row', children: [
+      { type: 'item', id: 'skip', icon: 'lock', tone: 'consume', title: 'A failed test stops what is built on it', sub: 'yesterday’s right rows beat today’s wrong ones', stack: true },
+      { type: 'item', id: 'known', icon: 'zap', title: 'Course 7’s planted faults: the alarm working', sub: 'unpaid orders, and orders paid twice', stack: true },
+    ] },
   ],
   edges: [
     { from: 'r-snap', to: 'r-build' },

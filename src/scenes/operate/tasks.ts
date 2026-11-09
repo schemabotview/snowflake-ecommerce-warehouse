@@ -10,7 +10,7 @@ import sql from '../../../spine/operate/01-tasks/project/ops/tasks.sql?raw'
 const tasks = rowsOf(session, 'name', 3, 0, 2)
 
 export const operateTasks: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A task graph: dbt, scheduled inside Snowflake',
   tree: operateTree('ops/tasks.sql', 'ops/tasks.sql', ['setup/ops_grants.sql', 'ops/snowflake/profiles.yml', 'ops/deploy.sh', 'ops/tasks.sql']),
   editor: { file: 'ops/tasks.sql', code: sql },
   session,
@@ -28,6 +28,8 @@ export const operateTasks: SceneModel = ideFrame2({
         { type: 'table', id: 's', columns: ['task', 'schedule', 'state'], rows: tasks.map(([n, s, st]) => [n, s === 'None' ? '—' : s.replace('USING CRON ', ''), st]) },
       ],
     },
+    { type: 'item', id: 'where', icon: 'snowflakedb', tone: 'serve', title: 'dbt runs inside Snowflake', sub: 'no server stays awake for the night' },
+    { type: 'item', id: 'role', icon: 'users', title: 'A task runs as its owner, TRANSFORMER', sub: 'the role that reads every customer' },
   ],
   edges: [
     { from: 't-cron', to: 't-snap' },

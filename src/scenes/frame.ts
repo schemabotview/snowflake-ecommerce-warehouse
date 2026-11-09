@@ -133,8 +133,7 @@ export interface Frame {
   cwd?: string
 }
 
-/* PORTING */ export function ideFrame2(f: Frame): SceneModel { try { return build(f) } catch (e) { console.error("FRAME " + (e as Error).message); ((globalThis as Record<string, unknown>).__frameErrors ??= [] as string[]) as string[]; ((globalThis as Record<string, unknown>).__frameErrors as string[]).push((e as Error).message); return { nodes: [] } } }
-function build({ model, editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep }: Frame): SceneModel {
+export function ideFrame2({ model, editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep }: Frame): SceneModel {
   const term = terminal(session)
   const termShow = keep && keepLines(term, keep)
   const rows = termRows(term, termShow)

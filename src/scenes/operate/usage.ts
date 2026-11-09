@@ -12,27 +12,24 @@ const failed = rowsOf(session, 'NAME', 2, 0, 1)
 const logins = rowsOf(session, 'WHO', 4, 0, 5)
 
 export const operateUsage: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'The morning check: ACCOUNT_USAGE',
   tree: operateTree('ops/usage.sql', 'ops/usage.sql'),
   editor: { file: 'ops/usage.sql', code: sql },
   session,
   keep: [['| WH_TRANSFORM', '| WH_BI'], '| NIGHTLY_BUILD', ['| WHO', '| SVC_DBT']],
   side: [
     {
-      type: 'group', id: 'cost', badge: 1, title: 'Credits by warehouse, since the trial opened', sub: 'from the run', tone: 'infra', children: [
-        { type: 'table', id: 'c', columns: ['warehouse', 'credits'], rows: credits },
+      type: 'group', id: 'where', bare: true, dir: 'row', children: [
+        { type: 'item', id: 'u-is', icon: 'database', title: 'INFORMATION_SCHEMA', sub: 'now, one database, days', stack: true, muted: true },
+        { type: 'item', id: 'u-au', icon: 'clock', title: 'ACCOUNT_USAGE', sub: 'hours late, the account, a year', stack: true, tone: 'serve' },
       ],
     },
-    {
-      type: 'group', id: 'tasks', badge: 2, title: 'Failed tasks', sub: 'from the run', tone: 'consume', children: [
-        { type: 'table', id: 'f', columns: ['task', 'failures'], rows: failed },
-      ],
-    },
-    {
-      type: 'group', id: 'who', badge: 3, title: 'Sign-ins: Ana and the two service users', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'l', columns: ['who', 'how', 'ok', 'failed'], rows: logins },
-      ],
-    },
+    { type: 'table', id: 'c', title: 'Credits by warehouse (from the run)', columns: ['warehouse', 'credits'], rows: credits },
+    { type: 'table', id: 'f', title: 'Failed tasks', columns: ['task', 'failures'], rows: failed, tone: 'consume' },
+    { type: 'table', id: 'l', title: 'Sign-ins', columns: ['who', 'how', 'ok', 'failed'], rows: logins },
   ],
-  edges: [],
+  edges: [
+    { from: 'u-au', to: 'c' },
+    { from: 'c', to: 'f' },
+  ],
 })
