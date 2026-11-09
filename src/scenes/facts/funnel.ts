@@ -12,7 +12,7 @@ const lone = rowsOf(session, 'STARTED_AT', 2, 0, 3)
 const step = (id: string, title: string, column: string, sub?: string, tone?: 'consume') => ({ type: 'item' as const, id, icon: 'filter', title: `${title}: ${n(column)}`, sub, tone })
 
 export const factsFunnel: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A funnel: sessions reaching each step',
   tree: factsTree('queries/funnel.sql', 'queries/funnel.sql', ['dbt/models/marts/fct_funnel.sql', 'queries/funnel.sql']),
   editor: { file: 'queries/funnel.sql', code: sql },
   session,

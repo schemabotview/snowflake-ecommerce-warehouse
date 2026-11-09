@@ -10,7 +10,7 @@ import sql from '../../../spine/facts/08-factless/project/dbt/models/marts/fct_e
 const campaigns = rowsOf(session, 'CAMPAIGN_ID', 3, 0, 4).map(([c, e, b]) => [c, e, b, String(Number(e) - Number(b))])
 
 export const factsFactless: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A factless fact: what could have happened',
   tree: factsTree('queries/eligibility.sql', 'dbt/models/marts/fct_eligibility.sql', ['load/campaigns.sql', 'dbt/models/marts/fct_eligibility.sql', 'queries/eligibility.sql']),
   editor: { file: 'dbt/models/marts/fct_eligibility.sql', code: sql },
   session,

@@ -7,11 +7,9 @@ import sql from '../../../spine/facts/03-returns/project/dbt/models/marts/fct_re
 
 // §9.3 — Returns: each returned line joined to the order line it undoes (recorded on Snowflake).
 const reasons = rowsOf(session, 'REASON', 4, 0, 6)
-const returned = reasons.reduce((a, r) => a + Number(r[1]), 0)
-const matched = reasons.reduce((a, r) => a + Number(r[2]), 0)
 
 export const factsReturns: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A return fact: each return beside the line it undoes',
   tree: factsTree('queries/returns.sql', 'dbt/models/marts/fct_returns.sql', ['dbt/models/marts/fct_returns.sql', 'queries/returns.sql']),
   editor: { file: 'dbt/models/marts/fct_returns.sql', code: sql },
   session,

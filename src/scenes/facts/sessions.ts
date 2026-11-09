@@ -12,7 +12,7 @@ const n = (column: string) => cell(session, column)
 const share = Number.isNaN(Number(n('CLICKS'))) ? '…' : `${Math.round((100 * Number(n('BOT_CLICKS'))) / Number(n('CLICKS')))}%`
 
 export const factsSessions: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Sessions: clicks cut into visits at a 30-minute gap',
   tree: factsTree('queries/sessions.sql', 'dbt/models/marts/fct_sessions.sql', ['dbt/models/marts/fct_sessions.sql', 'queries/sessions.sql']),
   editor: { file: 'dbt/models/marts/fct_sessions.sql', code: sql, show: [[lineOf(sql, 'with clicks as'), lineOf(sql, 'from clicks') + 1], [lineOf(sql, "'product_view'"), lineOf(sql, "'purchase'")]] },
   session,
@@ -28,7 +28,7 @@ export const factsSessions: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'seen', badge: 2, title: 'The year’s clicks', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'c', columns: ['clicks', 'the bot’s', 'sessions', 'clicks each'], rows: [[n('CLICKS'), n('BOT_CLICKS'), n('SESSIONS'), n('EVENTS_PER_SESSION')]] },
+        { type: 'table', id: 'c', columns: ['clicks', 'the bot’s', 'sessions', 'clicks each'], rows: [[n('CLICKS'), `${n('BOT_CLICKS')} (${share})`, n('SESSIONS'), n('EVENTS_PER_SESSION')]] },
       ],
     },
   ],

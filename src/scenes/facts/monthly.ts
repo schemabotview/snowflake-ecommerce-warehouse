@@ -12,7 +12,7 @@ const total = cell(session, 'ROWS_IN_TABLE')
 const months = rowsOf(session, 'MONTH', 3, 0, 6)
 
 export const factsMonthly: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A periodic snapshot: every customer, every month',
   tree: factsTree('queries/monthly.sql', 'dbt/models/marts/fct_customer_monthly.sql', ['dbt/models/marts/fct_customer_monthly.sql', 'queries/monthly.sql']),
   editor: { file: 'dbt/models/marts/fct_customer_monthly.sql', code: sql, show: [[1, 2], [lineOf(sql, 'orders as ('), lineOf(sql, 'dbt_valid_to')]] },
   session,

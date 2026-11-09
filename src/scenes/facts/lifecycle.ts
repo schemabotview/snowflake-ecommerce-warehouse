@@ -12,7 +12,7 @@ const orders = rowsOf(session, 'ORDER_ID', 5, 0, 2).map((r) => r.map((c) => (c =
 const milestone = (id: string, title: string, column: string) => ({ type: 'item' as const, id, icon: 'check', title, sub: `${n(column)} orders` })
 
 export const factsLifecycle: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'An accumulating snapshot: one row per order, filled in',
   tree: factsTree('queries/lifecycle.sql', 'dbt/models/marts/fct_order_lifecycle.sql', ['load/order_changes_all.sql', 'dbt/models/staging/stg_order_changes.sql', 'dbt/models/marts/fct_order_lifecycle.sql', 'queries/lifecycle.sql']),
   editor: { file: 'dbt/models/marts/fct_order_lifecycle.sql', code: sql, show: [[lineOf(sql, 'with changes'), lineOf(sql, 'group by order_id')], [lineOf(sql, '    o.order_id,') - 1, lineOf(sql, 'left join returned')]] },
   session,
@@ -32,6 +32,7 @@ export const factsLifecycle: SceneModel = ideFrame2({
         { type: 'table', id: 'o', columns: ['order', 'placed', 'paid', 'shipped', 'delivered'], rows: orders },
       ],
     },
+    { type: 'item', id: 'avg', icon: 'clock', tone: 'infra', title: `${n('AVG_DAYS_TO_DELIVER')} days, placed to delivered`, sub: 'on average, from the run' },
   ],
   edges: [
     { from: 'm-placed', to: 'm-paid' },

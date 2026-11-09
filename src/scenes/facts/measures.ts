@@ -10,37 +10,32 @@ import sql from '../../../spine/facts/07-measures/project/queries/measures.sql?r
 const n = (column: string) => cell(session, column)
 
 export const factsMeasures: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Additive, semi-additive, non-additive',
   tree: factsTree('queries/measures.sql', 'queries/measures.sql'),
   editor: { file: 'queries/measures.sql', code: sql },
   session,
   keep: ['$ bash model', ['| ORDERS', '| 18014'], ['| GOLD_SUMMED_WRONG', '+--------------------------------------+']],
   side: [
+    { type: 'table', id: 'k', title: 'Three kinds of measure', columns: ['kind', 'example', 'sum across'], rows: [
+      { cells: ['additive', 'revenue', 'anything'], tone: 'serve' },
+      ['semi-additive', 'gold at month end', 'customers'],
+      { cells: ['non-additive', 'AOV, a ratio', 'nothing'], tone: 'consume' },
+    ] },
     {
-      type: 'group', id: 'kinds', badge: 1, title: 'Three kinds of measure', tone: 'infra', children: [
-        { type: 'table', id: 'k', columns: ['kind', 'example', 'sum across'], rows: [
-          { cells: ['additive', 'revenue, quantity', 'anything'], tone: 'serve' },
-          ['semi-additive', 'customers at month end', 'customers, not months'],
-          { cells: ['non-additive', 'AOV, a ratio', 'nothing: sum the parts'], tone: 'consume' },
-        ] },
-      ],
-    },
-    {
-      type: 'group', id: 'aov', badge: 2, title: 'Average order value', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'a', columns: ['', 'EUR'], rows: [
+      type: 'group', id: 'run', bare: true, dir: 'row', children: [
+        { type: 'table', id: 'a', title: 'AOV (from the run)', columns: ['', 'EUR'], rows: [
           { cells: ['revenue ÷ orders', n('AOV_RIGHT')], tone: 'serve' },
-          { cells: ['the average of each customer’s AOV', n('AOV_AVERAGED_WRONG')], tone: 'consume' },
+          { cells: ['avg of AOVs', n('AOV_AVERAGED_WRONG')], tone: 'consume' },
         ] },
-      ],
-    },
-    {
-      type: 'group', id: 'gold', badge: 3, title: 'Gold customers', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'g', columns: ['', 'customers'], rows: [
-          { cells: ['at the end of December', n('GOLD_AT_YEAR_END')], tone: 'serve' },
-          { cells: ['summed over twelve month ends', n('GOLD_SUMMED_WRONG')], tone: 'consume' },
+        { type: 'table', id: 'g', title: 'Gold (from the run)', columns: ['', 'customers'], rows: [
+          { cells: ['December', n('GOLD_AT_YEAR_END')], tone: 'serve' },
+          { cells: ['12 months, summed', n('GOLD_SUMMED_WRONG')], tone: 'consume' },
         ] },
       ],
     },
   ],
-  edges: [],
+  edges: [
+    { from: 'k', to: 'a' },
+    { from: 'k', to: 'g' },
+  ],
 })
