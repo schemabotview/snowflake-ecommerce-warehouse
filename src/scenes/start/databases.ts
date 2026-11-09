@@ -8,7 +8,7 @@ import sql from '../../../spine/start/02-databases/project/setup/databases.sql?r
 const schema = (id: string, title: string, sub: string) => ({ type: 'item' as const, id, icon: 'folder', title, sub })
 
 export const startDatabases: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Account, database, schema, object',
   tree: startTree('setup/databases.sql', 'setup/databases.sql'),
   editor: { file: 'setup/databases.sql', code: sql },
   session,
@@ -34,8 +34,8 @@ export const startDatabases: SceneModel = ideFrame2({
     {
       type: 'group', id: 'objects', title: 'Inside a schema', sub: 'every object has a three-part name', icon: 'layers', tone: 'neutral', children: [
         { type: 'table', id: 'kinds', columns: ['object', 'example'], rows: [
-          ['table', 'RAW.SHOPWAVE.PRODUCTS'], ['view', 'ANALYTICS.STAGING.STG_ORDERS'], ['stage', 'RAW.SHOPWAVE.LANDING'],
-          ['file format', 'RAW.SHOPWAVE.FF_CSV'],
+          ['table', 'RAW.SHOPWAVE.PRODUCTS'], ['view', 'STAGING.STG_ORDERS'], ['stage', 'RAW.SHOPWAVE.LANDING'],
+          ['format', 'RAW.SHOPWAVE.FF_CSV'],
         ] },
       ],
     },

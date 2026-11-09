@@ -12,7 +12,7 @@ const mine = rowsOf(session, 'MY_ROLES', 1, 0, 6).map(([r]) => r)
 const ravi = /RAVIS_ROLES/.test(session) ? rowsOf(session, 'RAVIS_ROLES', 1).map(([r]) => r) : /No data/.test(session) ? ['none: PUBLIC only, implicit'] : ['…']
 
 export const secureUsers: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Privileges to roles, roles to users',
   tree: secureTree('queries/who.sql', 'setup/users.sql', ['setup/users.sql', 'queries/who.sql']),
   editor: { file: 'setup/users.sql', code: sql },
   session,
@@ -20,20 +20,17 @@ export const secureUsers: SceneModel = ideFrame2({
   side: [
     {
       type: 'group', id: 'model', badge: 1, title: 'Privileges go to roles, roles go to users', tone: 'infra', children: [
-        { type: 'item', id: 'u-user', icon: 'user', title: 'A user', sub: 'a person or a program: who logs in' },
-        { type: 'item', id: 'u-role', icon: 'users', title: 'Roles', sub: 'granted to the user; one active at a time' },
-        { type: 'item', id: 'u-priv', icon: 'key', title: 'Privileges', sub: 'USAGE, SELECT, CREATE … on objects' },
+        { type: 'item', id: 'u-user', icon: 'user', title: 'A user', sub: 'a person or a program' },
+        { type: 'item', id: 'u-role', icon: 'users', title: 'Roles', sub: 'one active at a time' },
+        { type: 'item', id: 'u-priv', icon: 'key', title: 'Privileges', sub: 'USAGE, SELECT … on objects' },
       ],
     },
-    {
-      type: 'group', id: 'two', badge: 2, title: 'Two users, from the run', tone: 'neutral', dir: 'row', children: [
-        { type: 'table', id: 'ana', title: 'ANA may use', rows: mine.map((r) => ({ cells: [r] })) },
-        { type: 'table', id: 'ravi', title: 'RAVI may use', rows: ravi.map((r) => ({ cells: [r] })) },
-      ],
-    },
+    { type: 'table', id: 'ana', title: 'ANA may use (from the run)', rows: mine.map((r) => ({ cells: [r] })) },
+    { type: 'table', id: 'ravi', title: 'RAVI may use', rows: ravi.map((r) => ({ cells: [r] })) },
   ],
   edges: [
     { from: 'u-user', to: 'u-role', label: 'is granted' },
     { from: 'u-role', to: 'u-priv', label: 'holds' },
+    { from: 'u-priv', to: 'ana' },
   ],
 })

@@ -11,7 +11,7 @@ import sql from '../../../spine/secure/04-grants/project/setup/grants.sql?raw'
 const future = rowsOf(session, 'privilege', 3, 0, 4)
 
 export const secureGrants: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A privilege, on an object, to a role',
   tree: secureTree('queries/future.sql', 'setup/grants.sql', ['setup/grants.sql', 'queries/future.sql', 'setup/warehouses.sql']),
   editor: { file: 'setup/grants.sql', code: sql, ...view(sql, '-- LOADER', '-- ANALYST', 0) },
   session,
@@ -27,15 +27,6 @@ export const secureGrants: SceneModel = ideFrame2({
     {
       type: 'group', id: 'future', badge: 2, title: 'Future grants in RAW.SHOPWAVE', sub: 'from the run: tables that do not exist yet', tone: 'neutral', children: [
         { type: 'table', id: 'fg', columns: ['privilege', 'on', 'to'], rows: future },
-      ],
-    },
-    {
-      type: 'group', id: 'scope', badge: 3, title: 'How far a grant reaches', tone: 'infra', children: [
-        { type: 'table', id: 'scopes', columns: ['grant … ON', 'covers'], rows: [
-          ['TABLE PRODUCTS', 'that one table'],
-          ['ALL TABLES IN SCHEMA', 'every table there today'],
-          { cells: ['FUTURE TABLES IN SCHEMA', 'every table created later'], tone: 'serve' },
-        ] },
       ],
     },
   ],

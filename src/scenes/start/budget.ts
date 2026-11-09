@@ -10,7 +10,7 @@ import sql from '../../../spine/start/05-budget/project/setup/monitors.sql?raw'
 const quota = cell(session, 'credit_quota'), used = cell(session, 'used_credits')
 
 export const startBudget: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A monitor caps the credits',
   tree: startTree('setup/monitors.sql', 'setup/monitors.sql'),
   editor: { file: 'setup/monitors.sql', code: sql },
   session,
@@ -24,14 +24,10 @@ export const startBudget: SceneModel = ideFrame2({
         { type: 'item', id: 'm-bi', icon: 'cpu', title: 'WH_BI', sub: 'Course 4', stack: true, muted: true },
       ],
     },
-    {
-      type: 'group', id: 'triggers', title: 'What happens as credits are used', icon: 'zap', tone: 'consume', children: [
-        { type: 'table', id: 'thresholds', columns: ['used', 'credits', 'action'], rows: [
-          ['80%', '40', 'NOTIFY: email the administrators'],
-          { cells: ['100%', '50', 'SUSPEND: after running queries finish'], tone: 'consume' },
-        ] },
-      ],
-    },
+    { type: 'table', id: 'thresholds', title: 'What happens as credits are used', tone: 'consume', columns: ['used', 'credits', 'action'], rows: [
+      ['80%', '40', 'NOTIFY admins'],
+      { cells: ['100%', '50', 'SUSPEND'], tone: 'consume' },
+    ] },
     {
       type: 'group', id: 'now', title: 'RM_MONTHLY today', sub: 'from SHOW RESOURCE MONITORS', icon: 'gauge', tone: 'infra', children: [
         { type: 'table', id: 'quota', columns: ['quota', 'used so far'], rows: [[quota, used]] },
@@ -42,5 +38,6 @@ export const startBudget: SceneModel = ideFrame2({
     { from: 'rm', to: 'm-load' },
     { from: 'rm', to: 'm-transform', dashed: true },
     { from: 'rm', to: 'm-bi', dashed: true },
+    { from: 'whs', to: 'thresholds', label: 'as credits are used' },
   ],
 })

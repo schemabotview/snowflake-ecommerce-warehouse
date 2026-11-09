@@ -10,7 +10,7 @@ import sql from '../../../spine/start/03-first-table/project/load/products.sql?r
 const categories = rowsOf(session, 'CATEGORY', 3, 0, 6) // six categories (shopwave_gen)
 
 export const startFirstTable: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Every query takes the same round trip',
   tree: startTree('queries/categories.sql', 'load/products.sql', ['load/products.sql', 'queries/categories.sql'], { 'exports/': 'products.csv' }),
   editor: { file: 'load/products.sql', code: sql },
   session,

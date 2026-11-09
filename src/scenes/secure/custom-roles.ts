@@ -9,7 +9,7 @@ import sql from '../../../spine/secure/03-custom-roles/project/setup/roles.sql?r
 const analyst = rowsOf(session, 'granted_to', 2, 0, 3)
 
 export const secureCustomRoles: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Team roles under SYSADMIN',
   tree: secureTree('setup/roles.sql', 'setup/roles.sql'),
   editor: { file: 'setup/roles.sql', code: sql },
   session,
@@ -26,15 +26,6 @@ export const secureCustomRoles: SceneModel = ideFrame2({
     {
       type: 'group', id: 'who', title: 'Who holds ANALYST', sub: 'SHOW GRANTS OF ROLE, from the run', icon: 'users', tone: 'neutral', children: [
         { type: 'table', id: 'holders', columns: ['granted to', 'name'], rows: analyst },
-      ],
-    },
-    {
-      type: 'group', id: 'jobs', title: 'Each role’s job', icon: 'workflow', tone: 'neutral', children: [
-        { type: 'table', id: 'job', columns: ['role', 'held by', 'its warehouse'], rows: [
-          { cells: ['LOADER', 'data team, svc_loader', 'WH_LOAD'], tone: 'ingest' },
-          { cells: ['TRANSFORMER', 'analytics, svc_dbt', 'WH_TRANSFORM (7)'], tone: 'store' },
-          { cells: ['ANALYST', 'BI, finance: Ravi', 'WH_BI (next)'], tone: 'serve' },
-        ] },
       ],
     },
   ],

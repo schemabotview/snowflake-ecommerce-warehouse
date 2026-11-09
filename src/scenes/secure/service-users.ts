@@ -10,7 +10,7 @@ import code from '../../../spine/secure/07-service-users/project/setup/keys.sh?r
 const loader = rowsOf(session, 'WHO', 2, 0)[0], dbt = rowsOf(session, 'WHO', 2, 1)[0]
 
 export const secureServiceUsers: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A key pair, not a password',
   tree: secureTree('queries/whoami.sh', 'setup/keys.sh', ['setup/keys.sh', 'setup/service_users.sql', 'queries/whoami.sh']),
   editor: { file: 'setup/keys.sh', code, lang: 'shell' },
   session,
@@ -26,14 +26,6 @@ export const secureServiceUsers: SceneModel = ideFrame2({
     {
       type: 'group', id: 'who', badge: 2, title: 'Who Snowflake saw', sub: 'from the run', tone: 'neutral', children: [
         { type: 'table', id: 'seen', columns: ['user', 'role'], rows: [loader, dbt] },
-      ],
-    },
-    {
-      type: 'group', id: 'where', badge: 3, title: 'Where each half lives', tone: 'neutral', children: [
-        { type: 'table', id: 'halves', columns: ['', 'kept in', 'shown'], rows: [
-          { cells: ['private key', '~/.keys, this machine', 'never'], tone: 'consume' },
-          { cells: ['public key', 'the user, in Snowflake', 'RSA_PUBLIC_KEY'], tone: 'serve' },
-        ] },
       ],
     },
   ],

@@ -11,7 +11,7 @@ const onRaw = rowsOf(session, 'privilege', 2, 0, 3)
 const products = cell(session, 'PRODUCTS')
 
 export const secureRefused: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'No grant: the object does not exist',
   tree: secureTree('queries/raw_grants.sql', 'queries/refused.sql', ['queries/refused.sql', 'queries/raw_grants.sql']),
   editor: { file: 'queries/refused.sql', code: sql },
   session,
@@ -22,12 +22,6 @@ export const secureRefused: SceneModel = ideFrame2({
         { type: 'item', id: 'p-all', icon: 'users', title: 'Secondary roles: ALL', sub: `every role she holds counts too: RAW read, ${products} products` },
         { type: 'item', id: 'p-none', icon: 'filter', title: 'USE SECONDARY ROLES NONE', sub: 'only ANALYST counts, as for Ravi' },
         { type: 'item', id: 'p-db', icon: 'database', title: 'USAGE on RAW: never granted', sub: 'the UPDATE stops here, refused', tone: 'consume' },
-      ],
-    },
-    {
-      type: 'group', id: 'reading', badge: 2, title: 'Reading the refusal', tone: 'neutral', children: [
-        { type: 'item', id: 'r-hide', icon: 'shield', title: '“does not exist or not authorized”', sub: 'a role cannot even learn the object is there' },
-        { type: 'item', id: 'r-fix', icon: 'search', title: 'SHOW GRANTS ON DATABASE RAW', sub: 'who may: LOADER, TRANSFORMER, the admins' },
       ],
     },
     {
