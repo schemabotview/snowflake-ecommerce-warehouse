@@ -10,7 +10,7 @@ const all = rowsOf(session, 'COUNTRY', 2, 0, 4)
 const region = rowsOf(session, 'COUNTRY', 2, 1, 2)
 
 export const serveRowAccess: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A row access policy: one table, filtered by who asks',
   tree: serveTree('queries/regions.sql', 'govern/row_access.sql', ['setup/region_role.sql', 'govern/row_access.sql', 'dbt/models/marts/core/dim_customer.sql', 'queries/regions.sql']),
   editor: { file: 'govern/row_access.sql', code: sql },
   session,
@@ -24,14 +24,15 @@ export const serveRowAccess: SceneModel = ideFrame2({
       ],
     },
     {
-      type: 'group', id: 'two', badge: 2, title: 'Customers by country, two readers', sub: 'from the run', tone: 'neutral', dir: 'row', children: [
-        { type: 'table', id: 't', title: 'TRANSFORMER', columns: ['country', 'customers'], rows: all },
-        { type: 'table', id: 'm', title: 'REGION_MANAGER', columns: ['country', 'customers'], rows: region, tone: 'serve' },
+      type: 'group', id: 'two', bare: true, dir: 'row', children: [
+        { type: 'table', id: 't', title: 'TRANSFORMER (the run)', columns: ['country', 'customers'], rows: all },
+        { type: 'table', id: 'm', title: 'REGION_MANAGER (the run)', columns: ['country', 'customers'], rows: region, tone: 'serve' },
       ],
     },
   ],
   edges: [
     { from: 'a-map', to: 'a-pol' },
     { from: 'a-pol', to: 'a-read' },
+    { from: 'a-read', to: 'm' },
   ],
 })

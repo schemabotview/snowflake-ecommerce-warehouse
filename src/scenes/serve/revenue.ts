@@ -9,7 +9,7 @@ import sql from '../../../spine/serve/01-revenue/project/dbt/models/marts/bi/mar
 const week = rowsOf(session, 'DATE', 2, 0, 7).map(([d, r]) => (d === '2026-11-27' ? { cells: [`${d} (Black Friday)`, r], tone: 'serve' as const } : [d, r]))
 
 export const serveRevenue: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A mart: the star, shaped for one dashboard',
   tree: serveTree('queries/revenue.sql', 'dbt/models/marts/bi/mart_revenue.sql', ['dbt/models/marts/bi/mart_revenue.sql', 'queries/revenue.sql']),
   editor: { file: 'dbt/models/marts/bi/mart_revenue.sql', code: sql },
   session,

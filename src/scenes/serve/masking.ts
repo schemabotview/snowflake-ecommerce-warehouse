@@ -9,7 +9,7 @@ import sql from '../../../spine/serve/04-masking/project/govern/masking.sql?raw'
 const email = (after: number) => cell(session, 'EMAIL', 0, after)
 
 export const serveMasking: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A masking policy: one column, two readers',
   tree: serveTree('queries/masked.sql', 'govern/masking.sql', ['setup/masking_grants.sql', 'govern/masking.sql', 'dbt/models/marts/core/dim_customer.sql', 'queries/masked.sql']),
   editor: { file: 'govern/masking.sql', code: sql },
   session,
@@ -27,6 +27,8 @@ export const serveMasking: SceneModel = ideFrame2({
         { type: 'table', id: 'r', columns: ['role', 'email'], rows: [['TRANSFORMER', email(0)], { cells: ['ANALYST', email(1)], tone: 'serve' }] },
       ],
     },
+    { type: 'item', id: 'hook', icon: 'workflow', tone: 'consume', title: 'dbt replaces the table every run', sub: 'a post_hook re-attaches the policy' },
+    { type: 'item', id: 'role', icon: 'users', title: 'CURRENT_ROLE(), not the secondary roles', sub: 'the one role the session works as' },
   ],
   edges: [
     { from: 'm-pol', to: 'm-col' },
