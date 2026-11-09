@@ -21,14 +21,14 @@ for (const line of yml.split('\n')) {
 const pass = fromRun(session, /PASS=(\d+)/), fail = fromRun(session, /ERROR=(\d+)/)
 
 export const transformGenericTests: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Generic tests: the model checks its own shape',
   tree: transformTree('dbt/models/marts/core/_core.yml', 'dbt/models/marts/core/_core.yml'),
   editor: { file: 'dbt/models/marts/core/_core.yml', code: yml, ...view(yml, 'models:', '- name: dim_customer', 1) },
   session,
   keep: ['$ dbt test --select marts', 'Found ', '13 of 13 PASS', 'Finished running 13', 'Done. PASS=13'],
   side: [
     {
-      type: 'group', id: 'onstar', badge: 1, title: 'Tests on the DAG', sub: 'each a query that should return no rows', tone: 'infra', dir: 'row', children: [
+      type: 'group', id: 'onstar', badge: 1, title: `${tests.length} tests on the DAG`, sub: 'each a query that should return no rows', tone: 'infra', dir: 'row', children: [
         { type: 'item', id: 't-fact', icon: 'table', title: 'fct_order_lines', sub: 'unique, not_null, accepted_values', stack: true },
         {
           type: 'group', id: 't-dims', bare: true, children: [
@@ -39,18 +39,14 @@ export const transformGenericTests: SceneModel = ideFrame2({
       ],
     },
     {
-      type: 'group', id: 'all', badge: 2, title: `${tests.length} tests, from _core.yml`, tone: 'neutral', children: [
-        { type: 'table', id: 'list', columns: ['model', 'column', 'test'], rows: tests },
-      ],
-    },
-    {
-      type: 'group', id: 'kinds', badge: 3, title: 'The four built-in tests', tone: 'neutral', children: [
+      type: 'group', id: 'kinds', badge: 2, title: 'The four built-in tests', tone: 'neutral', children: [
         { type: 'table', id: 'k', columns: ['test', 'fails when'], rows: [
           ['unique', 'a value appears twice'], ['not_null', 'a value is missing'],
           ['relationships', 'a key has no row in its dimension'], ['accepted_values', 'a status no one expected'],
         ] },
       ],
     },
+    { type: 'item', id: 'result', icon: 'check', tone: 'serve', title: `${pass} passed, ${fail} failed`, sub: 'dbt test --select marts, from the run' },
   ],
   edges: [
     { from: 't-fact', to: 't-cust', label: 'relationships' },

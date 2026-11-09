@@ -7,7 +7,7 @@ import profiles from '../../../spine/transform/02-project/project/dbt/profiles.y
 // §7.2 — A dbt project: dbt_project.yml, profiles.yml as SVC_DBT by key pair, the sources (recorded
 // on Snowflake: dbt debug connects).
 export const transformProject: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'A project, a profile, a role: dbt reaches Snowflake',
   tree: transformTree('dbt/models/staging/_sources.yml', 'dbt/profiles.yml', ['requirements.txt', 'dbt/dbt_project.yml', 'dbt/profiles.yml', 'dbt/macros/generate_schema_name.sql', 'dbt/models/staging/_sources.yml']),
   editor: { file: 'dbt/profiles.yml', code: profiles },
   session,
@@ -15,10 +15,10 @@ export const transformProject: SceneModel = ideFrame2({
   side: [
     {
       type: 'group', id: 'chain', badge: 1, title: 'From a project to Snowflake', tone: 'infra', children: [
-        { type: 'item', id: 'c-project', icon: 'file', title: 'dbt_project.yml', sub: 'the models, where each layer lands' },
-        { type: 'item', id: 'c-profile', icon: 'key', title: 'profiles.yml', sub: 'who connects: SVC_DBT, by key pair' },
-        { type: 'item', id: 'c-role', icon: 'users', title: 'TRANSFORMER on WH_TRANSFORM', sub: 'Course 4’s grants: read RAW, build ANALYTICS' },
-        { type: 'item', id: 'c-db', icon: 'snowflakedb', title: 'ANALYTICS', sub: 'STAGING, MARTS: one schema per layer' },
+        { type: 'item', id: 'c-project', icon: 'file', title: 'dbt_project.yml', sub: 'where each layer lands' },
+        { type: 'item', id: 'c-profile', icon: 'key', title: 'profiles.yml', sub: 'SVC_DBT, by key pair' },
+        { type: 'item', id: 'c-role', icon: 'users', title: 'TRANSFORMER', sub: 'on WH_TRANSFORM: Course 4’s grants' },
+        { type: 'item', id: 'c-db', icon: 'snowflakedb', title: 'ANALYTICS', sub: 'STAGING, MARTS' },
       ],
     },
     {

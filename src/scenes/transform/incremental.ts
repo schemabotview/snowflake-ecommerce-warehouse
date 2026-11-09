@@ -1,7 +1,7 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
 import { ideFrame2 } from '../frame'
 import { view } from '../fold'
-import { fromRun, isRecorded } from '../recorded'
+import { isRecorded } from '../recorded'
 import { transformTree } from './tree'
 import session from '../../../spine/transform/06-incremental/session.txt?raw'
 import sql from '../../../spine/transform/06-incremental/project/dbt/models/marts/core/fct_order_lines.sql?raw'
@@ -10,10 +10,9 @@ import sql from '../../../spine/transform/06-incremental/project/dbt/models/mart
 // dbt's status lines are longer than the terminal: read them with the 80-column wrap undone.
 const flat = session.replace(/^(.{80})\n/gm, '$1')
 const runs = isRecorded(session) ? [...flat.matchAll(/incremental model \S+\s+\[SUCCESS (\d+) in/g)].map((m) => `${m[1]} rows merged`) : ['…', '…']
-const done = fromRun(session, /(Done\..*)$/m)
 
 export const transformIncremental: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Incremental: build once, then merge what is new',
   tree: transformTree('dbt/models/marts/core/fct_order_lines.sql', 'dbt/models/marts/core/fct_order_lines.sql'),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, ...view(sql, '{{ config', '{% endif %}', 0) },
   session,

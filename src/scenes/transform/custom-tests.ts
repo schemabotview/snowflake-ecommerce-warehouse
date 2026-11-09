@@ -11,7 +11,7 @@ import sql from '../../../spine/transform/08-custom-tests/project/dbt/tests/asse
 const got = (test: string) => isRecorded(session) ? (session.match(new RegExp(`(?:FAIL|PASS) (\\d+)? ?${test}`))?.[1] ?? '0') : '…'
 
 export const transformCustomTests: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Custom tests: the business’s own rules',
   tree: transformTree('dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_has_payment.sql', ['dbt/tests/assert_has_payment.sql', 'dbt/tests/assert_paid_once.sql']),
   editor: { file: 'dbt/tests/assert_has_payment.sql', code: sql },
   session,
@@ -30,15 +30,6 @@ export const transformCustomTests: SceneModel = ideFrame2({
         { type: 'item', id: 'w-fail', icon: 'zap', title: 'dbt test fails', sub: 'and stops a nightly build (Course 12)' },
         { type: 'item', id: 'w-who', icon: 'users', title: 'Someone decides', sub: 'bad data, or a rule the business needs' },
         { type: 'item', id: 'w-fix', icon: 'check', title: 'Fixed at the source, or modelled', sub: 'paid_date_key takes the FIRST payment (6.8)' },
-      ],
-    },
-    {
-      type: 'group', id: 'vs', badge: 3, title: 'Generic or custom', tone: 'infra', children: [
-        { type: 'table', id: 'gc', columns: ['', 'generic', 'custom'], rows: [
-          ['written as', 'a line of YAML', 'a SELECT in tests/'],
-          ['checks', 'the model’s structure', 'a business rule'],
-          { cells: ['fails when', 'it returns rows', 'it returns rows'], tone: 'serve' },
-        ] },
       ],
     },
   ],

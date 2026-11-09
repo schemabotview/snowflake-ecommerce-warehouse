@@ -10,7 +10,7 @@ import sql from '../../../spine/transform/03-staging/project/dbt/models/staging/
 const pairs = DAG.filter((n) => n.name.startsWith('stg_')).map((n) => [n.parents[0], n.name])
 
 export const transformStaging: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Staging: one clean view per source',
   tree: transformTree('dbt/models/staging/stg_products.sql', 'dbt/models/staging/stg_clicks.sql', ['dbt/models/staging/stg_clicks.sql', 'dbt/models/staging/stg_orders.sql', 'dbt/models/staging/stg_order_items.sql']),
   editor: { file: 'dbt/models/staging/stg_clicks.sql', code: sql },
   session,
