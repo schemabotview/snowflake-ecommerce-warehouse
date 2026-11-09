@@ -10,7 +10,7 @@ import sql from '../../../spine/perform/02-pruning/project/queries/pruning.sql?r
 const n = (column: string) => cell(session, column)
 
 export const performPruning: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Pruning: skip a partition by its min and max',
   tree: performTree('queries/pruning.sql', 'queries/pruning.sql'),
   editor: { file: 'queries/pruning.sql', code: sql },
   session,
@@ -25,8 +25,7 @@ export const performPruning: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'layout', badge: 2, title: 'FCT_ORDER_LINES, by order date', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'l', columns: ['partitions', 'overlapping each', 'depth'], rows: [[n('PARTITIONS'), n('OVERLAPS'), n('DEPTH')]] },
-        { type: 'table', id: 's', columns: ['November: partitions read', 'of'], rows: [{ cells: [n('SCANNED'), n('TOTAL')], tone: 'consume' }] },
+        { type: 'table', id: 'l', columns: ['partitions', 'overlapping', 'depth', 'November read'], rows: [{ cells: [n('PARTITIONS'), n('OVERLAPS'), n('DEPTH'), `${n('SCANNED')} of ${n('TOTAL')}`], tone: 'consume' }] },
       ],
     },
   ],

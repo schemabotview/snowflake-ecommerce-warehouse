@@ -10,7 +10,7 @@ import macro from '../../../spine/perform/07-credits/project/dbt/macros/set_quer
 const models = rowsOf(session, 'MODEL', 4, 0, 6)
 
 export const performCredits: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Query tags: a bill split by model',
   tree: performTree('queries/credits.sql', 'dbt/macros/set_query_tag.sql', ['dbt/macros/set_query_tag.sql', 'queries/credits.sql']),
   editor: { file: 'dbt/macros/set_query_tag.sql', code: macro },
   session,
@@ -28,6 +28,7 @@ export const performCredits: SceneModel = ideFrame2({
         { type: 'table', id: 't', columns: ['model', 'queries', 'seconds', '%'], rows: models },
       ],
     },
+    { type: 'item', id: 'bill', icon: 'clock', tone: 'consume', title: 'Billed per second running, not per query', sub: 'time share splits a run’s bill across models' },
   ],
   edges: [
     { from: 'k-tag', to: 'k-hist' },

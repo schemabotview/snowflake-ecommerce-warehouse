@@ -1,20 +1,19 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
 import { ideFrame2 } from '../frame'
-import { isRecorded, rowsOf, PENDING } from '../recorded'
+import { isRecorded, PENDING } from '../recorded'
 import { performTree } from './tree'
 import session from '../../../spine/perform/04-scale/session.txt?raw'
 import code from '../../../spine/perform/04-scale/project/perform/black_friday.py?raw'
 
 // §10.4 — Scale up vs scale out (recorded on Snowflake): WH_TRANSFORM one size up, WH_BI allowed
 // three clusters, then 96 dashboard queries at once. The clusters table is the script's own print.
-const sizes = rowsOf(session, 'name', 4, 0, 3)
 const clusters = isRecorded(session)
   ? [...session.matchAll(/^\s+(\d+)\s+(\d+)\s+([\d.]+) s$/gm)].map(([, c, q, w]) => [c, q, `${w} s`])
   : [[PENDING, PENDING, PENDING]]
 if (isRecorded(session) && !clusters.length) throw new Error('scale.ts: no cluster rows in the recorded session')
 
 export const performScale: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Scale up for one heavy job, out for many',
   tree: performTree('perform/black_friday.py', 'perform/black_friday.py', ['setup/perform_grants.sql', 'setup/scale.sql', 'perform/black_friday.py']),
   editor: { file: 'perform/black_friday.py', code, show: [[1, 5], [9, 9], [25, 38]] },
   session,
@@ -37,12 +36,7 @@ export const performScale: SceneModel = ideFrame2({
       ],
     },
     {
-      type: 'group', id: 'sizes', badge: 2, title: 'The warehouses now', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'w', columns: ['warehouse', 'size', 'min', 'max'], rows: sizes },
-      ],
-    },
-    {
-      type: 'group', id: 'bf', badge: 3, title: 'Black Friday: 96 dashboard loads at once', sub: 'from the run', tone: 'serve', children: [
+      type: 'group', id: 'bf', badge: 2, title: 'Black Friday: 96 dashboard loads at once', sub: 'from the run', tone: 'serve', children: [
         { type: 'table', id: 'c', columns: ['cluster', 'queries', 'longest wait'], rows: clusters },
       ],
     },

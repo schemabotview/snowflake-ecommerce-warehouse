@@ -11,7 +11,7 @@ import sql from '../../../spine/perform/06-acceleration/project/queries/accelera
 const n = (column: string) => cell(session, column, 0, column === 'STATUS' ? 1 : 0)  // the first 'status' table is ALTER SESSION's
 
 export const performAcceleration: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Query acceleration: borrow compute for one big scan',
   tree: performTree('queries/acceleration.sql', 'queries/acceleration.sql'),
   editor: { file: 'queries/acceleration.sql', code: sql },
   session,

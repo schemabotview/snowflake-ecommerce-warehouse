@@ -11,7 +11,7 @@ import sql from '../../../spine/perform/03-clustering/project/dbt/models/marts/c
 const row = (label: string, column: string) => [label, cell(before, column), cell(session, column)]
 
 export const performClustering: SceneModel = ideFrame2({
-  model: 'TODO',
+  model: 'Clustering: store each stretch of dates together',
   tree: performTree('queries/clustering.sql', 'dbt/models/marts/core/fct_order_lines.sql', ['dbt/models/marts/core/fct_order_lines.sql', 'queries/clustering.sql']),
   editor: { file: 'dbt/models/marts/core/fct_order_lines.sql', code: sql, show: [[1, 22]] },
   session,
@@ -32,6 +32,7 @@ export const performClustering: SceneModel = ideFrame2({
         ] },
       ],
     },
+    { type: 'item', id: 'cost', icon: 'zap', tone: 'consume', title: 'Automatic Clustering re-sorts it', sub: 'in the background, billed separately' },
   ],
   edges: [
     { from: 'c-key', to: 'c-sort' },
