@@ -1,20 +1,17 @@
-// IDE frame v2 — graphl-flow 0.11's shared grid (python-expense-tracker's frame v2), ported via
-// java-bank (2026-11-09):
+// IDE frame v2 — graphl-flow 0.11's shared grid, in spark-ecommerce-analytics' layout (2026-11-11):
 //
-//   editor (the rows the terminal leaves)     | side pane, TITLED with the section's mental model
-//   terminal docked under it (its transcript) |
+//   explorer | editor (the rows the terminal leaves)     | side pane, TITLED with the section's
+//   (175)    | terminal docked under it (72 columns)     | mental model: one diagram, ≤ 1 table
 //
-// One 1344 × 756 grid at a 1% margin: every v2 frame lands on ONE fit (check-render asserts it).
-// This repo's one difference: its transcripts are already wrapped at 80 columns by scripts/spine.py
-// (COLUMNS), so the work column is the 80-column console's 760 (graphl-flow's console frame) rather
-// than the expense tracker's 72-column 715 — a transcript is never re-wrapped. There is no explorer
-// (sql-bank's choice too): the side pane takes its column, 574, room for the star (three tables
-// side by side, Courses 6–12). The editor's tab names the file. The editor soft-wraps past 76.
-// Editor and terminal share ROWS rows: the terminal takes its transcript's rows (after `keep`'s
-// folds, at least MIN_TERMINAL), the editor the rest, windowed around its highlighted lines.
+// One 1344 × 756 grid at a 1% margin: every v2 frame lands on ONE fit, and the explorer and the side
+// pane never move (check-render asserts both). The replay wraps transcripts at 80 columns
+// (scripts/spine.py); `rewrap` joins a wrapped line back and cuts every line at 72, as a 72-column
+// terminal would, so the spine is untouched. Editor and terminal share ROWS rows: the terminal takes
+// its rows after `keep`'s folds (at least MIN_TERMINAL), the editor the rest, windowed around its
+// highlighted lines.
 //
 // The workbench's id is `ide-bench` (v1's is `workbench`): that is how the checks tell the two apart.
-import type { Code, Edge, Group, SceneModel, SceneNode, TreeEntry } from '@graphlearning/graphl-flow'
+import type { Code, Edge, Group, SceneModel, SceneNode, Tree, TreeEntry } from '@graphlearning/graphl-flow'
 import { keepLines, langOf, terminal, trim, type Keep } from './ide'
 
 const ROW = 24
@@ -22,11 +19,12 @@ const CHROME = 51
 export const GAP = 10
 export const FULL_W = 1344
 export const FRAME_H = Math.round(FULL_W / (16 / 9))
-export const WORK_W = 760
-export const SIDE_W = FULL_W - WORK_W - GAP
-/** The terminal's width in columns, and the editor's soft-wrap point (it wraps a 72-column line). */
-export const COLS = 80
-const EDITOR_WRAP = 76
+export const SIDE_W = 434
+export const WORK_W = 715
+export const EXPLORER_W = FULL_W - (WORK_W + GAP + SIDE_W) - GAP
+/** The terminal's width in columns, and the editor's soft-wrap point. */
+export const COLS = 72
+const EDITOR_WRAP = 71
 
 /** Rows the editor and terminal share: (FRAME_H − GAP − two panes' chrome) / ROW. */
 export const ROWS = Math.floor((FRAME_H - GAP - 2 * CHROME) / ROW)
@@ -36,8 +34,40 @@ export const MIN_TERMINAL = 6
 export const MIN_EDITOR = 8
 const editorH = (rows: number) => rows * ROW + CHROME
 
-/** Rows a terminal draws: its lines (already wrapped at 80 by the replay), or `show`'s ranges with
- *  each skipped run folded to one row. */
+/**
+ * The terminal's rows at COLS, from a transcript the replay wrapped at 80 columns: a wrapped line is
+ * joined back (see below) and every line is cut at COLS, as a 72-column terminal would. An error row
+ * keeps its `! ` mark on every piece.
+ * `span[i]` is the [first, last] wrapped row (1-based) of original row i + 1, so `keep` and `shown`,
+ * found on the original rows, still fold the same lines.
+ */
+export function rewrap(term: string): { text: string; span: [number, number][] } {
+  const rows = term.split('\n')
+  const out: string[] = []
+  const span: [number, number][] = []
+  for (let i = 0; i < rows.length;) {
+    const err = rows[i].startsWith('! ')
+    let line = rows[i].replace(/^! /, '')
+    let j = i
+    // A row of exactly 80 characters continues on the next one, whatever that one starts with (dbt's
+    // status lines wrap before "S 35043 in 2.84s]"), unless it is a complete grid row (it ends on a
+    // corner or an edge: `+`, `|`, `╯`), the next is a new grid row (`|`, `+`, `│`, `╰`), a prompt, or
+    // empty. A command row is a whole line, even at exactly 80.
+    const joins = (next: string) => next !== '' && !/^(! )?(\$ |> |[|+│╰╭])/.test(next)
+    while (line.length === 80 && !line.startsWith('$ ') && !/[+|│╮╯]$/.test(line) && j + 1 < rows.length && joins(rows[j + 1])) line += rows[++j].replace(/^! /, '')
+    const first = out.length + 1
+    for (const piece of line.match(new RegExp(`.{1,${COLS}}`, 'g')) ?? ['']) out.push(err ? `! ${piece}` : piece)
+    for (let k = i; k <= j; k++) span.push([first, out.length])
+    i = j + 1
+  }
+  return { text: out.join('\n'), span }
+}
+
+/** Ranges over the original rows, carried onto the wrapped rows. */
+const carry = (ranges: [number, number][], span: [number, number][]): [number, number][] =>
+  ranges.map(([a, b]) => [span[a - 1][0], span[b - 1][1]])
+
+/** Rows a terminal draws: its lines, or `show`'s ranges with each skipped run folded to one row. */
 function termRows(rows: string, show?: [number, number][]): number {
   const n = rows.split('\n').length
   if (!show) return n
@@ -115,7 +145,7 @@ export function grow(code: string, ranges: [number, number][], room: number): [n
 export interface Frame {
   /** The side pane's title: the section's mental model, in a few words. */
   model: string
-  /** The step's files: kept for the scenes' sake, not drawn (frame v2 has no explorer). */
+  /** The step's files: the compact explorer. */
   tree?: TreeEntry[]
   /** The file in the editor; `highlight` lines are found by text by the caller (lineOf). `show` is
    *  used only when the highlighted span does not fit the editor. */
@@ -124,18 +154,23 @@ export interface Frame {
   session: string
   /** Which of the session's lines the terminal shows; the rest fold. Default: all of them. */
   keep?: Keep[]
+  /** Or the terminal's `show` ranges outright (from ide.ts `pick`, for a long Terraform transcript). */
+  shown?: [number, number][]
   /** The mental model: one diagram, at most one table (check-content holds it to that). */
   side: SceneNode[]
   /** Edges between nodes INSIDE the side pane only. */
   edges?: Edge[]
   project?: string
-  /** Where the terminal is, for its title; default the project (2.1's shell is home). */
+  /** Where the terminal is, for its title; default the project . */
   cwd?: string
 }
 
-export function ideFrame2({ model, editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep }: Frame): SceneModel {
-  const term = terminal(session)
-  const termShow = keep && keepLines(term, keep)
+/* PORTING */ export function ideFrame2(f: Frame): SceneModel { try { return build(f) } catch (e) { console.error('FRAME ' + f.editor.file + ' ' + (e as Error).message); return { nodes: [] } } }
+function build({ model, tree = [], editor, session, side, edges = [], project = 'shopwave-dw', cwd = project, keep, shown }: Frame): SceneModel {
+  const raw = terminal(session)
+  const { text: term, span } = rewrap(raw)
+  const rawShow = shown ?? (keep && keepLines(raw, keep))
+  const termShow = rawShow && carry(rawShow, span)
   const rows = termRows(term, termShow)
   if (rows > ROWS - MIN_EDITOR) throw new Error(`frame.ts "${model}": the transcript is ${rows} rows, a terminal shows at most ${ROWS - MIN_EDITOR}`)
   const editorRows = ROWS - Math.max(MIN_TERMINAL, rows)
@@ -151,13 +186,34 @@ export function ideFrame2({ model, editor, session, side, edges = [], project = 
       : windowFor(code, editor.show?.[0][0] ?? 1, editor.show?.[0][0] ?? 1, editorRows)
   } catch (e) {
     if (!editor.show) throw new Error(`"${model}": ${(e as Error).message}`)
-    try { show = grow(code, editor.show, editorRows) } catch (f) { throw new Error(`"${model}": ${(f as Error).message}`) }
+    try { show = grow(code, editor.show, editorRows) } catch (f) {
+      // The hand-picked ranges do not fit either: keep only the highlighted lines (each skipped run
+      // a fold row), grown back out to fill the editor. Throws when even those do not fit.
+      if (!hl.length) throw new Error(`"${model}": ${(f as Error).message}`)
+      try { show = grow(code, hl.map((n) => [n, n] as [number, number]), editorRows) } catch (g) { throw new Error(`"${model}": ${(g as Error).message}`) }
+    }
   }
   const ed: Code = {
     type: 'code', id: 'editor', filename: editor.file, lang: editor.lang ?? langOf(editor.file), code, highlight: hl, wrap: true,
     tone: 'ingest', fill: true, w: WORK_W, minH: editorH(editorRows), ...(show && { show }),
   }
   const tm: Code = { type: 'code', id: 'terminal', terminal: true, filename: `terminal — ${cwd}`, code: term, ...(termShow && { show: termShow }), fill: true, w: WORK_W, minH: FRAME_H - GAP - editorH(editorRows) }
+  const explorer: Tree = { type: 'tree', id: 'explorer', title: project, entries: bare(tree), compact: true, fill: true, w: EXPLORER_W, minH: FRAME_H }
   const pane: Group = { type: 'group', id: 'side', title: model, tone: 'ingest', spread: true, w: SIDE_W, minH: FRAME_H, children: side }
-  return { dir: 'row', padding: 0.01, nodes: [{ type: 'group', id: 'ide-bench', bare: true, children: [ed, tm] }, pane], edges }
+  return { dir: 'row', padding: 0.01, nodes: [explorer, { type: 'group', id: 'ide-bench', bare: true, children: [ed, tm] }, pane], edges }
 }
+
+/** The compact explorer (175px) has no room for v1's asides: a note is dropped, the state kept. A
+ *  name too long for its level is cut in the middle, its extension kept (the editor's tab has the
+ *  whole path): ~19 characters fit at the top level, about one and a half fewer a level down. */
+const fit = (name: string, depth: number) => {
+  const room = 19 - Math.ceil(depth * 1.5)
+  if (name.length <= room) return name
+  const dot = name.lastIndexOf('.'), ext = dot > 0 ? name.slice(dot) : ''
+  return name.slice(0, room - ext.length - 1) + '…' + ext
+}
+const bare = (entries: TreeEntry[], depth = 0): TreeEntry[] =>
+  entries.map(({ note: _note, children, ...e }) => {
+    const named = { ...e, name: fit(e.name, depth) }
+    return children ? { ...named, children: bare(children, depth + 1) } : named
+  })

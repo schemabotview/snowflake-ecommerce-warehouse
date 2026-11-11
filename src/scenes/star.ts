@@ -1,8 +1,8 @@
 import type { Edge, Group, Table, TableRow } from '@graphlearning/graphl-flow'
 
 // THE STAR — Shopwave's dimensional model, drawn the same way in every section from Course 6 on
-// (COURSE-PLAN.md, "Frames"): the fact in the middle, its dimensions either side, an edge for every
-// key. It is a side-pane diagram (it fits the IDE frame's 649px column), so a section shows the code
+// (COURSE-PLAN.md, "Frames"): the fact on the right, its dimensions stacked on the left, an edge for
+// every key. It is a side-pane diagram (it fits frame v2's 434px pane), so a section shows the code
 // that builds a part beside the part it builds.
 //
 // `stage` is how far the model has come: 'natural' (6.4–6.5: the fact joins on the shop's own ids),
@@ -22,15 +22,15 @@ function factRows(stage: StarStage): TableRow[] {
   return [row('order_id', 'DD'), row('line'), ...keys, row('order_status'), row('qty', '+'), row('unit_price'), row('amount_eur', '+')]
 }
 
-// A dimension's key is its first row, where the fact's edge lands; at frame v2's 574px pane the star
-// has no room for a PK tag column on either side of the fact (the fact keeps its FK/DD/+ tags).
+// A dimension's key is its first row, where the fact's edge lands, and one column the course uses
+// after it (frame v2's 434px pane has height for no more); no PK tag column (the fact keeps its tags).
 const DIMS: Record<Dim, (stage: StarStage) => TableRow[]> = {
-  date: (s) => [row(s === 'natural' ? 'date' : 'date_key'), row(s === 'natural' ? 'date_key' : 'date'), row('month'), row('is_weekend')],
-  customer: (s) => s === 'natural' ? [row('customer_id'), row('country'), row('signup_date')] : [row('customer_key'), row('customer_id'), row('country')],
-  product: (s) => s === 'natural' ? [row('product_id'), row('category'), row('brand')] : [row('product_key'), row('product_id'), row('category')],
-  currency: () => [row('currency_key'), row('code'), row('per_eur')],
+  date: (s) => [row(s === 'natural' ? 'date' : 'date_key'), row('month')],
+  customer: (s) => s === 'natural' ? [row('customer_id'), row('country')] : [row('customer_key'), row('customer_id')],
+  product: (s) => s === 'natural' ? [row('product_id'), row('category')] : [row('product_key'), row('category')],
+  currency: () => [row('currency_key'), row('per_eur')],
 }
-const LATER: Partial<Record<Dim, string>> = { currency: 'Course 8' }
+const LATER: Partial<Record<Dim, string>> = { currency: 'later' }
 
 export interface StarOptions {
   stage: StarStage
@@ -44,17 +44,19 @@ export interface StarOptions {
 export function star({ stage, dims, lit = [] }: StarOptions): { node: Group; edges: Edge[] } {
   const table = (d: Dim): Table => {
     const built = dims.includes(d)
-    return { type: 'table', id: `dim-${d}`, title: built ? `dim_${d}` : `dim_${d} (${LATER[d] ?? 'next'})`, tone: built ? 'store' : 'neutral', rows: DIMS[d](stage) }
+    return { type: 'table', id: `dim-${d}`, title: built ? `dim_${d}` : `dim_${d}, ${LATER[d] ?? 'next'}`, tone: built ? 'store' : 'neutral', rows: DIMS[d](stage) }
   }
   const fact: Table = {
     type: 'table', id: 'fact', title: 'fct_order_lines', tone: 'serve',
     rows: factRows(stage).map((r) => (lit.includes(r.id!) ? { ...r, tone: 'serve' as const } : r)),
   }
+  // At frame v2's 434px pane the star is two columns: the dimensions stacked on the left in the
+  // order of the fact's keys (date, customer, product, then currency for amount_eur), the fact on the
+  // right, so every edge leaves a fact row to the left and none cross.
   const node: Group = {
-    type: 'group', id: 'star', title: 'The star', sub: 'grain: one row per order line', icon: 'layers', tone: 'neutral', dir: 'row', children: [
-      { type: 'group', id: 'star-left', bare: true, children: [table('date'), table('customer')] },
+    type: 'group', id: 'star', bare: true, dir: 'row', children: [
+      { type: 'group', id: 'star-dims', bare: true, children: [table('date'), table('customer'), table('product'), table('currency')] },
       fact,
-      { type: 'group', id: 'star-right', bare: true, children: [table('product'), table('currency')] },
     ],
   }
   const pairs: [string, string, Dim][] = stage === 'natural'

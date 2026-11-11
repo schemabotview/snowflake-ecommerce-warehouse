@@ -1,5 +1,5 @@
 import type { SceneModel, Table } from '@graphlearning/graphl-flow'
-import { ideFrame2 } from '../frame'
+import { SIDE_W, ideFrame2 } from '../frame'
 import { projectTree } from '../tree'
 import session from '../../../spine/intro/01-questions/session.txt?raw'
 import query from '../../../spine/intro/01-questions/project/queries/revenue_by_month.sql?raw'
@@ -16,7 +16,8 @@ if (months.length !== 12) throw new Error(`questions.ts: ${months.length} months
 const LETTERS = 'JFMAMJJASOND'.split('')
 
 const table = (id: string, title: string, rows: [string, string?][]): Table => ({
-  type: 'table', id, title, rows: rows.map(([col, tag]) => ({ cells: [col], tag })),
+  type: 'table', id, title, // No PK/FK tag column at the 434px pane: a key is tinted instead (the edges join them).
+  rows: rows.map(([col, tag]) => ({ cells: [col], ...(tag && { tone: 'ingest' as const }) })),
 })
 
 export const introQuestions: SceneModel = ideFrame2({
@@ -29,20 +30,22 @@ export const introQuestions: SceneModel = ideFrame2({
   keep: ['$ psql', 'month', '---', '2026-01', ['2026-10', '(12 rows)']],
   side: [
     {
-      type: 'group', id: 'join', badge: 1, title: 'One question, three tables', sub: 'joined by their keys, for every line', tone: 'source', children: [
+      type: 'group', id: 'join', bare: true, children: [
         {
           type: 'group', id: 'tables', bare: true, dir: 'row', children: [
-            table('t-orders', 'orders', [['order_id', 'PK'], ['order_ts'], ['status']]),
+            { type: 'group', id: 'lookups', bare: true, children: [
+              table('t-orders', 'orders', [['order_id', 'PK'], ['order_ts'], ['status']]),
+              table('t-products', 'products', [['product_id', 'PK'], ['category']]),
+            ] },
             table('t-items', 'order_items', [['order_id', 'FK'], ['product_id', 'FK'], ['qty'], ['unit_price']]),
-            table('t-products', 'products', [['product_id', 'PK'], ['category']]),
           ],
         },
       ],
     },
     {
-      type: 'group', id: 'answer', badge: 2, title: 'The answer: revenue by month', sub: 'the six columns added up, EUR thousands', tone: 'serve', children: [
+      type: 'group', id: 'answer', badge: 1, title: 'The answer: revenue by month', sub: 'the six columns added up, EUR thousands', tone: 'serve', children: [
         {
-          type: 'plot', id: 'by-month', compact: true, x: { labels: LETTERS }, y: { min: 0, max: 300, step: 50 },
+          type: 'plot', id: 'by-month', compact: true, w: SIDE_W - 60, x: { labels: LETTERS }, y: { min: 0, max: 300, step: 50 },
           series: [{ kind: 'bar', points: months.map(({ month, total }) => [month - 1, Math.round(total / 1000)]) }],
         },
       ],

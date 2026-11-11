@@ -25,8 +25,8 @@ export const modelAnswer: SceneModel = ideFrame2({
     s.node,
     {
       type: 'group', id: 'compare', badge: 1, title: 'November, two ways', sub: 'Course 1’s shop database and the star', tone: 'serve', children: [
-        { type: 'table', id: 'nov', columns: ['asked of', 'electronics', 'home', 'beauty'], rows: [
-          ['shop database (1.1)', nov1[1], nov1[2], nov1[4]],
+        { type: 'table', id: 'nov', columns: ['', 'electronics', 'home', 'beauty'], rows: [
+          ['shop db (1.1)', nov1[1], nov1[2], nov1[4]],
           { cells: ['the star (6.9)', round(nov6[1]), round(nov6[2]), round(nov6[4])], tone: 'serve' },
         ] },
       ],

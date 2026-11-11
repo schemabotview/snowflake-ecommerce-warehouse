@@ -23,7 +23,7 @@ export const modelKeys: SceneModel = ideFrame2({
         { type: 'table', id: 'compare', columns: ['', 'customer_id', 'customer_key'], rows: [
           ['made by', 'the shop', 'the warehouse'],
           ['one per', 'customer', 'version (8)'],
-          { cells: ['ids renumbered', 'joins break', 'no change'], tone: 'serve' },
+          { cells: ['renumbered', 'joins break', 'unchanged'], tone: 'serve' },
         ] },
       ],
     },
