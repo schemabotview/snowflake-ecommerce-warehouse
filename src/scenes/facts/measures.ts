@@ -16,20 +16,20 @@ export const factsMeasures: SceneModel = ideFrame2({
   session,
   keep: ['$ bash model', ['| ORDERS', '| 18014'], ['| GOLD_SUMMED_WRONG', '+--------------------------------------+']],
   side: [
-    { type: 'table', id: 'k', title: 'Three kinds of measure', columns: ['kind', 'example', 'sum across'], rows: [
-      { cells: ['additive', 'revenue', 'anything'], tone: 'serve' },
-      ['semi-additive', 'gold at month end', 'customers'],
+    { type: 'table', id: 'k', title: 'Three kinds of measure', columns: ['kind', 'e.g.', 'sums across'], rows: [
+      { cells: ['additive', 'revenue', 'all'], tone: 'serve' },
+      ['semi-additive', 'gold, month end', 'customers'],
       { cells: ['non-additive', 'AOV, a ratio', 'nothing'], tone: 'consume' },
     ] },
     {
       type: 'group', id: 'run', bare: true, dir: 'row', children: [
         { type: 'table', id: 'a', title: 'AOV (from the run)', columns: ['', 'EUR'], rows: [
-          { cells: ['revenue ÷ orders', n('AOV_RIGHT')], tone: 'serve' },
+          { cells: ['rev ÷ orders', n('AOV_RIGHT')], tone: 'serve' },
           { cells: ['avg of AOVs', n('AOV_AVERAGED_WRONG')], tone: 'consume' },
         ] },
         { type: 'table', id: 'g', title: 'Gold (from the run)', columns: ['', 'customers'], rows: [
           { cells: ['December', n('GOLD_AT_YEAR_END')], tone: 'serve' },
-          { cells: ['12 months, summed', n('GOLD_SUMMED_WRONG')], tone: 'consume' },
+          { cells: ['12 summed', n('GOLD_SUMMED_WRONG')], tone: 'consume' },
         ] },
       ],
     },

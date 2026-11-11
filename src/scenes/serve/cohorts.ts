@@ -23,11 +23,7 @@ export const serveCohorts: SceneModel = ideFrame2({
         { type: 'item', id: 'c-pct', icon: 'chart', title: '÷ the cohort’s size', sub: 'retention, in %' },
       ],
     },
-    {
-      type: 'group', id: 'tri', badge: 2, title: 'Ordered again, % of the cohort', sub: 'from the run: months 1 to 5', tone: 'neutral', children: [
-        { type: 'table', id: 't', columns: ['cohort', 'size', '1', '2', '3', '4', '5'], rows: triangle },
-      ],
-    },
+    { type: 'table', title: 'Ordered again, % of the cohort (from the run)', id: 't', columns: ['cohort', 'size', '1', '2', '3', '4', '5'], rows: triangle.map(([c, ...r]) => [c.slice(5), ...r]) },
     { type: 'item', id: 'jan', icon: 'zap', tone: 'consume', title: 'January is not a true cohort', sub: 'the data starts on January 1: every customer’s “first” order lands in it' },
   ],
   edges: [

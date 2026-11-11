@@ -26,7 +26,7 @@ export const historyPointInTime: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'c81', badge: 2, title: 'Customer 81’s orders, then and now', sub: 'from the run', tone: 'serve', children: [
-        { type: 'table', id: 'o', columns: ['order', 'ordered', 'country then', 'tier then', 'country now'], rows: orders },
+        { type: 'table', id: 'o', columns: ['order', 'on', 'then', 'tier', 'now'], rows: orders.map(([o, d, c, t, n]) => [o, d.slice(5), c, t, n]) },
       ],
     },
     { type: 'item', id: 'priced', icon: 'check', tone: 'serve', title: `Priced as listed that day: ${listed} of ${lines} lines`, sub: 'every order line against its product version, from the run' },

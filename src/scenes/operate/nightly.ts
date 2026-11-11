@@ -27,7 +27,7 @@ export const operateNightly: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'said', badge: 2, title: 'What dbt said inside the build', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'd', columns: ['dbt'], rows: said },
+        { type: 'table', id: 'd', columns: ['dbt'], rows: said.map(([l]) => [l.replace(/ \[.*\]$/, '').replace(' WARN=0', '').replace(' NO-OP=0', '')]) },
       ],
     },
     { type: 'group', id: 'cards', bare: true, dir: 'row', children: [

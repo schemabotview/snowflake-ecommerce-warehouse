@@ -20,13 +20,14 @@
 
 Plan v1 written 2026-11-01. Courses 1–12 authored; Courses 2–12 recorded on the owner's trial (AWS us-east-1); the pilot (Course 7) approved. Narrated (all 90 wavs), 4K-recorded (`record:all`, 2026-11-02) and filmed: `film.mp4` 2:10:10, 90 chapters; cover `output/thumbnails/film.png` (`thumb:film`, star source), `output/film-description.txt`.
 
-**2026-11-09: ported to IDE frame v2** (COURSE-PLAN Decision 9). All 69 IDE sections are on graphl-flow
-0.11's shared grid (`src/scenes/frame.ts` `ideFrame2`, workbench id `ide-bench`): editor over the
-80-column terminal | side pane 574, titled with the section's mental model; no explorer. The map,
-star-only and concept frames are unchanged. 26 narrations changed (each named the explorer or a
-note): their wavs are removed and the manifest regenerated, so check-content fails on those 26 until
-Colab regenerates them. Then every course is re-recorded and the film re-cut: the recordings, film
-and cover above are v1. Nothing was re-recorded on Snowflake.
+**2026-11-09: ported to IDE frame v2** (COURSE-PLAN Decision 9; the explorer restored 2026-11-11).
+All 69 IDE sections are on graphl-flow 0.11's shared grid (`src/scenes/frame.ts` `ideFrame2`,
+workbench id `ide-bench`) in spark-ecommerce-analytics' layout: compact explorer 175 | editor over a
+72-column terminal | side pane 434, titled with the section's mental model. The map, star-only and
+concept frames are unchanged. 22 narrations changed: their wavs are removed and the manifest
+regenerated, so check-content fails on those 22 until Colab regenerates them. Then every course is
+re-recorded and the film re-cut: the recordings, film and cover above are v1. Nothing was
+re-recorded on Snowflake.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.11.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
@@ -91,16 +92,17 @@ See COURSE-PLAN, "The spine". The rules an author applies every step:
 The map's and the star's parts are fixed from the course they appear in; never rename a part. Every
 map frame shares one fit; every IDE frame shares one fit. Snowsight is never screenshotted.
 
-**IDE frame v2** (`frame.ts` `ideFrame2`): one 1344 × 756 grid. Editor over an 80-column terminal
-sharing 26 rows: the terminal takes its transcript's rows after `keep`'s folds, the editor the rest,
-windowed around its highlighted lines (a hand-picked `show` only when they do not fit; it THROWS,
-naming the scene, when that does not either); the editor soft-wraps past 76. Side pane 574, TITLED
-(`model`), ONE diagram (edges or a plot) and at most one table outside it, no bullets, no notes
+**IDE frame v2** (`frame.ts` `ideFrame2`): one 1344 × 756 grid. Compact explorer 175 | editor over a
+72-column terminal sharing 26 rows | side pane 434. The replay's 80-column transcripts are re-wrapped
+when drawn (`rewrap`: a wrapped row is joined back unless it is a command or a complete grid row,
+then every line is cut at 72; `keep` names the original rows). The terminal takes its rows after
+`keep`'s folds, the editor the rest, windowed around its highlighted lines (a hand-picked `show` only
+when they do not fit; it THROWS, naming the scene, when that does not either). Side pane TITLED
+(`model`), ONE diagram (edges or a plot) and at most one table outside it, no notes or bullets
 (check-content), filled ≥ 1/2 (check-render). A second table joins the diagram by an edge to the
-TABLE itself, hoisted out of its titled group (an edge into a group's heading fails check-render);
-a narrated aside is an `item` card. Three items in a row (`dir: 'row'`, `stack: true`) fit 574 with
-short subs. The star fits 574 only without a PK tag column on the dimensions. A table fits ~50
-monospace characters a row. `tree` is still passed (the scenes' helpers build it) but not drawn.
+TABLE itself, hoisted out of its titled group; a narrated aside is an `item` card. A table fits ~36
+monospace characters a row (dates as MM-DD, long names cut with …). The star is two columns:
+dimensions stacked left in key order, each its key and one column, the fact right.
 
 ## Narration
 

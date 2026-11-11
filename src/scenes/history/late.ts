@@ -17,10 +17,10 @@ export const historyLate: SceneModel = ideFrame2({
   keep: ['$ bash model/as-transformer.sh', ['| DAYS_LATE', '| 3 ']],
   side: [
     {
-      type: 'group', id: 'when', badge: 1, title: 'Two dates on every event', tone: 'infra', dir: 'row', children: [
-        { type: 'item', id: 'w-happen', icon: 'clock', title: 'When it happened', sub: 'event_ts: its day', stack: true },
-        { type: 'item', id: 'w-arrive', icon: 'file', title: 'When it arrived', sub: 'the file’s day', stack: true },
-        { type: 'item', id: 'w-right', icon: 'check', title: 'Its own day', sub: 'whose numbers change', stack: true },
+      type: 'group', id: 'when', badge: 1, title: 'Two dates on every event', tone: 'infra', children: [
+        { type: 'item', id: 'w-happen', icon: 'clock', title: 'When it happened', sub: 'event_ts: its day' },
+        { type: 'item', id: 'w-arrive', icon: 'file', title: 'When it arrived', sub: 'the file’s day' },
+        { type: 'item', id: 'w-right', icon: 'check', title: 'Its own day', sub: 'whose numbers change' },
       ],
     },
     {

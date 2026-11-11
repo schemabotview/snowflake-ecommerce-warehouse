@@ -18,13 +18,13 @@ export const serveShare: SceneModel = ideFrame2({
   keep: ['| OUTBOUND', ['| CAMPAIGN_ID', '| spring-sale'], 'does not exist or not authorized'],
   side: [
     {
-      type: 'group', id: 'path', badge: 1, title: 'A share: read in place, never copied', tone: 'infra', dir: 'row', children: [
-        { type: 'item', id: 'p-view', icon: 'lock', title: 'BI.CAMPAIGN_STATS', sub: 'the secure view', stack: true },
-        { type: 'item', id: 'p-share', icon: 'branch', title: 'SHOPWAVE_CAMPAIGNS', sub: 'the share: grants only', stack: true },
-        { type: 'item', id: 'p-reader', icon: 'building', title: 'Brightline', sub: 'a reader account', stack: true },
+      type: 'group', id: 'path', badge: 1, title: 'A share: read in place, never copied', tone: 'infra', children: [
+        { type: 'item', id: 'p-view', icon: 'lock', title: 'BI.CAMPAIGN_STATS', sub: 'the secure view' },
+        { type: 'item', id: 'p-share', icon: 'branch', title: 'SHOPWAVE_CAMPAIGNS', sub: 'the share: grants only' },
+        { type: 'item', id: 'p-reader', icon: 'building', title: 'Brightline', sub: 'a reader account' },
       ],
     },
-    { type: 'table', title: 'The share (from the run)', id: 's', columns: ['kind', 'name', 'to'], rows: share },
+    { type: 'table', title: 'The share (from the run)', id: 's', columns: ['share', 'to'], rows: share.map(([, n, t]) => [n, t.replace('SHOPWAVE.', '')]) },
     {
       type: 'group', id: 'in', badge: 2, title: 'Inside Brightline’s account', sub: 'from the run', tone: 'serve', children: [
         { type: 'table', id: 'c', columns: ['campaign', 'visits', 'buying'], rows: seen },
@@ -34,6 +34,6 @@ export const serveShare: SceneModel = ideFrame2({
   edges: [
     { from: 'p-view', to: 'p-share' },
     { from: 'p-share', to: 'p-reader' },
-    { from: 'p-share', to: 's' },
+    { from: 'p-reader', to: 's' },
   ],
 })

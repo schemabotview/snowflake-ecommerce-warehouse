@@ -29,7 +29,7 @@ export const operateCi: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'res', badge: 2, title: 'What dbt built and tested', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 't', columns: ['node', 'result'], rows: results },
+        { type: 'table', id: 't', columns: ['node', 'result'], rows: results.map(([w, r]) => [w.length > 24 ? `${w.slice(0, 23)}…` : w, r]) },
       ],
     },
     { type: 'group', id: 'cards', bare: true, dir: 'row', children: [

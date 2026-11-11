@@ -21,13 +21,13 @@ export const factsMonthly: SceneModel = ideFrame2({
     {
       type: 'group', id: 'grid', badge: 1, title: 'Every customer × every month', tone: 'infra', children: [
         { type: 'item', id: 'g-m', icon: 'clock', title: 'months', sub: 'from dim_date' },
-        { type: 'item', id: 'g-c', icon: 'users', title: 'CROSS JOIN customers', sub: 'a row even when nothing happened' },
-        { type: 'item', id: 'g-t', icon: 'layers', title: 'the tier at month end', sub: 'the snapshot version valid that day (8.2)' },
+        { type: 'item', id: 'g-c', icon: 'users', title: 'CROSS JOIN customers', sub: 'a row even with no order' },
+        { type: 'item', id: 'g-t', icon: 'layers', title: 'the tier at month end', sub: 'the snapshot version (8.2)' },
         { type: 'item', id: 'g-n', icon: 'table', title: `${total} rows`, sub: 'from the run' },
       ],
     },
     {
-      type: 'group', id: 'c81', badge: 2, title: 'Customer 81, month by month', sub: 'from the run', tone: 'serve', children: [
+      type: 'group', id: 'c81', badge: 2, title: 'Customer 81, month by month (from the run)', tone: 'serve', children: [
         { type: 'table', id: 'm', columns: ['month', 'orders', 'tier'], rows: months },
       ],
     },

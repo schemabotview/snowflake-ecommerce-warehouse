@@ -23,7 +23,7 @@ export const historySnapshots: SceneModel = ideFrame2({
         { type: 'item', id: 's-table', icon: 'layers', title: 'SNAP_CUSTOMERS', sub: 'every version, dbt_valid_from / dbt_valid_to' },
       ],
     },
-    { type: 'table', title: 'Customer 81’s versions (from the run)', id: 'v', columns: ['id', 'country', 'tier', 'valid from', 'valid to'], rows: versions },
+    { type: 'table', title: 'Customer 81’s versions (from the run)', id: 'v', columns: ['country', 'tier', 'from', 'to'], rows: versions.map(([, c, t, f, u]) => [c, t, f.slice(0, 10), u === 'None' ? '—' : u.slice(0, 10)]) },
     { type: 'item', id: 'catch', icon: 'zap', tone: 'consume', title: 'Two changes between runs: one version', sub: 'a snapshot keeps only what it sees' },
   ],
   edges: [

@@ -25,7 +25,7 @@ export const performCredits: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'top', badge: 2, title: 'Where WH_TRANSFORM’s time went', sub: 'the six biggest models, from the run', tone: 'neutral', children: [
-        { type: 'table', id: 't', columns: ['model', 'queries', 'seconds', '%'], rows: models },
+        { type: 'table', id: 't', columns: ['model', 'queries', 's', '%'], rows: models },
       ],
     },
     { type: 'item', id: 'bill', icon: 'clock', tone: 'consume', title: 'Billed per second running, not per query', sub: 'time share splits a run’s bill across models' },

@@ -25,7 +25,7 @@ export const operateTasks: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'shown', badge: 2, title: 'SHOW TASKS', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 's', columns: ['task', 'schedule', 'state'], rows: tasks.map(([n, s, st]) => [n, s === 'None' ? '—' : s.replace('USING CRON ', ''), st]) },
+        { type: 'table', id: 's', columns: ['task', 'schedule', 'state'], rows: tasks.map(([n0, s, st]) => [n0.replace('NIGHTLY_', '…'), s === 'None' ? '—' : s.replace('USING CRON ', '').replace(' Europe/Berlin', ', Berlin'), st]) },
       ],
     },
     { type: 'item', id: 'where', icon: 'snowflakedb', tone: 'serve', title: 'dbt runs inside Snowflake', sub: 'no server stays awake for the night' },

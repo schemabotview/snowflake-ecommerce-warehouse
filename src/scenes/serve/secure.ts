@@ -27,7 +27,7 @@ export const serveSecure: SceneModel = ideFrame2({
     { type: 'table', title: 'The analyst’s read (from the run)', id: 'r', columns: ['campaign', 'visits', 'buying'], rows },
     {
       type: 'group', id: 'show', badge: 2, title: 'SHOW VIEWS: the definition', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'd', columns: ['role', 'text'], rows: [{ cells: ['ANALYST', text(0)], tone: 'serve' }, ['TRANSFORMER (owner)', text(1)]] },
+        { type: 'table', id: 'd', columns: ['role', 'text'], rows: [{ cells: ['ANALYST', text(0)], tone: 'serve' }, ['TRANSFORMER', text(1).length > 22 ? `${text(1).slice(0, 21)}…` : text(1)]] },
       ],
     },
   ],

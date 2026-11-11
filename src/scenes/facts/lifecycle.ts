@@ -19,7 +19,7 @@ export const factsLifecycle: SceneModel = ideFrame2({
   keep: ['$ bash load/as-loader.sh', '| 358', '2 of 2 OK created', '$ bash model/as-transformer.sh', ['| ORDERS', '| 20024']],
   side: [
     {
-      type: 'group', id: 'steps', badge: 1, title: 'One row per order, its milestones filling in', sub: 'from the run', tone: 'serve', children: [
+      type: 'group', id: 'steps', badge: 1, title: 'Its milestones filling in (from the run)', tone: 'serve', children: [
         milestone('m-placed', 'placed', 'ORDERS'),
         milestone('m-paid', 'paid', 'PAID'),
         milestone('m-shipped', 'shipped', 'SHIPPED'),
@@ -29,7 +29,7 @@ export const factsLifecycle: SceneModel = ideFrame2({
     },
     {
       type: 'group', id: 'two', badge: 2, title: 'Two orders, two stages', tone: 'neutral', children: [
-        { type: 'table', id: 'o', columns: ['order', 'placed', 'paid', 'shipped', 'delivered'], rows: orders },
+        { type: 'table', id: 'o', columns: ['order', 'placed', 'paid', 'shipped', 'deliv.'], rows: orders.map(([o, ...d]) => [o, ...d.map((x) => x.slice(5))]) },
       ],
     },
     { type: 'item', id: 'avg', icon: 'clock', tone: 'infra', title: `${n('AVG_DAYS_TO_DELIVER')} days, placed to delivered`, sub: 'on average, from the run' },

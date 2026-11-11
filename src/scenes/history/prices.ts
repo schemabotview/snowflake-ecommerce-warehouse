@@ -21,7 +21,7 @@ export const historyPrices: SceneModel = ideFrame2({
         { type: 'item', id: 'h-log', icon: 'file', title: 'Prices', sub: 'the source keeps a log: model it', stack: true, tone: 'serve' },
       ],
     },
-    { type: 'table', title: 'Products priced three ways in 2026 (from the run)', id: 'v', columns: ['id', 'product', 'EUR', 'from', 'to'], rows: versions },
+    { type: 'table', title: 'Products priced three ways in 2026 (from the run)', id: 'v', columns: ['product', 'EUR', 'from', 'to'], rows: versions.map(([, p, e, f, t]) => [p, e, ((d: string) => (d.startsWith('9999') ? '9999' : d.slice(5)))(f), ((d: string) => (d.startsWith('9999') ? '9999' : d.slice(5)))(t)]) },
   ],
   edges: [{ from: 'h-log', to: 'v' }],
 })

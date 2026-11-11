@@ -22,11 +22,7 @@ export const factsReturns: SceneModel = ideFrame2({
         { type: 'item', id: 'r-fact', icon: 'layers', title: 'fct_returns', sub: 'refund = the line’s amount in EUR' },
       ],
     },
-    {
-      type: 'group', id: 'why', badge: 2, title: 'Why customers sent things back', sub: 'from the run', tone: 'neutral', children: [
-        { type: 'table', id: 'rs', columns: ['reason', 'returns', 'matched', 'refund €'], rows: reasons },
-      ],
-    },
+    { type: 'table', title: 'Why customers sent things back (from the run)', id: 'rs', columns: ['reason', 'ret.', 'matched', '€'], rows: reasons.map(([r, a, b, e]) => [r, a, b, e.replace(/\.\d+$/, '')]) },
   ],
   edges: [
     { from: 'r-ret', to: 'r-line' },
