@@ -37,10 +37,10 @@ export const transformIncremental: SceneModel = ideFrame2({
     {
       type: 'group', id: 'config', badge: 2, title: 'The model’s first lines, read', tone: 'neutral', children: [
         { type: 'table', id: 'cfg', columns: ['setting', 'means'], rows: [
-          ['incremental', 'built once, then added to'],
-          ['unique_key', 'a changed line updates'],
+          ['incremental', 'built once, added to'],
+          ['unique_key', 'changed lines update'],
           ['merge', 'one MERGE per run'],
-          { cells: ['is_incremental()', 'true after the first run'], tone: 'serve' },
+          { cells: ['is_incremental()', 'true from run 2'], tone: 'serve' },
         ] },
       ],
     },

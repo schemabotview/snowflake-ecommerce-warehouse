@@ -24,13 +24,13 @@ export const loadSchemaChange: SceneModel = ideFrame2({
   side: [
     {
       type: 'group', id: 'sides', badge: 1, title: 'The same event, either side of June 1', tone: 'ingest', dir: 'row', children: [
-        { type: 'table', id: 'before', title: 'May 31', rows: [['event_type'], { id: 'device', cells: ['context.device'] }, ['items']] },
-        { type: 'table', id: 'after', title: 'June 1', rows: [['event_type'], { id: 'device_type', cells: ['context.device_type'], tone: 'consume' }, ['items'], { cells: ['consent'], tone: 'serve' }] },
+        { type: 'table', id: 'before', title: 'May 31', rows: [['event_type'], { id: 'device', cells: ['…device'] }, ['items']] },
+        { type: 'table', id: 'after', title: 'June 1', rows: [['event_type'], { id: 'device_type', cells: ['…device_type'], tone: 'consume' }, ['items'], { cells: ['consent'], tone: 'serve' }] },
       ],
     },
     {
       type: 'group', id: 'counts', badge: 2, title: 'Counted across both', sub: 'from the run: events per field, by month', tone: 'neutral', children: [
-        { type: 'table', id: 'm', columns: ['month', 'device', 'device_type', 'either', 'consent'], rows: months },
+        { type: 'table', id: 'm', columns: ['month', 'device', 'dev_type', 'either', 'consent'], rows: months.map(([m, ...r]) => [m.slice(0, 7), ...r]) },
       ],
     },
     {

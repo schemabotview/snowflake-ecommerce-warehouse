@@ -24,8 +24,8 @@ export const transformProject: SceneModel = ideFrame2({
     {
       type: 'group', id: 'files', badge: 2, title: 'The project’s first files', tone: 'neutral', children: [
         { type: 'table', id: 'f', columns: ['file', 'says'], rows: [
-          ['_sources.yml', 'RAW.SHOPWAVE’s 8 tables'], ['generate_schema_name', 'a +schema is the schema'],
-          { cells: ['profiles.yml', 'no secret: env var and a key file'], tone: 'serve' },
+          ['_sources.yml', 'RAW’s 8 tables'], ['generate_schema…', 'schema names as is'],
+          { cells: ['profiles.yml', 'no secret in it'], tone: 'serve' },
         ] },
       ],
     },

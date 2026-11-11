@@ -20,8 +20,8 @@ export const transformCustomTests: SceneModel = ideFrame2({
     {
       type: 'group', id: 'found', badge: 1, title: 'The failing rows, found', sub: 'from the run', tone: 'consume', children: [
         { type: 'table', id: 'fails', columns: ['test', 'rows', 'planted'], rows: [
-          ['paid orders have a payment', got('assert_has_payment'), '1% unpaid'],
-          ['orders paid once', got('assert_paid_once'), '0.3% paid twice'],
+          ['has a payment', got('assert_has_payment'), '1% unpaid'],
+          ['paid once', got('assert_paid_once'), '0.3% twice'],
         ] },
       ],
     },

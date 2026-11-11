@@ -29,7 +29,7 @@ export const transformGenericTests: SceneModel = ideFrame2({
   side: [
     {
       type: 'group', id: 'onstar', badge: 1, title: `${tests.length} tests on the DAG`, sub: 'each a query that should return no rows', tone: 'infra', dir: 'row', children: [
-        { type: 'item', id: 't-fact', icon: 'table', title: 'fct_order_lines', sub: 'unique, not_null, accepted_values', stack: true },
+        { type: 'item', id: 't-fact', icon: 'table', title: 'fct_order_lines', sub: 'unique, not_null, accepted_values; relationships →', stack: true },
         {
           type: 'group', id: 't-dims', bare: true, children: [
             { type: 'item', id: 't-cust', icon: 'users', title: 'dim_customer', sub: 'unique key' },
@@ -41,15 +41,15 @@ export const transformGenericTests: SceneModel = ideFrame2({
     {
       type: 'group', id: 'kinds', badge: 2, title: 'The four built-in tests', tone: 'neutral', children: [
         { type: 'table', id: 'k', columns: ['test', 'fails when'], rows: [
-          ['unique', 'a value appears twice'], ['not_null', 'a value is missing'],
-          ['relationships', 'a key has no row in its dimension'], ['accepted_values', 'a status no one expected'],
+          ['unique', 'a value twice'], ['not_null', 'a value missing'],
+          ['relationships', 'a key, no dim row'], ['accepted_values', 'an odd status'],
         ] },
       ],
     },
     { type: 'item', id: 'result', icon: 'check', tone: 'serve', title: `${pass} passed, ${fail} failed`, sub: 'dbt test --select marts, from the run' },
   ],
   edges: [
-    { from: 't-fact', to: 't-cust', label: 'relationships' },
-    { from: 't-fact', to: 't-prod', label: 'relationships' },
+    { from: 't-fact', to: 't-cust' },
+    { from: 't-fact', to: 't-prod' },
   ],
 })

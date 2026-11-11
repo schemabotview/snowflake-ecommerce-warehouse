@@ -27,8 +27,8 @@ export const loadOnce: SceneModel = ideFrame2({
     {
       type: 'group', id: 'exceptions', badge: 2, title: 'When a file does load again', tone: 'consume', children: [
         { type: 'table', id: 'cases', columns: ['', 'loads?'], rows: [
-          ['the same file, again', 'no'], ['the same name, new contents', 'yes'],
-          ['FORCE = TRUE', 'yes: duplicates'], ['older than 64 days', 'unknown: skipped by default'],
+          ['same file, again', 'no'], ['same name, new bytes', 'yes'],
+          ['FORCE = TRUE', 'yes: twice'], ['over 64 days old', 'skipped'],
         ] },
       ],
     },

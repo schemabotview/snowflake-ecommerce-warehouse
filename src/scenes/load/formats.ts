@@ -19,17 +19,17 @@ export const loadFormats: SceneModel = ideFrame2({
     {
       type: 'group', id: 'contract', badge: 1, title: 'A format is a contract', sub: 'between a sender and the warehouse', tone: 'infra', children: [
         { type: 'table', id: 'formats', columns: ['format', 'reads', 'from'], rows: [
-          { cells: ['FF_CSV', 'CSV, UTF-8', 'the shop'], tone: 'source' },
-          { cells: ['FF_CSV_LATIN1', 'CSV, Latin-1', 'returns'], tone: 'consume' },
-          { cells: ['FF_JSON', 'a JSON a line', 'the tracker'], tone: 'ingest' },
-          { cells: ['FF_PARQUET', 'typed columns', 'payments'], tone: 'store' },
+          { cells: ['FF_CSV', 'UTF-8', 'shop'], tone: 'source' },
+          { cells: ['FF_CSV_LATIN1', 'Latin-1', 'returns'], tone: 'consume' },
+          { cells: ['FF_JSON', 'JSON lines', 'tracker'], tone: 'ingest' },
+          { cells: ['FF_PARQUET', 'typed', 'payments'], tone: 'store' },
         ] },
       ],
     },
     {
       type: 'group', id: 'peek', badge: 2, title: 'Read before loading', sub: 'Black Friday’s first orders, straight from the stage', tone: 'neutral', children: [
         { type: 'item', id: 'p-file', icon: 'file', title: 'orders-2026-11-27.csv', sub: 'still a file on @LANDING' },
-        { type: 'table', id: 'rows', columns: ['order_id', 'order_ts', 'status', 'total'], rows: peek },
+        { type: 'table', id: 'rows', columns: ['order_id', 'at', 'status', 'total'], rows: peek.map(([id, ts, st, t]) => [id, ts.slice(11, 16), st, t]) },
       ],
     },
   ],

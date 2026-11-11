@@ -9,7 +9,7 @@ import sql from '../../../spine/secure/01-users/project/setup/users.sql?raw'
 // recorder's user); Ravi is a new colleague with nothing but PUBLIC.
 const mine = rowsOf(session, 'MY_ROLES', 1, 0, 6).map(([r]) => r)
 // A new user's only role, PUBLIC, is implicit: SHOW GRANTS TO USER lists nothing (the run says "No data").
-const ravi = /RAVIS_ROLES/.test(session) ? rowsOf(session, 'RAVIS_ROLES', 1).map(([r]) => r) : /No data/.test(session) ? ['none: PUBLIC only, implicit'] : ['…']
+const ravi = /RAVIS_ROLES/.test(session) ? rowsOf(session, 'RAVIS_ROLES', 1).map(([r]) => r) : /No data/.test(session) ? ['PUBLIC (implicit)'] : ['…'] 
 
 export const secureUsers: SceneModel = ideFrame2({
   model: 'Privileges to roles, roles to users',

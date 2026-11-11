@@ -27,9 +27,9 @@ export const loadSnowpipe: SceneModel = ideFrame2({
     {
       type: 'group', id: 'trigger', badge: 2, title: 'What tells the pipe', tone: 'neutral', children: [
         { type: 'table', id: 'triggers', columns: ['stage', 'trigger', 'here'], rows: [
-          { cells: ['internal', 'ALTER PIPE … REFRESH', 'run'], tone: 'serve' },
-          ['internal', 'the Snowpipe REST API', 'doc-cited'],
-          ['external (S3)', 'cloud event: auto-ingest', 'doc-cited'],
+          { cells: ['internal', 'ALTER PIPE REFRESH', 'run'], tone: 'serve' },
+          ['internal', 'REST API', 'docs'],
+          ['S3', 'auto-ingest event', 'docs'],
         ] },
       ],
     },

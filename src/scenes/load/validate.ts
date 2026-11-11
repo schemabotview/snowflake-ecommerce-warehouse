@@ -7,8 +7,8 @@ import sql from '../../../spine/load/05-validate/project/queries/validate_return
 
 // §5.5 — VALIDATION_MODE and ON_ERROR: the returns files checked, nothing loaded (recorded on
 // Snowflake). The generator plants Latin-1 text and 3 malformed rows a month.
-// The run's messages are cut at 52 characters by the query; the pane has room for 40.
-const errors = rowsOf(session, 'ERROR', 2, 0, 3).map(([e, n]) => [e.length > 40 ? `${e.slice(0, 39)}…` : e, n])
+// The run's messages are cut at 52 characters by the query; the pane has room for 26.
+const errors = rowsOf(session, 'ERROR', 2, 0, 3).map(([e, n]) => [e.length > 26 ? `${e.slice(0, 25)}…` : e, n])
 
 export const loadValidate: SceneModel = ideFrame2({
   model: 'Validate first: find the bad rows, load nothing',
@@ -32,8 +32,8 @@ export const loadValidate: SceneModel = ideFrame2({
     {
       type: 'group', id: 'choices', badge: 2, title: 'ON_ERROR: what a load does at a bad row', tone: 'infra', children: [
         { type: 'table', id: 'onerr', columns: ['ON_ERROR', 'the file'], rows: [
-          ['ABORT_STATEMENT', 'nothing loads (the default)'], ['SKIP_FILE', 'that whole file is skipped'],
-          { cells: ['CONTINUE', 'good rows load, bad rows are counted'], tone: 'serve' },
+          ['ABORT_STATEMENT', 'nothing (default)'], ['SKIP_FILE', 'file skipped'],
+          { cells: ['CONTINUE', 'good rows load'], tone: 'serve' },
         ] },
       ],
     },

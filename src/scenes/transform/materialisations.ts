@@ -15,11 +15,11 @@ export const transformMaterialisations: SceneModel = ideFrame2({
   session,
   keep: ['$ dbt run --select marts', 'Done. PASS=4', ['| TABLE_SCHEMA', '| MARTS        | FCT_ORDER_LINES'], '| STAGING      | STG_CLICKS'],
   side: [
-    { type: 'table', title: 'What each materialisation builds', id: 'mats', columns: ['materialized', 'in Snowflake', 'computed'], rows: [
-          ['view', 'a VIEW', 'every time it is read'],
-          ['table', 'a TABLE', 'every dbt run'],
-          { cells: ['ephemeral', 'nothing: a CTE', 'inside each model using it'], tone: 'serve' },
-          ['incremental', 'a TABLE', 'only new rows (next)'],
+    { type: 'table', title: 'What each materialisation builds', id: 'mats', columns: ['as', 'builds', 'computed'], rows: [
+          ['view', 'VIEW', 'on every read'],
+          ['table', 'TABLE', 'every run'],
+          { cells: ['ephemeral', 'a CTE', 'inside users'], tone: 'serve' },
+          ['incremental', 'TABLE', 'new rows only'],
         ] },
     { type: 'table', title: 'What ANALYTICS holds now (from the run)', id: 'objects', columns: ['schema', 'name', 'type'], rows: built },
   ],

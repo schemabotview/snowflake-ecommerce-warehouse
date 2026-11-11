@@ -32,8 +32,8 @@ export const transformDocs: SceneModel = ideFrame2({
       ],
     },
     { type: 'table', title: 'What dbt docs holds', id: 'd', columns: ['file', 'from'], rows: [
-          ['manifest.json', 'the project: models, refs, tests'], ['catalog.json', 'Snowflake: columns, types, rows'],
-          { cells: ['index.html', 'a site: lineage, docs, search'], tone: 'serve' },
+          ['manifest.json', 'the project'], ['catalog.json', 'Snowflake’s tables'],
+          { cells: ['index.html', 'a site: lineage, docs'], tone: 'serve' },
         ] },
   ],
   edges: [
