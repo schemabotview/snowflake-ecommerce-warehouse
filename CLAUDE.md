@@ -25,9 +25,9 @@ All 69 IDE sections are on graphl-flow 0.11's shared grid (`src/scenes/frame.ts`
 workbench id `ide-bench`) in spark-ecommerce-analytics' layout: compact explorer 175 | editor over a
 72-column terminal | side pane 434, titled with the section's mental model. The map, star-only and
 concept frames are unchanged. 22 narrations changed: their wavs are removed and the manifest
-regenerated, so check-content fails on those 22 until Colab regenerates them. Then every course is
-re-recorded and the film re-cut: the recordings, film and cover above are v1. Nothing was
-re-recorded on Snowflake.
+regenerated; Colab regenerated them. Nothing was re-recorded on Snowflake. 2026-11-12: every course re-recorded at 4K on v2 (segment cache and `scripts/out/` cleared first:
+the cache's fingerprint covers audio and encoding, not the scene, so a frame change needs
+`--force` or an empty cache) and the film re-cut, 2:10:21, and the cover rebuilt.
 
 Built: the app (vite, shell 1.1.0, graphl-flow 0.11.0, `--brand` #29b5e8), `src/scenes/ide.ts`
 (aws-ecommerce's template; psql / snow / dbt / Python errors marked), `tree.ts`, `fold.ts`, `lab.ts`,
